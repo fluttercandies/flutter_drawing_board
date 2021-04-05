@@ -10,6 +10,8 @@ flutter_drawing_board:
 ```
 
 ```dart
+import 'package:flutter_drawing_board/flutter_drawing_board.dart';
+
 DrawingBoard(
   background: Container(width: 400, height: 400, color: Colors.white),
   showDefaultActions: true,
