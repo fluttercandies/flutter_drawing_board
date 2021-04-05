@@ -8,6 +8,14 @@ flutter_drawing_board:
     git:
       url: https://git.liugl.cn/flutter_drawing_board.git
 ```
+
+```dart
+DrawingBoard(
+  background: Container(width: 400, height: 400, color: Colors.white),
+  showDefaultActions: true,
+  showDefaultTools: true,
+),
+```
 ## Preview
 
 ### Phone
