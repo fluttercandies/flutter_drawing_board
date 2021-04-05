@@ -13,18 +13,20 @@ class ColorPic extends StatelessWidget {
     Color _pickColor = nowColor;
 
     return Material(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              IconButton(icon: const Icon(CupertinoIcons.clear), onPressed: () => Navigator.pop(context)),
-              IconButton(icon: const Icon(CupertinoIcons.check_mark), onPressed: () => Navigator.pop(context, _pickColor)),
-            ],
-          ),
-          ColorPicker(pickerColor: _pickColor, onColorChanged: (Color c) => _pickColor = c),
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                IconButton(icon: const Icon(CupertinoIcons.clear), onPressed: () => Navigator.pop(context)),
+                IconButton(icon: const Icon(CupertinoIcons.check_mark), onPressed: () => Navigator.pop(context, _pickColor)),
+              ],
+            ),
+            ColorPicker(pickerColor: _pickColor, onColorChanged: (Color c) => _pickColor = c),
+          ],
+        ),
       ),
     );
   }

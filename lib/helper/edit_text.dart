@@ -22,6 +22,7 @@ class EditText extends StatelessWidget {
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.5,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(10),
           child: Column(

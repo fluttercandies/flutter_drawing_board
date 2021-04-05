@@ -191,7 +191,13 @@ class _DrawingBoardState extends State<DrawingBoard> {
                 valueListenable: _drawingController.drawConfig,
                 shouldRebuild: (DrawConfig p, DrawConfig n) => p.color != n.color,
                 builder: (_, DrawConfig dc, ___) {
-                  return TextButton(onPressed: _pickColor, child: Container(color: dc.color));
+                  return TextButton(
+                    onPressed: _pickColor,
+                    style: ButtonStyle(
+                      padding: MaterialStateProperty.all(EdgeInsets.zero),
+                    ),
+                    child: Container(color: dc.color),
+                  );
                 },
               ),
             ),

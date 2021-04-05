@@ -27,12 +27,29 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.grey,
-      appBar: AppBar(title: const Text('Drawing Test')),
-      body: DrawingBoard(
-        background: Container(width: 400, height: 400, color: Colors.white),
-        showDefaultActions: true,
-        showDefaultTools: true,
+      appBar: AppBar(
+        title: const Text('Drawing Test'),
+        brightness: Brightness.dark,
+      ),
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: DrawingBoard(
+              background: Container(width: 400, height: 400, color: Colors.white),
+              showDefaultActions: true,
+              showDefaultTools: true,
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: SelectableText(
+              'https://github.com/xSILENCEx/flutter_drawing_board',
+              style: TextStyle(fontSize: 10, color: Colors.white),
+            ),
+          ),
+        ],
       ),
     );
   }
