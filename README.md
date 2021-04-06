@@ -18,9 +18,11 @@ DrawingBoard(
   showDefaultTools: true,
 ),
 ```
-## Preview
+## 效果预览
 
-### Phone
+预览网址:https://painter.liugl.cn
+
+### 手机
 <img src="./preview/phone.jpg" height=400>
 
 ### Web
