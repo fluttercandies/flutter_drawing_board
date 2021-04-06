@@ -9,12 +9,7 @@ import 'helper/ex_value_builder.dart';
 import 'helper/get_size.dart';
 import 'paint_contents/paint_content.dart';
 import 'painter.dart';
-
-///工具栏构建器
-typedef ToolsBuilder = Widget Function(BuildContext context, PaintType paintType);
-
-///操作栏构建器
-typedef ActionBuilder = Widget Function(BuildContext context, int angle, int currentLayer, int maxLayer);
+import 'tools_bar.dart';
 
 ///画板
 class DrawingBoard extends StatefulWidget {
@@ -218,16 +213,32 @@ class _DrawingBoardState extends State<DrawingBoard> {
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         padding: EdgeInsets.zero,
-        child: Row(
-          children: <Widget>[
-            IconButton(icon: const Icon(CupertinoIcons.pencil), onPressed: () => _drawingController.setType = PaintType.simpleLine),
-            IconButton(icon: Transform.rotate(angle: -0.78, child: const Icon(CupertinoIcons.minus)), onPressed: () => _drawingController.setType = PaintType.straightLine),
-            IconButton(icon: const Icon(CupertinoIcons.stop), onPressed: () => _drawingController.setType = PaintType.rectangle),
-            IconButton(icon: const Icon(CupertinoIcons.text_cursor), onPressed: _editText),
-            IconButton(icon: const Icon(CupertinoIcons.bandage), onPressed: () => _drawingController.setType = PaintType.eraser),
-          ],
+        child: ToolsBar(
+          controller: _drawingController,
+          builder: (_, PaintType type) {
+            return Row(
+              children: <Widget>[
+                _buildToolItem(type == PaintType.simpleLine, CupertinoIcons.pencil, () => _drawingController.setType = PaintType.simpleLine),
+                _buildToolItem(type == PaintType.straightLine, Icons.show_chart, () => _drawingController.setType = PaintType.straightLine),
+                _buildToolItem(type == PaintType.rectangle, CupertinoIcons.stop, () => _drawingController.setType = PaintType.rectangle),
+                _buildToolItem(type == PaintType.text, CupertinoIcons.text_cursor, _editText),
+                _buildToolItem(type == PaintType.eraser, CupertinoIcons.bandage, () => _drawingController.setType = PaintType.eraser),
+              ],
+            );
+          },
         ),
       ),
+    );
+  }
+
+  ///构建工具项
+  Widget _buildToolItem(bool select, IconData icon, Function() onTap) {
+    return IconButton(
+      icon: Icon(
+        icon,
+        color: select ? Colors.blue : null,
+      ),
+      onPressed: onTap,
     );
   }
 }

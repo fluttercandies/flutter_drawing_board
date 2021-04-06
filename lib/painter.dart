@@ -116,7 +116,7 @@ class _UpPainter extends CustomPainter {
         _drawRect(canvas, drawingController.currentContent as Rectangle);
         break;
       case PaintType.text:
-        _drawText(canvas, size, drawingController.currentContent as CustomText);
+        _drawText(canvas, size, drawingController.currentContent as CustomText, uper: true);
         break;
       case PaintType.smoothLine:
         _drawSmooth(canvas, drawingController.currentContent as SmoothLine);
@@ -190,7 +190,7 @@ void _drawLine(Canvas canvas, StraightLine line) => canvas.drawLine(line.startPo
 void _drawRect(Canvas canvas, Rectangle r) => canvas.drawRect(Rect.fromLTRB(r.startPoint.dx, r.startPoint.dy, r.endPoint.dx, r.endPoint.dy), r.paint);
 
 ///绘制文本
-void _drawText(Canvas canvas, Size size, CustomText text) {
+void _drawText(Canvas canvas, Size size, CustomText text, {bool uper = false}) {
   canvas.save();
 
   canvas.rotate(-math.pi * 0.5 * text.angle);
@@ -207,7 +207,18 @@ void _drawText(Canvas canvas, Size size, CustomText text) {
     canvas.translate(0, -size.width);
   }
 
-  // canvas.drawRect(Rect.fromPoints(text.realStart(size), text.realEnd(size)), text.paint);
+  if (uper) {
+    canvas.drawRect(
+      Rect.fromLTWH(
+        text.realStart(size).dx,
+        text.realStart(size).dy,
+        text.realEnd(size).dx - text.realStart(size).dx,
+        text.size,
+      ),
+      text.paint,
+    );
+  }
+
   text.textPainter.layout(maxWidth: text.maxWidth);
   text.textPainter.paint(canvas, text.realStart(size));
 

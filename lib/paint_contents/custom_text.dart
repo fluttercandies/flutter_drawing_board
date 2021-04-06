@@ -10,13 +10,16 @@ class CustomText extends PaintContent {
     Paint paint,
     this.angle,
     this.text,
-  }) : super(type: PaintType.text, paint: paint);
+  }) : super(type: PaintType.text, paint: paint) {
+    size = textPainter.text.style.fontSize * 1.2;
+  }
 
   Offset startPoint;
   Offset endPoint;
   TextPainter textPainter;
   int angle;
   String text;
+  double size;
 
   ///最大宽度
   double get maxWidth {

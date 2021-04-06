@@ -28,3 +28,6 @@ DrawingBoard(
 
 ### Windows
 <img src="./preview/win.png" height=400>
+
+### macOS
+<img src="./preview/mac.png" height=400>

@@ -186,9 +186,16 @@ class DrawingController {
       ///文本
       case PaintType.text:
         _paint.strokeWidth = 0;
-        final TextSpan span = TextSpan(text: drawConfig.value.text, style: TextStyle(color: drawConfig.value.color, fontSize: drawConfig.value.thickness));
+        final TextSpan span =
+            TextSpan(text: drawConfig.value.text, style: TextStyle(color: drawConfig.value.color, fontSize: drawConfig.value.thickness));
         final TextPainter tp = TextPainter(text: span, textAlign: TextAlign.left, textDirection: TextDirection.ltr, maxLines: 1);
-        currentContent = CustomText(paint: _paint, startPoint: _startPoint, angle: drawConfig.value.angle, textPainter: tp, text: drawConfig.value.text);
+        currentContent = CustomText(
+          paint: _paint,
+          startPoint: _startPoint,
+          angle: drawConfig.value.angle,
+          textPainter: tp,
+          text: drawConfig.value.text,
+        );
         break;
 
       ///平滑自由线条
