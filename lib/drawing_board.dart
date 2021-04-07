@@ -213,32 +213,33 @@ class _DrawingBoardState extends State<DrawingBoard> {
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         padding: EdgeInsets.zero,
-        child: ToolsBar(
-          controller: _drawingController,
-          builder: (_, PaintType type) {
-            return Row(
-              children: <Widget>[
-                _buildToolItem(type == PaintType.simpleLine, CupertinoIcons.pencil, () => _drawingController.setType = PaintType.simpleLine),
-                _buildToolItem(type == PaintType.straightLine, Icons.show_chart, () => _drawingController.setType = PaintType.straightLine),
-                _buildToolItem(type == PaintType.rectangle, CupertinoIcons.stop, () => _drawingController.setType = PaintType.rectangle),
-                _buildToolItem(type == PaintType.text, CupertinoIcons.text_cursor, _editText),
-                _buildToolItem(type == PaintType.eraser, CupertinoIcons.bandage, () => _drawingController.setType = PaintType.eraser),
-              ],
-            );
-          },
+        child: Row(
+          children: <Widget>[
+            _buildToolItem(PaintType.simpleLine, CupertinoIcons.pencil, () => _drawingController.setType = PaintType.simpleLine),
+            _buildToolItem(PaintType.straightLine, Icons.show_chart, () => _drawingController.setType = PaintType.straightLine),
+            _buildToolItem(PaintType.rectangle, CupertinoIcons.stop, () => _drawingController.setType = PaintType.rectangle),
+            _buildToolItem(PaintType.text, CupertinoIcons.text_cursor, _editText),
+            _buildToolItem(PaintType.eraser, CupertinoIcons.bandage, () => _drawingController.setType = PaintType.eraser),
+          ],
         ),
       ),
     );
   }
 
   ///构建工具项
-  Widget _buildToolItem(bool select, IconData icon, Function() onTap) {
-    return IconButton(
-      icon: Icon(
-        icon,
-        color: select ? Colors.blue : null,
-      ),
-      onPressed: onTap,
+  Widget _buildToolItem(PaintType type, IconData icon, Function() onTap) {
+    return ExValueBuilder<DrawConfig>(
+      valueListenable: _drawingController.drawConfig,
+      shouldRebuild: (DrawConfig p, DrawConfig n) => p.paintType == type || n.paintType == type,
+      builder: (_, DrawConfig dc, __) {
+        return IconButton(
+          icon: Icon(
+            icon,
+            color: dc.paintType == type ? Colors.blue : null,
+          ),
+          onPressed: onTap,
+        );
+      },
     );
   }
 }
