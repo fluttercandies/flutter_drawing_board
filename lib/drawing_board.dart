@@ -9,7 +9,6 @@ import 'helper/ex_value_builder.dart';
 import 'helper/get_size.dart';
 import 'paint_contents/paint_content.dart';
 import 'painter.dart';
-import 'tools_bar.dart';
 
 ///画板
 class DrawingBoard extends StatefulWidget {
