@@ -7,9 +7,9 @@ class StraightLine extends PaintContent {
   StraightLine({
     this.startPoint,
     this.endPoint,
-    Paint paint,
+    Paint? paint,
   }) : super(type: PaintType.straightLine, paint: paint);
 
-  Offset startPoint;
-  Offset endPoint;
+  Offset? startPoint;
+  Offset? endPoint;
 }

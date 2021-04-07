@@ -2,22 +2,22 @@ import 'package:flutter/material.dart';
 
 ///编辑文本内容
 class EditText extends StatelessWidget {
-  const EditText({Key key, this.defaultText}) : super(key: key);
+  const EditText({Key? key, this.defaultText}) : super(key: key);
 
-  final String defaultText;
+  final String? defaultText;
 
   ///完成编辑
-  void _complate(BuildContext context, String text) {
+  void _complate(BuildContext? context, String? text) {
     if (text != null && text.trim().isNotEmpty && text != defaultText) {
-      Navigator.pop(context, text);
+      Navigator.pop(context!, text);
     } else {
-      Navigator.pop(context);
+      Navigator.pop(context!);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    String _contnet;
+    String? _contnet;
 
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.5,
