@@ -76,7 +76,7 @@ class DrawingController {
     realPainter = _RealPainter();
     _history = <PaintContent?>[];
     _currentIndex = 0;
-    _startPoint = Offset?.zero;
+    _startPoint = Offset.zero;
     drawConfig = ValueNotifier<DrawConfig?>(config ?? DrawConfig.def());
   }
 
@@ -186,8 +186,7 @@ class DrawingController {
       ///文本
       case PaintType.text:
         _paint.strokeWidth = 0;
-        final TextSpan span =
-            TextSpan(text: drawConfig.value!.text, style: TextStyle(color: drawConfig.value!.color, fontSize: drawConfig.value!.thickness));
+        final TextSpan span = TextSpan(text: drawConfig.value!.text, style: TextStyle(color: drawConfig.value!.color, fontSize: drawConfig.value!.thickness));
         final TextPainter tp = TextPainter(text: span, textAlign: TextAlign.left, textDirection: TextDirection.ltr, maxLines: 1);
         currentContent = CustomText(
           paint: _paint,

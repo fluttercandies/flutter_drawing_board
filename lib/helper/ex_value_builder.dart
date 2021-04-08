@@ -4,7 +4,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-typedef ValueWidgetBuilder<T> = Widget Function(BuildContext context, T value, Widget child);
+typedef ValueWidgetBuilder<T> = Widget Function(BuildContext context, T value, Widget? child);
 
 class ExValueBuilder<T> extends StatefulWidget {
   const ExValueBuilder({
@@ -63,6 +63,6 @@ class _ExValueBuilderState<T> extends State<ExValueBuilder<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.builder(context, value, widget.child!);
+    return widget.builder(context, value, widget.child);
   }
 }
