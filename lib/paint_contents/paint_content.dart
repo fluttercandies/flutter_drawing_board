@@ -6,7 +6,7 @@ import 'package:flutter/painting.dart';
 /// * rectangle 矩形
 /// * text 文本
 /// * smoothLine 平滑自由线条
-enum PaintType { simpleLine, straightLine, rectangle, text, smoothLine, eraser }
+enum PaintType { simpleLine, straightLine, rectangle, text, eraser, smoothLine }
 
 ///绘制对象
 abstract class PaintContent {
