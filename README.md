@@ -7,9 +7,13 @@ A new Flutter package of drawing board.
 flutter_drawing_board:
     git:
       url: https://git.liugl.cn/flutter_drawing_board.git
+      ref: master
 ```
+空安全请使用 `master` 分支
 
 ```dart
+//simple example
+
 import 'package:flutter_drawing_board/flutter_drawing_board.dart';
 
 DrawingBoard(
@@ -18,6 +22,26 @@ DrawingBoard(
   showDefaultTools: true,
 ),
 ```
+
+```dart
+//获取画板数据
+
+import 'package:flutter_drawing_board/flutter_drawing_board.dart';
+
+final DrawingController _drawingController = DrawingController();
+
+DrawingBoard(
+  controller: _drawingController,
+  background: Container(width: 400, height: 400, color: Colors.white),
+  showDefaultActions: true,
+  showDefaultTools: true,
+),
+
+Future<void> _getImageData() async {
+  print((await _drawingController.getImageData()).buffer.asInt8List());
+}
+```
+
 ## 效果预览
 
 预览网址:https://painter.liugl.cn
