@@ -32,33 +32,33 @@ class DrawConfig {
   });
 
   ///绘制类型
-  final PaintType paintType;
+  final PaintType? paintType;
 
   ///开始点
-  final Offset startPoint;
+  final Offset? startPoint;
 
   ///绘制颜色
-  final Color color;
+  final Color? color;
 
   ///线条粗细
-  final double thickness;
+  final double? thickness;
 
   ///旋转的角度（0:0,1:90,2:180,3:270）
-  final int angle;
+  final int? angle;
 
   ///当前文本内容
-  final String text;
+  final String? text;
 
-  DrawConfig copyWith({
-    PaintType paintType,
-    PaintContent currentContent,
-    List<PaintContent> history,
-    int currentIndex,
-    Offset startPoint,
-    Color color,
-    double thickness,
-    int angle,
-    String text,
+  DrawConfig? copyWith({
+    PaintType? paintType,
+    PaintContent? currentContent,
+    List<PaintContent>? history,
+    int? currentIndex,
+    Offset? startPoint,
+    Color? color,
+    double? thickness,
+    int? angle,
+    String? text,
   }) =>
       DrawConfig(
         paintType: paintType ?? this.paintType,
@@ -72,104 +72,104 @@ class DrawConfig {
 
 ///绘制控制器
 class DrawingController {
-  DrawingController({DrawConfig config}) {
+  DrawingController({DrawConfig? config}) {
     realPainter = _RealPainter();
-    _history = <PaintContent>[];
+    _history = <PaintContent?>[];
     _currentIndex = 0;
     _startPoint = Offset.zero;
-    drawConfig = ValueNotifier<DrawConfig>(config ?? DrawConfig.def());
+    drawConfig = ValueNotifier<DrawConfig?>(config ?? DrawConfig.def());
   }
 
   ///画板数据
-  final GlobalKey painterKey = GlobalKey();
+  final GlobalKey? painterKey = GlobalKey();
 
   ///控制器
-  ValueNotifier<DrawConfig> drawConfig = ValueNotifier<DrawConfig>(DrawConfig());
+  ValueNotifier<DrawConfig?> drawConfig = ValueNotifier<DrawConfig?>(DrawConfig());
 
   ///表层绘制内容
-  PaintContent currentContent;
+  PaintContent? currentContent;
 
   ///手指落下点
-  Offset _startPoint;
+  Offset? _startPoint;
 
   ///底层绘制内容
-  List<PaintContent> _history;
+  List<PaintContent?>? _history;
 
   ///获取绘制类型
-  PaintType get getType => drawConfig.value.paintType;
+  PaintType? get getType => drawConfig.value!.paintType;
 
   ///设置绘制类型
-  set setType(PaintType type) {
-    if (type != drawConfig.value.paintType) {
-      drawConfig.value = drawConfig.value.copyWith(paintType: type);
+  set setType(PaintType? type) {
+    if (type != drawConfig.value!.paintType) {
+      drawConfig.value = drawConfig.value!.copyWith(paintType: type);
     }
   }
 
   ///获取绘制图层/历史
-  List<PaintContent> get getHistory => _history;
+  List<PaintContent?>? get getHistory => _history;
 
   ///图层指针
-  int _currentIndex;
+  int? _currentIndex;
 
   ///获取图层指针
-  int get currentIndex => _currentIndex;
+  int? get currentIndex => _currentIndex;
 
   ///获取当前颜色
-  Color get getColor => drawConfig.value.color;
+  Color? get getColor => drawConfig.value!.color;
 
   ///设置绘制颜色
   set setColor(Color color) {
-    if (color != drawConfig.value.color) {
-      drawConfig.value = drawConfig.value.copyWith(color: color);
+    if (color != drawConfig.value!.color) {
+      drawConfig.value = drawConfig.value!.copyWith(color: color);
     }
   }
 
   ///获取线条粗细
-  double get getThickness => drawConfig.value.thickness;
+  double? get getThickness => drawConfig.value!.thickness;
 
   ///设置线条粗细
   set setThickness(double thickness) {
-    if (thickness != drawConfig.value.thickness) {
-      drawConfig.value = drawConfig.value.copyWith(thickness: thickness);
+    if (thickness != drawConfig.value!.thickness) {
+      drawConfig.value = drawConfig.value!.copyWith(thickness: thickness);
     }
   }
 
   ///旋转画布
   ///设置角度
   void turn() {
-    drawConfig.value = drawConfig.value.copyWith(angle: (drawConfig.value.angle + 1) % 4);
+    drawConfig.value = drawConfig.value!.copyWith(angle: (drawConfig.value!.angle! + 1) % 4);
   }
 
   ///获取当前文本内容
-  String get getText => drawConfig.value.text;
+  String get getText => drawConfig.value!.text!;
 
   ///设置当前文本内容
-  set setText(String text) {
-    if (text != drawConfig.value.text) {
-      drawConfig.value = drawConfig.value.copyWith(text: text);
+  set setText(String? text) {
+    if (text != drawConfig.value!.text) {
+      drawConfig.value = drawConfig.value!.copyWith(text: text);
     }
   }
 
   ///开始绘制
-  void startDraw(Offset startPoint) {
+  void startDraw(Offset? startPoint) {
     ///刷新起点
     _startPoint = startPoint;
 
     ///创建画笔
     ///配置属性
     final Paint _paint = Paint();
-    _paint.color = drawConfig.value.color;
-    _paint.strokeWidth = drawConfig.value.thickness;
+    _paint.color = drawConfig.value!.color!;
+    _paint.strokeWidth = drawConfig.value!.thickness!;
     _paint.strokeCap = StrokeCap.round;
     _paint.strokeJoin = StrokeJoin.round;
     _paint.style = PaintingStyle.stroke;
 
-    switch (drawConfig.value.paintType) {
+    switch (drawConfig.value!.paintType) {
 
       ///自由线条
       case PaintType.simpleLine:
         final Path path = Path();
-        path.moveTo(startPoint.dx, startPoint.dy);
+        path.moveTo(startPoint!.dx, startPoint.dy);
         currentContent = SimpleLine(paint: _paint, path: path);
         break;
 
@@ -186,15 +186,14 @@ class DrawingController {
       ///文本
       case PaintType.text:
         _paint.strokeWidth = 0;
-        final TextSpan span =
-            TextSpan(text: drawConfig.value.text, style: TextStyle(color: drawConfig.value.color, fontSize: drawConfig.value.thickness));
+        final TextSpan span = TextSpan(text: drawConfig.value!.text, style: TextStyle(color: drawConfig.value!.color, fontSize: drawConfig.value!.thickness));
         final TextPainter tp = TextPainter(text: span, textAlign: TextAlign.left, textDirection: TextDirection.ltr, maxLines: 1);
         currentContent = CustomText(
           paint: _paint,
           startPoint: _startPoint,
-          angle: drawConfig.value.angle,
+          angle: drawConfig.value!.angle,
           textPainter: tp,
-          text: drawConfig.value.text,
+          text: drawConfig.value!.text,
         );
         break;
 
@@ -203,8 +202,8 @@ class DrawingController {
         final Path path = Path();
         final List<Offset> points = <Offset>[];
 
-        path.moveTo(startPoint.dx, startPoint.dy);
-        points.add(_startPoint);
+        path.moveTo(startPoint!.dx, startPoint.dy);
+        points.add(_startPoint!);
         currentContent = SmoothLine(paint: _paint, path: path, points: points, start: _startPoint);
         break;
 
@@ -212,7 +211,7 @@ class DrawingController {
       case PaintType.eraser:
         final Path path = Path();
         _paint.blendMode = BlendMode.clear;
-        path.moveTo(startPoint.dx, startPoint.dy);
+        path.moveTo(startPoint!.dx, startPoint.dy);
         currentContent = Eraser(paint: _paint, path: path);
         break;
       default:
@@ -222,7 +221,7 @@ class DrawingController {
 
   ///正在绘制
   void drawing(Offset nowPaint) {
-    switch (drawConfig.value.paintType) {
+    switch (drawConfig.value!.paintType) {
       case PaintType.simpleLine:
         _drawSimpleLine(nowPaint);
         break;
@@ -250,33 +249,33 @@ class DrawingController {
 
   ///结束绘制
   void endDraw() {
-    final int hisLen = _history.length;
-    if (hisLen > _currentIndex) {
-      _history.removeRange(_currentIndex, hisLen);
+    final int? hisLen = _history?.length;
+    if (hisLen! > _currentIndex!) {
+      _history?.removeRange(_currentIndex!, hisLen);
     }
 
     ///如果绘制类型为平滑曲线
     ///进行计算重绘
-    if (drawConfig.value.paintType == PaintType.smoothLine) {
+    if (drawConfig.value!.paintType == PaintType.smoothLine) {
       final SmoothLine line = currentContent as SmoothLine;
-      final List<Offset> points = line.points;
-      line.path.reset();
+      final List<Offset?>? points = line.points;
+      line.path!.reset();
 
-      for (int i = 0; i < points.length; i += 2) {
-        final Offset point = points[i];
+      for (int i = 0; i < points!.length; i += 2) {
+        final Offset point = points[i]!;
         if (i == 0) {
-          line.path.moveTo(point.dx, point.dy);
+          line.path!.moveTo(point.dx, point.dy);
         } else if (i < points.length - 1) {
-          final Offset next = points[i + 1];
-          line.path.quadraticBezierTo(point.dx, point.dy, next.dx, next.dy);
+          final Offset next = points[i + 1]!;
+          line.path!.quadraticBezierTo(point.dx, point.dy, next.dx, next.dy);
         } else {
-          line.path.lineTo(point.dx, point.dy);
+          line.path!.lineTo(point.dx, point.dy);
         }
       }
     }
 
-    _history.add(currentContent);
-    _currentIndex = _history.length;
+    _history?.add(currentContent);
+    _currentIndex = _history?.length;
     currentContent = null;
 
     _refresh();
@@ -287,7 +286,7 @@ class DrawingController {
   ///绘制普通线条
   void _drawSimpleLine(Offset nowPoint) {
     final SimpleLine line = currentContent as SimpleLine;
-    line.path.lineTo(nowPoint.dx, nowPoint.dy);
+    line.path!.lineTo(nowPoint.dx, nowPoint.dy);
     _refresh();
   }
 
@@ -315,45 +314,45 @@ class DrawingController {
     final SmoothLine line = currentContent as SmoothLine;
 
     ///记录点位
-    line.points.add(nowPoint);
+    line.points!.add(nowPoint);
 
-    line.path.lineTo(nowPoint.dx, nowPoint.dy);
+    line.path!.lineTo(nowPoint.dx, nowPoint.dy);
   }
 
   ///橡皮
   void _eraser(Offset nowPoint) {
     final Eraser eraser = currentContent as Eraser;
 
-    eraser.path.lineTo(nowPoint.dx, nowPoint.dy);
+    eraser.path!.lineTo(nowPoint.dx, nowPoint.dy);
   }
 
   ///撤销
   void undo() {
-    if (_currentIndex > 0) {
-      _currentIndex--;
+    if (_currentIndex! > 0) {
+      _currentIndex = _currentIndex! - 1;
       _refreshDeep();
     }
   }
 
   ///重做
   void redo() {
-    if (_currentIndex < _history.length) {
-      _currentIndex++;
+    if (_currentIndex! < _history!.length) {
+      _currentIndex = _currentIndex! + 1;
       _refreshDeep();
     }
   }
 
   ///清理画布
   void clear() {
-    _history.clear();
+    _history?.clear();
     _currentIndex = 0;
     _refreshDeep();
   }
 
   ///获取图片数据
-  Future<ByteData> getImageData() async {
+  Future<ByteData?> getImageData() async {
     try {
-      final RenderRepaintBoundary boundary = painterKey.currentContext.findRenderObject() as RenderRepaintBoundary;
+      final RenderRepaintBoundary boundary = painterKey!.currentContext!.findRenderObject() as RenderRepaintBoundary;
       final ui.Image image = await boundary.toImage(pixelRatio: ui.window.devicePixelRatio);
       return await image.toByteData(format: ui.ImageByteFormat.png);
     } catch (e) {
@@ -364,21 +363,21 @@ class DrawingController {
 
   ///刷新表层画板
   void _refresh() {
-    drawConfig.value = drawConfig.value.copyWith();
+    drawConfig.value = drawConfig.value!.copyWith();
   }
 
   ///刷新底层画板
   void _refreshDeep() {
-    realPainter._refresh();
+    realPainter?._refresh();
   }
 
   ///底层画布刷新控制
-  _RealPainter realPainter;
+  _RealPainter? realPainter;
 
   ///销毁控制器
   void dispose() {
     drawConfig.dispose();
-    realPainter.dispose();
+    realPainter?.dispose();
   }
 }
 

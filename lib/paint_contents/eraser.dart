@@ -6,8 +6,8 @@ import 'paint_content.dart';
 class Eraser extends PaintContent {
   Eraser({
     this.path,
-    Paint paint,
+    Paint? paint,
   }) : super(type: PaintType.eraser, paint: paint);
 
-  Path path;
+  Path? path;
 }

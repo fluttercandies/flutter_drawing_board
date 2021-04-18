@@ -14,8 +14,8 @@ import 'paint_contents/straight_line.dart';
 ///绘图板
 class Painter extends StatefulWidget {
   const Painter({
-    Key key,
-    @required this.drawingController,
+    Key? key,
+    required this.drawingController,
   }) : super(key: key);
 
   @override
@@ -80,10 +80,10 @@ class _PainterState extends State<Painter> {
           ),
         ),
         valueListenable: _fingerCount,
-        builder: (_, int count, Widget child) {
+        builder: (_, int? count, Widget? child) {
           return GestureDetector(
             child: child,
-            onPanStart: count <= 1 ? _onPanStart : null,
+            onPanStart: count! <= 1 ? _onPanStart : null,
             onPanUpdate: count <= 1 ? _onPanUpdate : null,
             onPanEnd: count <= 1 ? _onPanEnd : null,
           );
@@ -95,34 +95,34 @@ class _PainterState extends State<Painter> {
 
 ///表层画板
 class _UpPainter extends CustomPainter {
-  _UpPainter({this.drawingController}) : super(repaint: drawingController.drawConfig);
+  _UpPainter({this.drawingController}) : super(repaint: drawingController?.drawConfig);
 
-  final DrawingController drawingController;
+  final DrawingController? drawingController;
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (drawingController.currentContent == null) {
+    if (drawingController?.currentContent == null) {
       return;
     }
 
-    switch (drawingController.getType) {
+    switch (drawingController?.getType) {
       case PaintType.simpleLine:
-        _drawPath(canvas, drawingController.currentContent as SimpleLine);
+        _drawPath(canvas, drawingController?.currentContent as SimpleLine);
         break;
       case PaintType.straightLine:
-        _drawLine(canvas, drawingController.currentContent as StraightLine);
+        _drawLine(canvas, drawingController?.currentContent as StraightLine);
         break;
       case PaintType.rectangle:
-        _drawRect(canvas, drawingController.currentContent as Rectangle);
+        _drawRect(canvas, drawingController?.currentContent as Rectangle);
         break;
       case PaintType.text:
-        _drawText(canvas, size, drawingController.currentContent as CustomText, uper: true);
+        _drawText(canvas, size, drawingController?.currentContent as CustomText, uper: true);
         break;
       case PaintType.smoothLine:
-        _drawSmooth(canvas, drawingController.currentContent as SmoothLine);
+        _drawSmooth(canvas, drawingController?.currentContent as SmoothLine);
         break;
       case PaintType.eraser:
-        _eraser(canvas, size, drawingController.currentContent as Eraser);
+        _eraser(canvas, size, drawingController?.currentContent as Eraser);
         break;
       default:
         break;
@@ -135,20 +135,20 @@ class _UpPainter extends CustomPainter {
 
 ///底层画板
 class _DeepPainter extends CustomPainter {
-  _DeepPainter({this.drawingController}) : super(repaint: drawingController.realPainter);
-  final DrawingController drawingController;
+  _DeepPainter({this.drawingController}) : super(repaint: drawingController?.realPainter);
+  final DrawingController? drawingController;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final List<PaintContent> _contents = drawingController.getHistory;
-    if (_contents.isEmpty) {
+    final List<PaintContent?>? _contents = drawingController?.getHistory;
+    if (_contents!.isEmpty) {
       return;
     }
 
     canvas.saveLayer(Offset.zero & size, Paint());
 
-    for (int i = 0; i < drawingController.currentIndex; i++) {
-      final PaintContent item = _contents[i];
+    for (int i = 0; i < drawingController!.currentIndex!; i++) {
+      final PaintContent item = _contents[i]!;
       switch (item.type) {
         case PaintType.simpleLine:
           _drawPath(canvas, item as SimpleLine);
@@ -181,19 +181,20 @@ class _DeepPainter extends CustomPainter {
 }
 
 ///绘制自由线条
-void _drawPath(Canvas canvas, SimpleLine line) => canvas.drawPath(line.path, line.paint);
+void _drawPath(Canvas canvas, SimpleLine line) => canvas.drawPath(line.path!, line.paint!);
 
 ///绘制直线
-void _drawLine(Canvas canvas, StraightLine line) => canvas.drawLine(line.startPoint, line.endPoint, line.paint);
+void _drawLine(Canvas canvas, StraightLine line) => canvas.drawLine(line.startPoint!, line.endPoint!, line.paint!);
 
 ///绘制矩形
-void _drawRect(Canvas canvas, Rectangle r) => canvas.drawRect(Rect.fromLTRB(r.startPoint.dx, r.startPoint.dy, r.endPoint.dx, r.endPoint.dy), r.paint);
+void _drawRect(Canvas canvas, Rectangle r) =>
+    canvas.drawRect(Rect.fromLTRB(r.startPoint!.dx, r.startPoint!.dy, r.endPoint!.dx, r.endPoint!.dy), r.paint!);
 
 ///绘制文本
 void _drawText(Canvas canvas, Size size, CustomText text, {bool uper = false}) {
   canvas.save();
 
-  canvas.rotate(-math.pi * 0.5 * text.angle);
+  canvas.rotate(-math.pi * 0.5 * text.angle!);
 
   if (text.angle == 1) {
     canvas.translate(-size.height, 0);
@@ -210,23 +211,23 @@ void _drawText(Canvas canvas, Size size, CustomText text, {bool uper = false}) {
   if (uper) {
     canvas.drawRect(
       Rect.fromLTWH(
-        text.realStart(size).dx,
-        text.realStart(size).dy,
-        text.realEnd(size).dx - text.realStart(size).dx,
-        text.size,
+        text.realStart(size)!.dx,
+        text.realStart(size)!.dy,
+        text.realEnd(size)!.dx - text.realStart(size)!.dx,
+        text.size!,
       ),
-      text.paint,
+      text.paint!,
     );
   }
 
-  text.textPainter.layout(maxWidth: text.maxWidth);
-  text.textPainter.paint(canvas, text.realStart(size));
+  text.textPainter!.layout(maxWidth: text.maxWidth!);
+  text.textPainter!.paint(canvas, text.realStart(size)!);
 
   canvas.restore();
 }
 
 ///绘制平滑自由线条
-void _drawSmooth(Canvas canvas, SmoothLine line) => canvas.drawPath(line.path, line.paint);
+void _drawSmooth(Canvas canvas, SmoothLine line) => canvas.drawPath(line.path!, line.paint!);
 
 ///绘制自由线条
-void _eraser(Canvas canvas, Size size, Eraser line) => canvas.drawPath(line.path, line.paint);
+void _eraser(Canvas canvas, Size size, Eraser line) => canvas.drawPath(line.path!, line.paint!);

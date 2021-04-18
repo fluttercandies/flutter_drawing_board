@@ -6,8 +6,8 @@ import 'paint_content.dart';
 class SimpleLine extends PaintContent {
   SimpleLine({
     this.path,
-    Paint paint,
+    Paint? paint,
   }) : super(type: PaintType.simpleLine, paint: paint);
 
-  Path path;
+  Path? path;
 }

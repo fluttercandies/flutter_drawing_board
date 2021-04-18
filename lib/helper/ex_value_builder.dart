@@ -4,33 +4,31 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-typedef ValueWidgetBuilder<T> = Widget Function(BuildContext context, T value, Widget child);
+typedef ValueWidgetBuilder<T> = Widget Function(BuildContext context, T value, Widget? child);
 
 class ExValueBuilder<T> extends StatefulWidget {
   const ExValueBuilder({
-    Key key,
-    @required this.valueListenable,
-    @required this.builder,
+    Key? key,
+    required this.valueListenable,
+    required this.builder,
     this.child,
     this.shouldRebuild,
-  })  : assert(valueListenable != null),
-        assert(builder != null),
-        super(key: key);
+  }) : super(key: key);
 
-  final ValueListenable<T> valueListenable;
+  final ValueListenable<T?> valueListenable;
 
-  final ValueWidgetBuilder<T> builder;
+  final ValueWidgetBuilder<T?> builder;
 
-  final bool Function(T previous, T next) shouldRebuild;
+  final bool Function(T? previous, T? next)? shouldRebuild;
 
-  final Widget child;
+  final Widget? child;
 
   @override
   State<StatefulWidget> createState() => _ExValueBuilderState<T>();
 }
 
 class _ExValueBuilderState<T> extends State<ExValueBuilder<T>> {
-  T value;
+  T? value;
 
   @override
   void initState() {
@@ -56,7 +54,7 @@ class _ExValueBuilderState<T> extends State<ExValueBuilder<T>> {
   }
 
   void _valueChanged() {
-    if (widget.shouldRebuild == null || widget.shouldRebuild(value, widget.valueListenable.value)) {
+    if (widget.shouldRebuild == null || widget.shouldRebuild!(value, widget.valueListenable.value)) {
       setState(() {
         value = widget.valueListenable.value;
       });

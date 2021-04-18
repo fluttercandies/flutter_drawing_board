@@ -9,7 +9,7 @@ flutter_drawing_board:
       url: https://git.liugl.cn/flutter_drawing_board.git
       ref: master
 ```
-空安全请使用 `master` 分支
+非空安全请使用 `non-nullsafety` 分支
 
 ```dart
 //simple example

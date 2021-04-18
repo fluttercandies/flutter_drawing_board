@@ -11,6 +11,6 @@ enum PaintType { simpleLine, straightLine, rectangle, text, eraser, smoothLine }
 ///绘制对象
 abstract class PaintContent {
   PaintContent({this.type, this.paint});
-  PaintType type;
-  Paint paint;
+  PaintType? type;
+  Paint? paint;
 }
