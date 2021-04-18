@@ -46,7 +46,7 @@ Future<void> _getImageData() async {
 
 预览网址:https://painter.liugl.cn
 
-### 手机
+### Phone
 <img src="./preview/phone.jpg" height=400>
 
 ### Web
@@ -57,3 +57,6 @@ Future<void> _getImageData() async {
 
 ### macOS
 <img src="./preview/mac.png" height=400>
+
+### Linux
+<img src="./preview/linux.png" height=400>
