@@ -7,7 +7,7 @@ A Flutter package of drawing board.
 ```dart
 flutter_drawing_board:
     git:
-      url: https://github.com/xSILENCEx/flutter_drawing_board.git
+      url: https://github.com/xSILENCEx/flutter_drawing_board/blob/master.git
       ref: non-nullsafety
 ```
 使用方法
@@ -47,16 +47,16 @@ Future<void> _getImageData() async {
 预览网址:[https://painter.liugl.cn](https://painter.liugl.cn)
 
 ### Phone
-<img src="./preview/phone.jpg" height=400>
+<img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/master/preview/phone.jpg" height=400>
 
 ### Web
-<img src="./preview/web.png" height=400>
+<img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/master/preview/web.png" height=400>
 
 ### Windows
-<img src="./preview/win.png" height=400>
+<img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/master/preview/win.png" height=400>
 
 ### macOS
-<img src="./preview/mac.png" height=400>
+<img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/master/preview/mac.png" height=400>
 
 ### Linux
-<img src="./preview/linux.png" height=400>
+<img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/master/preview/linux.png" height=400>
