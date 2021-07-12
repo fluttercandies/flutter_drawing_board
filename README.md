@@ -1,16 +1,16 @@
 # flutter_drawing_board
 
-A new Flutter package of drawing board.
+A Flutter package of drawing board.
 
-## Getting Started
+
+非空安全请使用git依赖 `non-nullsafety` 分支
 ```dart
 flutter_drawing_board:
     git:
-      url: https://git.liugl.cn/flutter_drawing_board.git
-      ref: master
+      url: https://github.com/xSILENCEx/flutter_drawing_board.git
+      ref: non-nullsafety
 ```
-非空安全请使用 `non-nullsafety` 分支
-
+使用方法
 ```dart
 //simple example
 
