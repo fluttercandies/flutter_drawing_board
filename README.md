@@ -44,7 +44,7 @@ Future<void> _getImageData() async {
 
 ## 效果预览
 
-预览网址:https://painter.liugl.cn
+预览网址:[https://painter.liugl.cn](https://painter.liugl.cn)
 
 ### Phone
 <img src="./preview/phone.jpg" height=400>
