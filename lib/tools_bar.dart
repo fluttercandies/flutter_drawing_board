@@ -5,11 +5,13 @@ import 'helper/ex_value_builder.dart';
 import 'paint_contents/paint_content.dart';
 
 ///工具栏构建器
-typedef ToolsBuilder = Widget Function(BuildContext context, PaintType paintType);
+typedef ToolsBuilder = Widget Function(
+    BuildContext context, PaintType paintType);
 
 ///工具栏
 class ToolsBar extends StatelessWidget {
-  const ToolsBar({Key? key, @required this.controller, required this.builder}) : super(key: key);
+  const ToolsBar({Key? key, @required this.controller, required this.builder})
+      : super(key: key);
 
   ///控制器
   final DrawingController? controller;
@@ -21,8 +23,10 @@ class ToolsBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return ExValueBuilder<DrawConfig>(
       valueListenable: controller!.drawConfig,
-      shouldRebuild: (DrawConfig? p, DrawConfig? n) => p!.paintType != n!.paintType,
-      builder: (BuildContext? context, DrawConfig? dc, _) => builder(context!, dc!.paintType!),
+      shouldRebuild: (DrawConfig? p, DrawConfig? n) =>
+          p!.paintType != n!.paintType,
+      builder: (BuildContext? context, DrawConfig? dc, _) =>
+          builder(context!, dc!.paintType!),
     );
   }
 }

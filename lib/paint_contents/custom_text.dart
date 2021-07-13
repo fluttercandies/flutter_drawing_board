@@ -43,7 +43,8 @@ class CustomText extends PaintContent {
       case 1:
         return Offset(size.height - startPoint!.dy, startPoint!.dx);
       case 2:
-        return Offset(size.width - startPoint!.dx, size.height - startPoint!.dy);
+        return Offset(
+            size.width - startPoint!.dx, size.height - startPoint!.dy);
       case 3:
         return Offset(startPoint!.dy, size.width - startPoint!.dx);
       default:

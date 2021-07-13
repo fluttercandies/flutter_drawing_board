@@ -84,7 +84,8 @@ class DrawingController {
   final GlobalKey? painterKey = GlobalKey();
 
   ///控制器
-  ValueNotifier<DrawConfig?> drawConfig = ValueNotifier<DrawConfig?>(DrawConfig());
+  ValueNotifier<DrawConfig?> drawConfig =
+      ValueNotifier<DrawConfig?>(DrawConfig());
 
   ///表层绘制内容
   PaintContent? currentContent;
@@ -137,7 +138,8 @@ class DrawingController {
   ///旋转画布
   ///设置角度
   void turn() {
-    drawConfig.value = drawConfig.value!.copyWith(angle: (drawConfig.value!.angle! + 1) % 4);
+    drawConfig.value =
+        drawConfig.value!.copyWith(angle: (drawConfig.value!.angle! + 1) % 4);
   }
 
   ///获取当前文本内容
@@ -175,19 +177,29 @@ class DrawingController {
 
       ///直线
       case PaintType.straightLine:
-        currentContent = StraightLine(paint: _paint, startPoint: _startPoint, endPoint: _startPoint);
+        currentContent = StraightLine(
+            paint: _paint, startPoint: _startPoint, endPoint: _startPoint);
         break;
 
       ///矩形
       case PaintType.rectangle:
-        currentContent = Rectangle(paint: _paint, startPoint: _startPoint, endPoint: _startPoint);
+        currentContent = Rectangle(
+            paint: _paint, startPoint: _startPoint, endPoint: _startPoint);
         break;
 
       ///文本
       case PaintType.text:
         _paint.strokeWidth = 0;
-        final TextSpan span = TextSpan(text: drawConfig.value!.text, style: TextStyle(color: drawConfig.value!.color, fontSize: drawConfig.value!.thickness));
-        final TextPainter tp = TextPainter(text: span, textAlign: TextAlign.left, textDirection: TextDirection.ltr, maxLines: 1);
+        final TextSpan span = TextSpan(
+            text: drawConfig.value!.text,
+            style: TextStyle(
+                color: drawConfig.value!.color,
+                fontSize: drawConfig.value!.thickness));
+        final TextPainter tp = TextPainter(
+            text: span,
+            textAlign: TextAlign.left,
+            textDirection: TextDirection.ltr,
+            maxLines: 1);
         currentContent = CustomText(
           paint: _paint,
           startPoint: _startPoint,
@@ -204,7 +216,8 @@ class DrawingController {
 
         path.moveTo(startPoint!.dx, startPoint.dy);
         points.add(_startPoint!);
-        currentContent = SmoothLine(paint: _paint, path: path, points: points, start: _startPoint);
+        currentContent = SmoothLine(
+            paint: _paint, path: path, points: points, start: _startPoint);
         break;
 
       ///橡皮
@@ -352,8 +365,10 @@ class DrawingController {
   ///获取图片数据
   Future<ByteData?> getImageData() async {
     try {
-      final RenderRepaintBoundary boundary = painterKey!.currentContext!.findRenderObject() as RenderRepaintBoundary;
-      final ui.Image image = await boundary.toImage(pixelRatio: ui.window.devicePixelRatio);
+      final RenderRepaintBoundary boundary = painterKey!.currentContext!
+          .findRenderObject() as RenderRepaintBoundary;
+      final ui.Image image =
+          await boundary.toImage(pixelRatio: ui.window.devicePixelRatio);
       return await image.toByteData(format: ui.ImageByteFormat.png);
     } catch (e) {
       print('获取图片数据出错:$e');

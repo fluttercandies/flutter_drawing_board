@@ -20,11 +20,17 @@ class ColorPic extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                IconButton(icon: const Icon(CupertinoIcons.clear), onPressed: () => Navigator.pop(context)),
-                IconButton(icon: const Icon(CupertinoIcons.check_mark), onPressed: () => Navigator.pop(context, _pickColor)),
+                IconButton(
+                    icon: const Icon(CupertinoIcons.clear),
+                    onPressed: () => Navigator.pop(context)),
+                IconButton(
+                    icon: const Icon(CupertinoIcons.check_mark),
+                    onPressed: () => Navigator.pop(context, _pickColor)),
               ],
             ),
-            ColorPicker(pickerColor: _pickColor!, onColorChanged: (Color c) => _pickColor = c),
+            ColorPicker(
+                pickerColor: _pickColor!,
+                onColorChanged: (Color c) => _pickColor = c),
           ],
         ),
       ),
