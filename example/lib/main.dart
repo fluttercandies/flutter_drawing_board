@@ -65,14 +65,17 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: const Text('Drawing Test'),
         brightness: Brightness.dark,
-        actions: <Widget>[IconButton(icon: const Icon(Icons.check), onPressed: _getImageData)],
+        actions: <Widget>[
+          IconButton(icon: const Icon(Icons.check), onPressed: _getImageData)
+        ],
       ),
       body: Column(
         children: <Widget>[
           Expanded(
             child: DrawingBoard(
               controller: _drawingController,
-              background: Container(width: 400, height: 400, color: Colors.white),
+              background:
+                  Container(width: 400, height: 400, color: Colors.white),
               showDefaultActions: true,
               showDefaultTools: true,
             ),
