@@ -2,6 +2,7 @@ name: flutter_drawing_board
 description: A Flutter package of drawing board, provides basic drawing tools, canvas operations, and image data acquisition.
 version: 0.1.5
 homepage: https://github.com/xSILENCEx/flutter_drawing_board
+publish_to: 'https://pub.dev'
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
