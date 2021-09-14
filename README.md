@@ -3,13 +3,6 @@
 A Flutter package of drawing board.
 
 
-非空安全请使用git依赖 `non-nullsafety` 分支
-```dart
-flutter_drawing_board:
-    git:
-      url: https://github.com/xSILENCEx/flutter_drawing_board/blob/master.git
-      ref: non-nullsafety
-```
 使用方法
 ```dart
 //simple example

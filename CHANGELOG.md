@@ -5,3 +5,7 @@
 ## [0.1.5]
 
 - Fix color-picker bug.
+
+## [0.1.6]
+
+- Perfect example and update color-picker.
