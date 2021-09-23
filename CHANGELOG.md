@@ -9,3 +9,7 @@
 ## [0.1.6]
 
 - Perfect example and update color-picker.
+
+## [0.1.7]
+
+- update example to null-safety.

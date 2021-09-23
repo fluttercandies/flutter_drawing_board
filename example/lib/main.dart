@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key key}) : super(key: key);
+  const MyHomePage({Key? key}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -55,7 +55,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   ///获取画板数据 `getImageData()`
   Future<void> _getImageData() async {
-    final Uint8List data = (await _drawingController.getImageData()).buffer.asUint8List();
+    final Uint8List? data = (await _drawingController.getImageData())?.buffer.asUint8List();
+    if (data == null) {
+      print('获取图片数据失败');
+      return;
+    }
     showDialog<void>(
       context: context,
       builder: (BuildContext c) {
