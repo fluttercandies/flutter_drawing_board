@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_drawing_board/flutter_drawing_board.dart';
 
 void main() {
@@ -78,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
       backgroundColor: Colors.grey,
       appBar: AppBar(
         title: const Text('Drawing Test'),
-        brightness: Brightness.dark,
+        systemOverlayStyle: SystemUiOverlayStyle.light,
         actions: <Widget>[IconButton(icon: const Icon(Icons.check), onPressed: _getImageData)],
       ),
       body: Column(
@@ -87,8 +88,11 @@ class _MyHomePageState extends State<MyHomePage> {
             child: DrawingBoard(
               controller: _drawingController,
               background: Container(width: 400, height: 400, color: Colors.white),
-              showDefaultActions: true,
-              showDefaultTools: true,
+              drawingCallback: (bool isDrawing) {
+                print('isDrawing:$isDrawing');
+              },
+              // showDefaultActions: true,
+              // showDefaultTools: true,
             ),
           ),
           const Padding(

@@ -12,4 +12,8 @@
 
 ## [0.1.7]
 
-- update example to null-safety.
+- Update example to null-safety.
+
+## [0.1.8]
+
+- Optimize layout.
