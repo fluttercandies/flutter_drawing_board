@@ -6,7 +6,8 @@ import 'drawing_controller.dart';
 import 'helper/color_pic.dart';
 import 'helper/edit_text.dart';
 import 'helper/ex_value_builder.dart';
-import 'helper/get_size.dart';
+import 'helper/safe_state.dart';
+import 'helper/safe_value_notifier.dart';
 import 'paint_contents/paint_content.dart';
 import 'painter.dart';
 
@@ -40,28 +41,25 @@ class DrawingBoard extends StatefulWidget {
   final Function(bool isDrawing)? drawingCallback;
 }
 
-class _DrawingBoardState extends State<DrawingBoard> {
-  ///绘制区域大小
-  final ValueNotifier<Size?> _size = ValueNotifier<Size?>(null);
-
+class _DrawingBoardState extends State<DrawingBoard> with SafeState<DrawingBoard> {
   ///线条粗细进度
-  final ValueNotifier<double> _indicator = ValueNotifier<double>(1);
+  late SafeValueNotifier<double> _indicator;
 
   ///画板控制器
-  late DrawingController? _drawingController;
+  late DrawingController _drawingController;
 
   @override
   void initState() {
     super.initState();
+    _indicator = SafeValueNotifier<double>(1);
     _drawingController = widget.controller ?? DrawingController();
   }
 
   @override
   void dispose() {
-    _size.dispose();
     _indicator.dispose();
     if (widget.controller == null) {
-      _drawingController!.dispose();
+      _drawingController.dispose();
     }
     super.dispose();
   }
@@ -69,26 +67,31 @@ class _DrawingBoardState extends State<DrawingBoard> {
   ///选择颜色
   Future<void> _pickColor() async {
     final Color? newColor = await showModalBottomSheet<Color?>(
-        context: context, builder: (_) => ColorPic(nowColor: _drawingController!.getColor));
-    if (newColor != _drawingController!.getColor) {
-      _drawingController!.setColor = newColor!;
+        context: context, builder: (_) => ColorPic(nowColor: _drawingController.getColor));
+    if (newColor == null) {
+      return;
+    }
+
+    if (newColor != _drawingController.getColor) {
+      _drawingController.setColor = newColor;
     }
   }
 
   ///编辑文字
   Future<void> _editText() async {
-    _drawingController!.setType = PaintType.text;
+    _drawingController.setType = PaintType.text;
     final String? text = await showModalBottomSheet<String>(
-        context: context, builder: (_) => EditText(defaultText: _drawingController!.getText));
-    if (text != _drawingController!.getText) {
-      _drawingController!.setText = text;
+        context: context, builder: (_) => EditText(defaultText: _drawingController.getText));
+
+    if (text != _drawingController.getText) {
+      _drawingController.setText = text;
     }
   }
 
   @override
   Widget build(BuildContext context) {
     Widget content = ExValueBuilder<DrawConfig>(
-      valueListenable: _drawingController!.drawConfig,
+      valueListenable: _drawingController.drawConfig,
       shouldRebuild: (DrawConfig? p, DrawConfig? n) => p!.angle != n!.angle,
       child: Center(child: AspectRatio(aspectRatio: 1, child: _buildBoard)),
       builder: (_, DrawConfig? dc, Widget? child) {
@@ -118,9 +121,9 @@ class _DrawingBoardState extends State<DrawingBoard> {
   Widget get _buildBoard {
     return Center(
       child: RepaintBoundary(
-        key: _drawingController!.painterKey,
+        key: _drawingController.painterKey,
         child: ExValueBuilder<DrawConfig>(
-          valueListenable: _drawingController!.drawConfig,
+          valueListenable: _drawingController.drawConfig,
           shouldRebuild: (DrawConfig? p, DrawConfig? n) => p!.angle != n!.angle,
           child: Stack(children: <Widget>[_buildImage, _buildPainter]),
           builder: (_, DrawConfig? dc, Widget? child) {
@@ -136,34 +139,20 @@ class _DrawingBoardState extends State<DrawingBoard> {
 
   ///构建背景
   Widget get _buildImage {
-    return GetSize(
-      onChange: (Size? size) {
-        if (_size.value == const Size(0.0, 0.0) || _size.value == null) {
-          _size.value = size;
-        }
-      },
-      child: ValueListenableBuilder<Size?>(
-        valueListenable: _size,
-        child: widget.background,
-        builder: (_, Size? s, Widget? child) {
-          final double? width = s?.width == 0 ? null : s?.width;
-          final double? height = s?.height == 0 ? null : s?.height;
-          return SizedBox(width: width, height: height, child: child);
-        },
-      ),
-    );
+    return widget.background;
   }
 
   ///构建绘制层
   Widget get _buildPainter {
-    return ValueListenableBuilder<Size?>(
-      valueListenable: _size,
+    return Positioned(
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
       child: Painter(
-        drawingController: _drawingController!,
+        drawingController: _drawingController,
         drawingCallback: widget.drawingCallback,
       ),
-      builder: (_, Size? s, Widget? child) =>
-          s == null || s == Size.zero ? Container() : SizedBox(child: child, width: s.width, height: s.height),
     );
   }
 
@@ -187,7 +176,7 @@ class _DrawingBoardState extends State<DrawingBoard> {
                     max: 50,
                     min: 1,
                     onChanged: (double v) => _indicator.value = v,
-                    onChangeEnd: (double v) => _drawingController!.setThickness = v,
+                    onChangeEnd: (double v) => _drawingController.setThickness = v,
                   );
                 },
               ),
@@ -196,7 +185,7 @@ class _DrawingBoardState extends State<DrawingBoard> {
               width: 24,
               height: 24,
               child: ExValueBuilder<DrawConfig?>(
-                valueListenable: _drawingController!.drawConfig,
+                valueListenable: _drawingController.drawConfig,
                 shouldRebuild: (DrawConfig? p, DrawConfig? n) => p!.color != n!.color,
                 builder: (_, DrawConfig? dc, ___) {
                   return TextButton(
@@ -209,12 +198,11 @@ class _DrawingBoardState extends State<DrawingBoard> {
                 },
               ),
             ),
+            IconButton(icon: const Icon(CupertinoIcons.arrow_turn_up_left), onPressed: () => _drawingController.undo()),
             IconButton(
-                icon: const Icon(CupertinoIcons.arrow_turn_up_left), onPressed: () => _drawingController!.undo()),
-            IconButton(
-                icon: const Icon(CupertinoIcons.arrow_turn_up_right), onPressed: () => _drawingController!.redo()),
-            IconButton(icon: const Icon(CupertinoIcons.rotate_right), onPressed: () => _drawingController!.turn()),
-            IconButton(icon: const Icon(CupertinoIcons.trash), onPressed: () => _drawingController!.clear()),
+                icon: const Icon(CupertinoIcons.arrow_turn_up_right), onPressed: () => _drawingController.redo()),
+            IconButton(icon: const Icon(CupertinoIcons.rotate_right), onPressed: () => _drawingController.turn()),
+            IconButton(icon: const Icon(CupertinoIcons.trash), onPressed: () => _drawingController.clear()),
           ],
         ),
       ),
@@ -231,14 +219,14 @@ class _DrawingBoardState extends State<DrawingBoard> {
         child: Row(
           children: <Widget>[
             _buildToolItem(
-                PaintType.simpleLine, CupertinoIcons.pencil, () => _drawingController!.setType = PaintType.simpleLine),
+                PaintType.simpleLine, CupertinoIcons.pencil, () => _drawingController.setType = PaintType.simpleLine),
             _buildToolItem(
-                PaintType.straightLine, Icons.show_chart, () => _drawingController!.setType = PaintType.straightLine),
+                PaintType.straightLine, Icons.show_chart, () => _drawingController.setType = PaintType.straightLine),
             _buildToolItem(
-                PaintType.rectangle, CupertinoIcons.stop, () => _drawingController!.setType = PaintType.rectangle),
+                PaintType.rectangle, CupertinoIcons.stop, () => _drawingController.setType = PaintType.rectangle),
             _buildToolItem(PaintType.text, CupertinoIcons.text_cursor, _editText),
             _buildToolItem(
-                PaintType.eraser, CupertinoIcons.bandage, () => _drawingController!.setType = PaintType.eraser),
+                PaintType.eraser, CupertinoIcons.bandage, () => _drawingController.setType = PaintType.eraser),
           ],
         ),
       ),
@@ -248,7 +236,7 @@ class _DrawingBoardState extends State<DrawingBoard> {
   ///构建工具项
   Widget _buildToolItem(PaintType type, IconData icon, Function() onTap) {
     return ExValueBuilder<DrawConfig>(
-      valueListenable: _drawingController!.drawConfig,
+      valueListenable: _drawingController.drawConfig,
       shouldRebuild: (DrawConfig? p, DrawConfig? n) => p!.paintType == type || n!.paintType == type,
       builder: (_, DrawConfig? dc, __) {
         return IconButton(

@@ -79,9 +79,10 @@ class _PainterState extends State<Painter> {
           clipBehavior: Clip.antiAlias,
           decoration: const BoxDecoration(color: Colors.transparent),
           child: Stack(
+            fit: StackFit.expand,
             children: <Widget>[
-              SizedBox.expand(child: CustomPaint(painter: _DeepPainter(drawingController: widget.drawingController))),
-              SizedBox.expand(child: CustomPaint(painter: _UpPainter(drawingController: widget.drawingController))),
+              CustomPaint(painter: _DeepPainter(drawingController: widget.drawingController)),
+              CustomPaint(painter: _UpPainter(drawingController: widget.drawingController)),
             ],
           ),
         ),
