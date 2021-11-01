@@ -17,3 +17,7 @@
 ## [0.1.8]
 
 - Optimize layout.
+
+## [0.1.9]
+
+- Optimize null-safety.
