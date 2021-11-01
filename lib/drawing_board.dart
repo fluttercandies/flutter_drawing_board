@@ -138,9 +138,7 @@ class _DrawingBoardState extends State<DrawingBoard> with SafeState<DrawingBoard
   }
 
   ///构建背景
-  Widget get _buildImage {
-    return widget.background;
-  }
+  Widget get _buildImage => widget.background;
 
   ///构建绘制层
   Widget get _buildPainter {

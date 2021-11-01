@@ -88,11 +88,8 @@ class _MyHomePageState extends State<MyHomePage> {
             child: DrawingBoard(
               controller: _drawingController,
               background: Container(width: 400, height: 400, color: Colors.white),
-              drawingCallback: (bool isDrawing) {
-                print('isDrawing:$isDrawing');
-              },
-              // showDefaultActions: true,
-              // showDefaultTools: true,
+              showDefaultActions: true,
+              showDefaultTools: true,
             ),
           ),
           const Padding(
