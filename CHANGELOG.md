@@ -21,3 +21,7 @@
 ## [0.1.9]
 
 - Optimize null-safety.
+
+## [0.2.0]
+
+- Format code, update flutter_colorpicker
