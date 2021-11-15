@@ -56,7 +56,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   ///获取画板数据 `getImageData()`
   Future<void> _getImageData() async {
-    final Uint8List? data = (await _drawingController.getImageData())?.buffer.asUint8List();
+    final Uint8List? data =
+        (await _drawingController.getImageData())?.buffer.asUint8List();
     if (data == null) {
       print('获取图片数据失败');
       return;
@@ -66,7 +67,8 @@ class _MyHomePageState extends State<MyHomePage> {
       builder: (BuildContext c) {
         return Material(
           color: Colors.transparent,
-          child: InkWell(onTap: () => Navigator.pop(c), child: Image.memory(data)),
+          child:
+              InkWell(onTap: () => Navigator.pop(c), child: Image.memory(data)),
         );
       },
     );
@@ -80,14 +82,17 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: const Text('Drawing Test'),
         systemOverlayStyle: SystemUiOverlayStyle.light,
-        actions: <Widget>[IconButton(icon: const Icon(Icons.check), onPressed: _getImageData)],
+        actions: <Widget>[
+          IconButton(icon: const Icon(Icons.check), onPressed: _getImageData)
+        ],
       ),
       body: Column(
         children: <Widget>[
           Expanded(
             child: DrawingBoard(
               controller: _drawingController,
-              background: Container(width: 400, height: 400, color: Colors.white),
+              background:
+                  Container(width: 400, height: 400, color: Colors.white),
               showDefaultActions: true,
               showDefaultTools: true,
             ),

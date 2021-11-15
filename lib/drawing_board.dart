@@ -41,7 +41,8 @@ class DrawingBoard extends StatefulWidget {
   final Function(bool isDrawing)? drawingCallback;
 }
 
-class _DrawingBoardState extends State<DrawingBoard> with SafeState<DrawingBoard> {
+class _DrawingBoardState extends State<DrawingBoard>
+    with SafeState<DrawingBoard> {
   ///线条粗细进度
   late SafeValueNotifier<double> _indicator;
 
@@ -67,7 +68,8 @@ class _DrawingBoardState extends State<DrawingBoard> with SafeState<DrawingBoard
   ///选择颜色
   Future<void> _pickColor() async {
     final Color? newColor = await showModalBottomSheet<Color?>(
-        context: context, builder: (_) => ColorPic(nowColor: _drawingController.getColor));
+        context: context,
+        builder: (_) => ColorPic(nowColor: _drawingController.getColor));
     if (newColor == null) {
       return;
     }
@@ -81,7 +83,8 @@ class _DrawingBoardState extends State<DrawingBoard> with SafeState<DrawingBoard
   Future<void> _editText() async {
     _drawingController.setType = PaintType.text;
     final String? text = await showModalBottomSheet<String>(
-        context: context, builder: (_) => EditText(defaultText: _drawingController.getText));
+        context: context,
+        builder: (_) => EditText(defaultText: _drawingController.getText));
 
     if (text != _drawingController.getText) {
       _drawingController.setText = text;
@@ -174,7 +177,8 @@ class _DrawingBoardState extends State<DrawingBoard> with SafeState<DrawingBoard
                     max: 50,
                     min: 1,
                     onChanged: (double v) => _indicator.value = v,
-                    onChangeEnd: (double v) => _drawingController.setThickness = v,
+                    onChangeEnd: (double v) =>
+                        _drawingController.setThickness = v,
                   );
                 },
               ),
@@ -184,7 +188,8 @@ class _DrawingBoardState extends State<DrawingBoard> with SafeState<DrawingBoard
               height: 24,
               child: ExValueBuilder<DrawConfig?>(
                 valueListenable: _drawingController.drawConfig,
-                shouldRebuild: (DrawConfig? p, DrawConfig? n) => p!.color != n!.color,
+                shouldRebuild: (DrawConfig? p, DrawConfig? n) =>
+                    p!.color != n!.color,
                 builder: (_, DrawConfig? dc, ___) {
                   return TextButton(
                     onPressed: _pickColor,
@@ -196,11 +201,18 @@ class _DrawingBoardState extends State<DrawingBoard> with SafeState<DrawingBoard
                 },
               ),
             ),
-            IconButton(icon: const Icon(CupertinoIcons.arrow_turn_up_left), onPressed: () => _drawingController.undo()),
             IconButton(
-                icon: const Icon(CupertinoIcons.arrow_turn_up_right), onPressed: () => _drawingController.redo()),
-            IconButton(icon: const Icon(CupertinoIcons.rotate_right), onPressed: () => _drawingController.turn()),
-            IconButton(icon: const Icon(CupertinoIcons.trash), onPressed: () => _drawingController.clear()),
+                icon: const Icon(CupertinoIcons.arrow_turn_up_left),
+                onPressed: () => _drawingController.undo()),
+            IconButton(
+                icon: const Icon(CupertinoIcons.arrow_turn_up_right),
+                onPressed: () => _drawingController.redo()),
+            IconButton(
+                icon: const Icon(CupertinoIcons.rotate_right),
+                onPressed: () => _drawingController.turn()),
+            IconButton(
+                icon: const Icon(CupertinoIcons.trash),
+                onPressed: () => _drawingController.clear()),
           ],
         ),
       ),
@@ -216,15 +228,16 @@ class _DrawingBoardState extends State<DrawingBoard> with SafeState<DrawingBoard
         padding: EdgeInsets.zero,
         child: Row(
           children: <Widget>[
+            _buildToolItem(PaintType.simpleLine, CupertinoIcons.pencil,
+                () => _drawingController.setType = PaintType.simpleLine),
+            _buildToolItem(PaintType.straightLine, Icons.show_chart,
+                () => _drawingController.setType = PaintType.straightLine),
+            _buildToolItem(PaintType.rectangle, CupertinoIcons.stop,
+                () => _drawingController.setType = PaintType.rectangle),
             _buildToolItem(
-                PaintType.simpleLine, CupertinoIcons.pencil, () => _drawingController.setType = PaintType.simpleLine),
-            _buildToolItem(
-                PaintType.straightLine, Icons.show_chart, () => _drawingController.setType = PaintType.straightLine),
-            _buildToolItem(
-                PaintType.rectangle, CupertinoIcons.stop, () => _drawingController.setType = PaintType.rectangle),
-            _buildToolItem(PaintType.text, CupertinoIcons.text_cursor, _editText),
-            _buildToolItem(
-                PaintType.eraser, CupertinoIcons.bandage, () => _drawingController.setType = PaintType.eraser),
+                PaintType.text, CupertinoIcons.text_cursor, _editText),
+            _buildToolItem(PaintType.eraser, CupertinoIcons.bandage,
+                () => _drawingController.setType = PaintType.eraser),
           ],
         ),
       ),
@@ -235,7 +248,8 @@ class _DrawingBoardState extends State<DrawingBoard> with SafeState<DrawingBoard
   Widget _buildToolItem(PaintType type, IconData icon, Function() onTap) {
     return ExValueBuilder<DrawConfig>(
       valueListenable: _drawingController.drawConfig,
-      shouldRebuild: (DrawConfig? p, DrawConfig? n) => p!.paintType == type || n!.paintType == type,
+      shouldRebuild: (DrawConfig? p, DrawConfig? n) =>
+          p!.paintType == type || n!.paintType == type,
       builder: (_, DrawConfig? dc, __) {
         return IconButton(
           icon: Icon(

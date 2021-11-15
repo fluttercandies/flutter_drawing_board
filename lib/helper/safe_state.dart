@@ -10,7 +10,9 @@ mixin SafeState<T extends StatefulWidget> on State<T> {
   ///安全刷新
   FutureOr<void> safeSetState(FutureOr<dynamic> Function() fn) async {
     await fn();
-    if (mounted && !context.debugDoingBuild && context.owner?.debugBuilding == false) {
+    if (mounted &&
+        !context.debugDoingBuild &&
+        context.owner?.debugBuilding == false) {
       setState(() {});
     }
   }

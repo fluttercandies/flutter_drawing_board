@@ -81,8 +81,12 @@ class _PainterState extends State<Painter> {
           child: Stack(
             fit: StackFit.expand,
             children: <Widget>[
-              CustomPaint(painter: _DeepPainter(drawingController: widget.drawingController)),
-              CustomPaint(painter: _UpPainter(drawingController: widget.drawingController)),
+              CustomPaint(
+                  painter: _DeepPainter(
+                      drawingController: widget.drawingController)),
+              CustomPaint(
+                  painter:
+                      _UpPainter(drawingController: widget.drawingController)),
             ],
           ),
         ),
@@ -102,7 +106,8 @@ class _PainterState extends State<Painter> {
 
 ///表层画板
 class _UpPainter extends CustomPainter {
-  _UpPainter({this.drawingController}) : super(repaint: drawingController?.drawConfig);
+  _UpPainter({this.drawingController})
+      : super(repaint: drawingController?.drawConfig);
 
   final DrawingController? drawingController;
 
@@ -123,7 +128,8 @@ class _UpPainter extends CustomPainter {
         _drawRect(canvas, drawingController?.currentContent as Rectangle);
         break;
       case PaintType.text:
-        _drawText(canvas, size, drawingController?.currentContent as CustomText, uper: true);
+        _drawText(canvas, size, drawingController?.currentContent as CustomText,
+            uper: true);
         break;
       case PaintType.smoothLine:
         _drawSmooth(canvas, drawingController?.currentContent as SmoothLine);
@@ -142,7 +148,8 @@ class _UpPainter extends CustomPainter {
 
 ///底层画板
 class _DeepPainter extends CustomPainter {
-  _DeepPainter({this.drawingController}) : super(repaint: drawingController?.realPainter);
+  _DeepPainter({this.drawingController})
+      : super(repaint: drawingController?.realPainter);
   final DrawingController? drawingController;
 
   @override
@@ -188,14 +195,18 @@ class _DeepPainter extends CustomPainter {
 }
 
 ///绘制自由线条
-void _drawPath(Canvas canvas, SimpleLine line) => canvas.drawPath(line.path!, line.paint!);
+void _drawPath(Canvas canvas, SimpleLine line) =>
+    canvas.drawPath(line.path!, line.paint!);
 
 ///绘制直线
-void _drawLine(Canvas canvas, StraightLine line) => canvas.drawLine(line.startPoint!, line.endPoint!, line.paint!);
+void _drawLine(Canvas canvas, StraightLine line) =>
+    canvas.drawLine(line.startPoint!, line.endPoint!, line.paint!);
 
 ///绘制矩形
-void _drawRect(Canvas canvas, Rectangle r) =>
-    canvas.drawRect(Rect.fromLTRB(r.startPoint!.dx, r.startPoint!.dy, r.endPoint!.dx, r.endPoint!.dy), r.paint!);
+void _drawRect(Canvas canvas, Rectangle r) => canvas.drawRect(
+    Rect.fromLTRB(
+        r.startPoint!.dx, r.startPoint!.dy, r.endPoint!.dx, r.endPoint!.dy),
+    r.paint!);
 
 ///绘制文本
 void _drawText(Canvas canvas, Size size, CustomText text, {bool uper = false}) {
@@ -234,7 +245,9 @@ void _drawText(Canvas canvas, Size size, CustomText text, {bool uper = false}) {
 }
 
 ///绘制平滑自由线条
-void _drawSmooth(Canvas canvas, SmoothLine line) => canvas.drawPath(line.path!, line.paint!);
+void _drawSmooth(Canvas canvas, SmoothLine line) =>
+    canvas.drawPath(line.path!, line.paint!);
 
 ///绘制自由线条
-void _eraser(Canvas canvas, Size size, Eraser line) => canvas.drawPath(line.path!, line.paint!);
+void _eraser(Canvas canvas, Size size, Eraser line) =>
+    canvas.drawPath(line.path!, line.paint!);
