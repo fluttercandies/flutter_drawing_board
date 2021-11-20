@@ -24,4 +24,8 @@
 
 ## [0.2.0]
 
-- Format code, update flutter_colorpicker
+- Format code, update flutter_colorpicker.
+
+## [0.2.1]
+
+- Organize folders.
