@@ -29,3 +29,7 @@
 ## [0.2.1]
 
 - Organize folders.
+
+## [0.2.2]
+
+- Fix export.
