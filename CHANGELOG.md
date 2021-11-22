@@ -32,4 +32,4 @@
 
 ## [0.2.2]
 
-- Fix export.
+- Fix export and update flutter_colorpicker
