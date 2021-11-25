@@ -33,3 +33,7 @@
 ## [0.2.2]
 
 - Fix export and update flutter_colorpicker
+
+## [0.2.3]
+
+- Improve code quality
