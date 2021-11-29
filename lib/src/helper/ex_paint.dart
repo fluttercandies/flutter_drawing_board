@@ -14,7 +14,6 @@ extension ExPaint on Paint {
     Shader? shader,
     StrokeCap? strokeCap,
     StrokeJoin? strokeJoin,
-    double? strokeMiterLimit,
     double? strokeWidth,
     PaintingStyle? style,
   }) {
@@ -30,7 +29,6 @@ extension ExPaint on Paint {
       ..shader = shader ?? this.shader
       ..strokeCap = strokeCap ?? this.strokeCap
       ..strokeJoin = strokeJoin ?? this.strokeJoin
-      ..strokeMiterLimit = strokeMiterLimit ?? this.strokeMiterLimit
       ..strokeWidth = strokeWidth ?? this.strokeWidth
       ..style = style ?? this.style;
   }
