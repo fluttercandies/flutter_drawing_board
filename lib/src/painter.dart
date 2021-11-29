@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_drawing_board/src/helper/ex_paint.dart';
 
 import 'drawing_controller.dart';
 import 'paint_contents/custom_text.dart';
@@ -11,7 +12,7 @@ import 'paint_contents/simple_line.dart';
 import 'paint_contents/smooth_line.dart';
 import 'paint_contents/straight_line.dart';
 
-///绘图板
+/// 绘图板
 class Painter extends StatefulWidget {
   const Painter({
     Key? key,
@@ -22,9 +23,10 @@ class Painter extends StatefulWidget {
   @override
   _PainterState createState() => _PainterState();
 
-  ///绘制控制器
+  /// 绘制控制器
   final DrawingController drawingController;
 
+  /// 绘制状态回调
   final Function(bool isDrawing)? drawingCallback;
 }
 
@@ -196,17 +198,17 @@ class _DeepPainter extends CustomPainter {
 
 ///绘制自由线条
 void _drawPath(Canvas canvas, SimpleLine line) =>
-    canvas.drawPath(line.path!, line.paint!);
+    canvas.drawPath(line.path, line.paint);
 
 ///绘制直线
 void _drawLine(Canvas canvas, StraightLine line) =>
-    canvas.drawLine(line.startPoint!, line.endPoint!, line.paint!);
+    canvas.drawLine(line.startPoint, line.endPoint, line.paint);
 
 ///绘制矩形
 void _drawRect(Canvas canvas, Rectangle r) => canvas.drawRect(
     Rect.fromLTRB(
-        r.startPoint!.dx, r.startPoint!.dy, r.endPoint!.dx, r.endPoint!.dy),
-    r.paint!);
+        r.startPoint.dx, r.startPoint.dy, r.endPoint.dx, r.endPoint.dy),
+    r.paint);
 
 ///绘制文本
 void _drawText(Canvas canvas, Size size, CustomText text, {bool uper = false}) {
@@ -234,7 +236,7 @@ void _drawText(Canvas canvas, Size size, CustomText text, {bool uper = false}) {
         text.realEnd(size)!.dx - text.realStart(size)!.dx,
         text.size!,
       ),
-      text.paint!,
+      text.paint,
     );
   }
 
@@ -244,10 +246,18 @@ void _drawText(Canvas canvas, Size size, CustomText text, {bool uper = false}) {
   canvas.restore();
 }
 
-///绘制平滑自由线条
-void _drawSmooth(Canvas canvas, SmoothLine line) =>
-    canvas.drawPath(line.path!, line.paint!);
+///绘制笔触自由线条
+void _drawSmooth(Canvas canvas, SmoothLine line) {
+  for (int i = 1; i < line.points.length; i++) {
+    canvas.drawPath(
+      Path()
+        ..moveTo(line.points[i - 1].dx, line.points[i - 1].dy)
+        ..lineTo(line.points[i].dx, line.points[i].dy),
+      line.paint.copyWith(strokeWidth: line.strokeWidthList[i]),
+    );
+  }
+}
 
 ///绘制自由线条
 void _eraser(Canvas canvas, Size size, Eraser line) =>
-    canvas.drawPath(line.path!, line.paint!);
+    canvas.drawPath(line.path, line.paint);

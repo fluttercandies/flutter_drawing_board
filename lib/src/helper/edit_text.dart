@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-///编辑文本内容
+/// 编辑文本内容
 class EditText extends StatelessWidget {
   const EditText({Key? key, this.defaultText}) : super(key: key);
 
   final String? defaultText;
 
-  ///完成编辑
+  /// 完成编辑
   void _complate(BuildContext? context, String? text) {
     if (text != null && text.trim().isNotEmpty && text != defaultText) {
       Navigator.pop(context!, text);

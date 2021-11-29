@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-///State安全扩展
+/// State安全扩展
 mixin SafeState<T extends StatefulWidget> on State<T> {
-  ///缓存路径
+  /// 缓存路径
   String? tempRoute;
 
-  ///安全刷新
+  /// 安全刷新
   FutureOr<void> safeSetState(FutureOr<dynamic> Function() fn) async {
     await fn();
     if (mounted &&

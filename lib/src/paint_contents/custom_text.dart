@@ -2,26 +2,37 @@ import 'package:flutter/painting.dart';
 
 import 'paint_content.dart';
 
-///文本
+/// 文本
 class CustomText extends PaintContent {
   CustomText({
     this.startPoint,
     this.textPainter,
-    Paint? paint,
+    required Paint paint,
     this.angle,
     this.text,
   }) : super(type: PaintType.text, paint: paint) {
     size = textPainter!.text!.style!.fontSize! * 1.2;
   }
 
+  /// 起始点
   Offset? startPoint;
+
+  /// 结束点
   Offset? endPoint;
+
+  /// 文本绘制对象
   TextPainter? textPainter;
+
+  /// 旋转角度
   int? angle;
+
+  /// 文本内容
   String? text;
+
+  /// 大小
   double? size;
 
-  ///最大宽度
+  /// 最大宽度
   double? get maxWidth {
     switch (angle) {
       case 0:
@@ -35,7 +46,7 @@ class CustomText extends PaintContent {
     }
   }
 
-  ///获取真实的开始点
+  /// 获取真实的开始点
   Offset? realStart(Size size) {
     switch (angle) {
       case 0:
@@ -52,7 +63,7 @@ class CustomText extends PaintContent {
     }
   }
 
-  ///获取真实的结束点
+  /// 获取真实的结束点
   Offset? realEnd(Size size) {
     switch (angle) {
       case 0:

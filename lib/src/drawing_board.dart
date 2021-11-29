@@ -11,7 +11,7 @@ import 'helper/safe_value_notifier.dart';
 import 'paint_contents/paint_content.dart';
 import 'painter.dart';
 
-///画板
+/// 画板
 class DrawingBoard extends StatefulWidget {
   const DrawingBoard({
     Key? key,
@@ -25,19 +25,19 @@ class DrawingBoard extends StatefulWidget {
   @override
   _DrawingBoardState createState() => _DrawingBoardState();
 
-  ///画板背景控件
+  /// 画板背景控件
   final Widget background;
 
-  ///画板控制器
+  /// 画板控制器
   final DrawingController? controller;
 
-  ///显示默认样式的操作栏
+  /// 显示默认样式的操作栏
   final bool showDefaultActions;
 
-  ///显示默认样式的工具栏
+  /// 显示默认样式的工具栏
   final bool showDefaultTools;
 
-  ///绘制状态回调
+  /// 绘制状态回调
   final Function(bool isDrawing)? drawingCallback;
 }
 
@@ -65,7 +65,7 @@ class _DrawingBoardState extends State<DrawingBoard>
     super.dispose();
   }
 
-  ///选择颜色
+  /// 选择颜色
   Future<void> _pickColor() async {
     final Color? newColor = await showModalBottomSheet<Color?>(
         context: context,
@@ -79,7 +79,7 @@ class _DrawingBoardState extends State<DrawingBoard>
     }
   }
 
-  ///编辑文字
+  /// 编辑文字
   Future<void> _editText() async {
     _drawingController.setType = PaintType.text;
     final String? text = await showModalBottomSheet<String>(
@@ -120,7 +120,7 @@ class _DrawingBoardState extends State<DrawingBoard>
     return content;
   }
 
-  ///构建画板
+  /// 构建画板
   Widget get _buildBoard {
     return Center(
       child: RepaintBoundary(
@@ -140,10 +140,10 @@ class _DrawingBoardState extends State<DrawingBoard>
     );
   }
 
-  ///构建背景
+  /// 构建背景
   Widget get _buildImage => widget.background;
 
-  ///构建绘制层
+  /// 构建绘制层
   Widget get _buildPainter {
     return Positioned(
       top: 0,
@@ -157,7 +157,7 @@ class _DrawingBoardState extends State<DrawingBoard>
     );
   }
 
-  ///构建默认操作栏
+  /// 构建默认操作栏
   Widget get _buildDefaultActions {
     return Material(
       color: Colors.white,
@@ -219,7 +219,7 @@ class _DrawingBoardState extends State<DrawingBoard>
     );
   }
 
-  ///构建默认工具栏
+  /// 构建默认工具栏
   Widget get _buildDefaultTools {
     return Material(
       color: Colors.white,
@@ -230,6 +230,8 @@ class _DrawingBoardState extends State<DrawingBoard>
           children: <Widget>[
             _buildToolItem(PaintType.simpleLine, CupertinoIcons.pencil,
                 () => _drawingController.setType = PaintType.simpleLine),
+            _buildToolItem(PaintType.smoothLine, CupertinoIcons.infinite,
+                () => _drawingController.setType = PaintType.smoothLine),
             _buildToolItem(PaintType.straightLine, Icons.show_chart,
                 () => _drawingController.setType = PaintType.straightLine),
             _buildToolItem(PaintType.rectangle, CupertinoIcons.stop,
@@ -244,7 +246,7 @@ class _DrawingBoardState extends State<DrawingBoard>
     );
   }
 
-  ///构建工具项
+  /// 构建工具项
   Widget _buildToolItem(PaintType type, IconData icon, Function() onTap) {
     return ExValueBuilder<DrawConfig>(
       valueListenable: _drawingController.drawConfig,

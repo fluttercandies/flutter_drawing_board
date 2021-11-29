@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
-///颜色选择器
+/// 颜色选择器
 class ColorPic extends StatelessWidget {
   const ColorPic({Key? key, this.nowColor}) : super(key: key);
 

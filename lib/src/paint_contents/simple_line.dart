@@ -2,12 +2,13 @@ import 'package:flutter/painting.dart';
 
 import 'paint_content.dart';
 
-///普通自由线条
+/// 普通自由线条
 class SimpleLine extends PaintContent {
   SimpleLine({
-    this.path,
-    Paint? paint,
+    required this.path,
+    required Paint paint,
   }) : super(type: PaintType.simpleLine, paint: paint);
 
-  Path? path;
+  /// 绘制路径
+  Path path;
 }

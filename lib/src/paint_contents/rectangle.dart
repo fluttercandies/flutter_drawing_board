@@ -2,14 +2,17 @@ import 'package:flutter/painting.dart';
 
 import 'paint_content.dart';
 
-///矩形
+/// 矩形
 class Rectangle extends PaintContent {
   Rectangle({
-    this.startPoint,
-    this.endPoint,
-    Paint? paint,
+    required this.startPoint,
+    required this.endPoint,
+    required Paint paint,
   }) : super(type: PaintType.rectangle, paint: paint);
 
-  Offset? startPoint;
-  Offset? endPoint;
+  /// 起始点
+  Offset startPoint;
+
+  /// 结束点
+  Offset endPoint;
 }

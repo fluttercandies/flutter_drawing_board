@@ -37,3 +37,7 @@
 ## [0.2.3]
 
 - Improve code quality
+
+## [0.2.4]
+
+- Add brush strokes, improve code quality
