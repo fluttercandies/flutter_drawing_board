@@ -41,3 +41,7 @@
 ## [0.2.4]
 
 - Add brush strokes, improve code quality
+
+## [0.2.5]
+
+- Improve brush strokes, add brushPrecision setter

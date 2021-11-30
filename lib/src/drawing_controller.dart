@@ -78,9 +78,10 @@ class DrawingController {
     _currentIndex = 0;
     _startPoint = Offset.zero;
     drawConfig = ValueNotifier<DrawConfig>(config ?? DrawConfig.def());
+    _brushPrecision = 0.4;
   }
 
-  /// 画板数据
+  /// 画板数据Key
   late GlobalKey painterKey = GlobalKey();
 
   /// 控制器
@@ -94,6 +95,17 @@ class DrawingController {
 
   /// 底层绘制内容
   late List<PaintContent> _history;
+
+  /// 笔触精度
+  late double _brushPrecision;
+
+  /// * 设置笔触精度
+  /// * 此值仅对`smoothLine`生效
+  /// * 此值越小，精度越高，笔触越平滑
+  set setBrushPrecision(double value) => _brushPrecision = value;
+
+  /// 获取当前笔触精度
+  double get getBrushPrecision => _brushPrecision;
 
   /// 获取绘制类型
   PaintType? get getType => drawConfig.value?.paintType;
@@ -311,19 +323,20 @@ class DrawingController {
 
     final double distance = (nowPoint - line.points.last).distance;
 
-    ///原始大小
+    //原始大小
     final double s = line.paint.strokeWidth;
 
     double strokeWidth = s * (s * 2 / (s * distance));
 
     if (strokeWidth > s * 2) strokeWidth = s * 2;
 
+    //上一个线宽
     final double preWidth = line.strokeWidthList.last;
 
-    if (strokeWidth - preWidth > 1) {
-      strokeWidth = preWidth + 1;
-    } else if (preWidth - strokeWidth > 1) {
-      strokeWidth = preWidth - 1;
+    if (strokeWidth - preWidth > _brushPrecision) {
+      strokeWidth = preWidth + _brushPrecision;
+    } else if (preWidth - strokeWidth > _brushPrecision) {
+      strokeWidth = preWidth - _brushPrecision;
     }
 
     //记录点位
