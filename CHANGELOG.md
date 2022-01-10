@@ -45,3 +45,7 @@
 ## [0.2.5]
 
 - Improve brush strokes, add brushPrecision setter
+
+## [0.2.6]
+
+- Change colorpicker

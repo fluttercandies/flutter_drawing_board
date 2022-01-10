@@ -62,20 +62,20 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_colorpicker:
-    dependency: transitive
-    description:
-      name: flutter_colorpicker
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.2"
   flutter_drawing_board:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "0.2.5"
+    version: "0.2.6"
+  flutter_hsvcolor_picker:
+    dependency: transitive
+    description:
+      name: flutter_hsvcolor_picker
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.2"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -165,4 +165,4 @@ packages:
     version: "2.1.0"
 sdks:
   dart: ">=2.12.0 <3.0.0"
-  flutter: ">=1.17.0"
+  flutter: ">=2.0.0"

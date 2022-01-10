@@ -68,8 +68,11 @@ class _DrawingBoardState extends State<DrawingBoard>
   /// 选择颜色
   Future<void> _pickColor() async {
     final Color? newColor = await showModalBottomSheet<Color?>(
-        context: context,
-        builder: (_) => ColorPic(nowColor: _drawingController.getColor));
+      context: context,
+      isScrollControlled: true,
+      enableDrag: false,
+      builder: (_) => ColorPic(nowColor: _drawingController.getColor),
+    );
     if (newColor == null) {
       return;
     }

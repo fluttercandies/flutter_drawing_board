@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:flutter_hsvcolor_picker/flutter_hsvcolor_picker.dart';
 
 /// 颜色选择器
 class ColorPic extends StatelessWidget {
@@ -24,13 +24,18 @@ class ColorPic extends StatelessWidget {
                     icon: const Icon(CupertinoIcons.clear),
                     onPressed: () => Navigator.pop(context)),
                 IconButton(
-                    icon: const Icon(CupertinoIcons.check_mark),
-                    onPressed: () => Navigator.pop(context, _pickColor)),
+                  icon: const Icon(CupertinoIcons.check_mark),
+                  onPressed: () => Navigator.pop(context, _pickColor),
+                ),
               ],
             ),
-            ColorPicker(
-                pickerColor: _pickColor!,
-                onColorChanged: (Color c) => _pickColor = c),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: ColorPicker(
+                color: _pickColor!,
+                onChanged: (Color c) => _pickColor = c,
+              ),
+            ),
           ],
         ),
       ),
