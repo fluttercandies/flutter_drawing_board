@@ -49,3 +49,7 @@
 ## [0.2.6]
 
 - Change colorpicker
+
+## [0.2.7]
+
+- Pass static analysis
