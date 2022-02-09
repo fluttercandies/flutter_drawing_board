@@ -52,4 +52,4 @@
 
 ## [0.2.7]
 
-- Pass static analysis
+- Pass static analysis, update colorpicker
