@@ -1,16 +1,21 @@
 import 'package:flutter/painting.dart';
 
-/// 绘制类型
-/// * simpleLine 自由线条
-/// * straightLine 直线
-/// * rectangle 矩形
-/// * text 文本
-/// * smoothLine 笔触自由线条
-enum PaintType { simpleLine, straightLine, rectangle, text, eraser, smoothLine }
-
-///绘制对象
+/// 绘制对象
 abstract class PaintContent {
-  PaintContent({this.type, required this.paint});
-  PaintType? type;
-  Paint paint;
+  PaintContent({this.paint});
+
+  /// 画笔
+  Paint? paint;
+
+  /// 复制实例，避免对象传递
+  PaintContent copy();
+
+  /// 绘制核心方法
+  void draw(Canvas canvas, Size size);
+
+  /// 正在绘制
+  void drawing(Offset nowPoint);
+
+  /// 开始绘制
+  void startDraw(Offset startPoint);
 }

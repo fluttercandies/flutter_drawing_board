@@ -1,11 +1,11 @@
-//扩展ValueListenableBuilder
-//添加shouldRebuild
+// 拷贝ValueListenableBuilder
+// 添加shouldRebuild方法
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_drawing_board/src/helper/safe_state.dart';
 
-typedef ValueWidgetBuilder<T> = Widget Function(
-    BuildContext context, T value, Widget? child);
+typedef ValueWidgetBuilder<T> = Widget Function(BuildContext context, T value, Widget? child);
 
 class ExValueBuilder<T> extends StatefulWidget {
   const ExValueBuilder({
@@ -16,20 +16,21 @@ class ExValueBuilder<T> extends StatefulWidget {
     this.shouldRebuild,
   }) : super(key: key);
 
-  final ValueListenable<T?> valueListenable;
+  final ValueListenable<T> valueListenable;
 
-  final ValueWidgetBuilder<T?> builder;
-
-  final bool Function(T? previous, T? next)? shouldRebuild;
+  final ValueWidgetBuilder<T> builder;
 
   final Widget? child;
+
+  ///是否进行重建
+  final bool Function(T previous, T next)? shouldRebuild;
 
   @override
   State<StatefulWidget> createState() => _ExValueBuilderState<T>();
 }
 
-class _ExValueBuilderState<T> extends State<ExValueBuilder<T>> {
-  T? value;
+class _ExValueBuilderState<T> extends State<ExValueBuilder<T>> with SafeState<ExValueBuilder<T>> {
+  late T value;
 
   @override
   void initState() {
@@ -55,9 +56,9 @@ class _ExValueBuilderState<T> extends State<ExValueBuilder<T>> {
   }
 
   void _valueChanged() {
-    if (widget.shouldRebuild == null ||
-        widget.shouldRebuild!(value, widget.valueListenable.value)) {
-      setState(() {
+    ///条件判断
+    if (widget.shouldRebuild?.call(value, widget.valueListenable.value) ?? true) {
+      safeSetState(() {
         value = widget.valueListenable.value;
       });
     }
