@@ -6,6 +6,7 @@ import 'helper/color_pic.dart';
 import 'helper/ex_value_builder.dart';
 import 'helper/safe_state.dart';
 import 'helper/safe_value_notifier.dart';
+import 'paint_contents/circle.dart';
 import 'paint_contents/eraser.dart';
 import 'paint_contents/paint_content.dart';
 import 'paint_contents/rectangle.dart';
@@ -56,8 +57,7 @@ class DrawingBoard extends StatefulWidget {
   final Clip clipBehavior;
 }
 
-class _DrawingBoardState extends State<DrawingBoard>
-    with SafeState<DrawingBoard> {
+class _DrawingBoardState extends State<DrawingBoard> with SafeState<DrawingBoard> {
   ///线条粗细进度
   late SafeValueNotifier<double> _indicator;
 
@@ -176,15 +176,13 @@ class _DrawingBoardState extends State<DrawingBoard>
               width: 160,
               child: ExValueBuilder<DrawConfig>(
                 valueListenable: _drawingController.drawConfig,
-                shouldRebuild: (DrawConfig p, DrawConfig n) =>
-                    p.strokeWidth != n.strokeWidth,
+                shouldRebuild: (DrawConfig p, DrawConfig n) => p.strokeWidth != n.strokeWidth,
                 builder: (_, DrawConfig dc, ___) {
                   return Slider(
                     value: dc.strokeWidth,
                     max: 50,
                     min: 1,
-                    onChanged: (double v) =>
-                        _drawingController.setStyle(strokeWidth: v),
+                    onChanged: (double v) => _drawingController.setStyle(strokeWidth: v),
                   );
                 },
               ),
@@ -194,8 +192,7 @@ class _DrawingBoardState extends State<DrawingBoard>
               height: 24,
               child: ExValueBuilder<DrawConfig>(
                 valueListenable: _drawingController.drawConfig,
-                shouldRebuild: (DrawConfig p, DrawConfig n) =>
-                    p.color != n.color,
+                shouldRebuild: (DrawConfig p, DrawConfig n) => p.color != n.color,
                 builder: (_, DrawConfig dc, ___) {
                   return TextButton(
                     onPressed: _pickColor,
@@ -207,18 +204,10 @@ class _DrawingBoardState extends State<DrawingBoard>
                 },
               ),
             ),
-            IconButton(
-                icon: const Icon(CupertinoIcons.arrow_turn_up_left),
-                onPressed: () => _drawingController.undo()),
-            IconButton(
-                icon: const Icon(CupertinoIcons.arrow_turn_up_right),
-                onPressed: () => _drawingController.redo()),
-            IconButton(
-                icon: const Icon(CupertinoIcons.rotate_right),
-                onPressed: () => _drawingController.turn()),
-            IconButton(
-                icon: const Icon(CupertinoIcons.trash),
-                onPressed: () => _drawingController.clear()),
+            IconButton(icon: const Icon(CupertinoIcons.arrow_turn_up_left), onPressed: () => _drawingController.undo()),
+            IconButton(icon: const Icon(CupertinoIcons.arrow_turn_up_right), onPressed: () => _drawingController.redo()),
+            IconButton(icon: const Icon(CupertinoIcons.rotate_right), onPressed: () => _drawingController.turn()),
+            IconButton(icon: const Icon(CupertinoIcons.trash), onPressed: () => _drawingController.clear()),
           ],
         ),
       ),
@@ -234,26 +223,18 @@ class _DrawingBoardState extends State<DrawingBoard>
         padding: EdgeInsets.zero,
         child: ExValueBuilder<DrawConfig>(
           valueListenable: _drawingController.drawConfig,
-          shouldRebuild: (DrawConfig p, DrawConfig n) =>
-              p.contentType != n.contentType,
+          shouldRebuild: (DrawConfig p, DrawConfig n) => p.contentType != n.contentType,
           builder: (_, DrawConfig dc, ___) {
             final Type currType = dc.contentType;
 
             return Row(
               children: <Widget>[
-                _buildToolItem<SimpleLine>(currType, CupertinoIcons.pencil,
-                    () => _drawingController.setPaintContent = SimpleLine()),
-                _buildToolItem<SmoothLine>(currType, CupertinoIcons.infinite,
-                    () => _drawingController.setPaintContent = SmoothLine()),
-                _buildToolItem<StraightLine>(currType, Icons.show_chart,
-                    () => _drawingController.setPaintContent = StraightLine()),
-                _buildToolItem<Rectangle>(currType, CupertinoIcons.stop,
-                    () => _drawingController.setPaintContent = Rectangle()),
-                _buildToolItem<Eraser>(
-                    currType,
-                    CupertinoIcons.bandage,
-                    () => _drawingController.setPaintContent =
-                        Eraser(color: Colors.white)),
+                _buildToolItem<SimpleLine>(currType, CupertinoIcons.pencil, () => _drawingController.setPaintContent = SimpleLine()),
+                _buildToolItem<SmoothLine>(currType, CupertinoIcons.infinite, () => _drawingController.setPaintContent = SmoothLine()),
+                _buildToolItem<StraightLine>(currType, Icons.show_chart, () => _drawingController.setPaintContent = StraightLine()),
+                _buildToolItem<Rectangle>(currType, CupertinoIcons.stop, () => _drawingController.setPaintContent = Rectangle()),
+                _buildToolItem<Circle>(currType, CupertinoIcons.circle, () => _drawingController.setPaintContent = Circle()),
+                _buildToolItem<Eraser>(currType, CupertinoIcons.bandage, () => _drawingController.setPaintContent = Eraser(color: Colors.white)),
               ],
             );
           },
@@ -263,8 +244,7 @@ class _DrawingBoardState extends State<DrawingBoard>
   }
 
   /// 构建工具项
-  Widget _buildToolItem<T extends PaintContent>(
-      Type currType, IconData icon, Function() onTap) {
+  Widget _buildToolItem<T extends PaintContent>(Type currType, IconData icon, Function() onTap) {
     return IconButton(
       icon: Icon(
         icon,
