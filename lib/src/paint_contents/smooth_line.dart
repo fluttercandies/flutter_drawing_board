@@ -1,14 +1,13 @@
 import 'dart:ui';
-
+import 'package:flutter_drawing_board/src/helper/ex_paint.dart';
 import 'paint_content.dart';
 
 /// 笔触线条
 class SmoothLine extends PaintContent {
   SmoothLine({
-    /// 绘制影响因子，越小线条越平滑
+    /// 绘制影响因子，值越小线条越平滑，粗细变化越慢
     this.brushPrecision = 0.4,
-    Paint? paint,
-  }) : super(paint: paint);
+  });
 
   final double brushPrecision;
 
@@ -21,15 +20,15 @@ class SmoothLine extends PaintContent {
   @override
   void startDraw(Offset startPoint) {
     points = <Offset>[startPoint];
-    strokeWidthList = <double>[paint!.strokeWidth];
+    strokeWidthList = <double>[paint.strokeWidth];
   }
 
   @override
   void drawing(Offset nowPoint) {
     final double distance = (nowPoint - points.last).distance;
 
-    //原始大小
-    final double s = paint!.strokeWidth;
+    //原始画笔线条线宽
+    final double s = paint.strokeWidth;
 
     double strokeWidth = s * (s * 2 / (s * distance));
 
@@ -50,17 +49,17 @@ class SmoothLine extends PaintContent {
   }
 
   @override
-  void draw(Canvas canvas, Size size) {
+  void draw(Canvas canvas, Size size, bool deeper) {
     for (int i = 1; i < points.length; i++) {
       canvas.drawPath(
         Path()
           ..moveTo(points[i - 1].dx, points[i - 1].dy)
           ..lineTo(points[i].dx, points[i].dy),
-        paint!..strokeWidth = strokeWidthList[i],
+        paint.copyWith(strokeWidth: strokeWidthList[i]),
       );
     }
   }
 
   @override
-  PaintContent copy() => SmoothLine(paint: paint!, brushPrecision: brushPrecision);
+  PaintContent copy() => SmoothLine(brushPrecision: brushPrecision);
 }

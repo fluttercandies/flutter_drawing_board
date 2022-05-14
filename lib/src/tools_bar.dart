@@ -8,7 +8,8 @@ typedef ToolsBuilder = Widget Function(BuildContext context);
 
 /// 具栏
 class ToolsBar extends StatelessWidget {
-  const ToolsBar({Key? key, @required this.controller, required this.builder}) : super(key: key);
+  const ToolsBar({Key? key, @required this.controller, required this.builder})
+      : super(key: key);
 
   /// 控制器
   final DrawingController? controller;

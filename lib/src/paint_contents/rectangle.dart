@@ -4,13 +4,13 @@ import 'paint_content.dart';
 
 /// 矩形
 class Rectangle extends PaintContent {
-  Rectangle({Paint? paint}) : super(paint: paint);
+  Rectangle();
 
   /// 起始点
-  late Offset startPoint;
+  Offset startPoint = Offset.zero;
 
   /// 结束点
-  late Offset endPoint;
+  Offset endPoint = Offset.zero;
 
   @override
   void startDraw(Offset startPoint) => this.startPoint = startPoint;
@@ -19,13 +19,9 @@ class Rectangle extends PaintContent {
   void drawing(Offset nowPoint) => endPoint = nowPoint;
 
   @override
-  void draw(Canvas canvas, Size size) {
-    canvas.drawRect(
-      Rect.fromLTRB(startPoint.dx, startPoint.dy, endPoint.dx, endPoint.dy),
-      paint!,
-    );
-  }
+  void draw(Canvas canvas, Size size, bool deeper) =>
+      canvas.drawRect(Rect.fromPoints(startPoint, endPoint), paint);
 
   @override
-  Rectangle copy() => Rectangle(paint: paint);
+  Rectangle copy() => Rectangle();
 }

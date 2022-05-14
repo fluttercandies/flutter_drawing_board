@@ -4,7 +4,7 @@ import 'paint_content.dart';
 
 /// 直线
 class StraightLine extends PaintContent {
-  StraightLine({Paint? paint}) : super(paint: paint);
+  StraightLine();
 
   late Offset startPoint;
   late Offset endPoint;
@@ -16,8 +16,9 @@ class StraightLine extends PaintContent {
   void drawing(Offset nowPoint) => endPoint = nowPoint;
 
   @override
-  void draw(Canvas canvas, Size size) => canvas.drawLine(startPoint, endPoint, paint!);
+  void draw(Canvas canvas, Size size, bool deeper) =>
+      canvas.drawLine(startPoint, endPoint, paint);
 
   @override
-  PaintContent copy() => StraightLine(paint: paint);
+  PaintContent copy() => StraightLine();
 }

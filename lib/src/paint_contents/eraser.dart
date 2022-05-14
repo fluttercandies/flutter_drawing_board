@@ -1,18 +1,18 @@
 import 'package:flutter/painting.dart';
+import 'package:flutter_drawing_board/src/helper/ex_paint.dart';
 
 import 'paint_content.dart';
 
 /// 橡皮
 class Eraser extends PaintContent {
-  Eraser({Paint? paint, this.color = const Color(0xff000000)}) : super(paint: paint);
+  Eraser({this.color = const Color(0xff000000)});
 
   /// 擦除路径
-  late Path path;
+  Path path = Path();
   final Color color;
 
   @override
   void startDraw(Offset startPoint) {
-    path = Path();
     path.moveTo(startPoint.dx, startPoint.dy);
   }
 
@@ -20,8 +20,13 @@ class Eraser extends PaintContent {
   void drawing(Offset nowPoint) => path.lineTo(nowPoint.dx, nowPoint.dy);
 
   @override
-  void draw(Canvas canvas, Size size) => canvas.drawPath(path, paint!..color = color);
+  void draw(Canvas canvas, Size size, bool deeper) {
+    if (deeper)
+      canvas.drawPath(path, paint.copyWith(blendMode: BlendMode.clear));
+    else
+      canvas.drawPath(path, paint.copyWith(color: color));
+  }
 
   @override
-  Eraser copy() => Eraser(paint: paint);
+  Eraser copy() => Eraser(color: color);
 }

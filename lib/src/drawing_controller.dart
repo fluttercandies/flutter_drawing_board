@@ -10,7 +10,7 @@ import 'paint_contents/simple_line.dart';
 /// 绘制参数
 class DrawConfig {
   DrawConfig({
-    required this.paintContent,
+    required this.contentType,
     this.angle = 0,
     this.blendMode = BlendMode.srcOver,
     this.color = Colors.red,
@@ -23,13 +23,12 @@ class DrawConfig {
     this.shader,
     this.strokeCap = StrokeCap.round,
     this.strokeJoin = StrokeJoin.round,
-    this.strokeMiterLimit = 4,
     this.strokeWidth = 4,
     this.style = PaintingStyle.stroke,
   });
 
   DrawConfig.def({
-    required this.paintContent,
+    required this.contentType,
     this.angle = 0,
     this.blendMode = BlendMode.srcOver,
     this.color = Colors.red,
@@ -42,7 +41,6 @@ class DrawConfig {
     this.shader,
     this.strokeCap = StrokeCap.round,
     this.strokeJoin = StrokeJoin.round,
-    this.strokeMiterLimit = 4,
     this.strokeWidth = 4,
     this.style = PaintingStyle.stroke,
   });
@@ -50,8 +48,7 @@ class DrawConfig {
   /// 旋转的角度（0:0,1:90,2:180,3:270）
   final int angle;
 
-  /// 最后一次绘制的内容
-  final PaintContent paintContent;
+  final Type contentType;
 
   /// Paint相关
   final BlendMode blendMode;
@@ -65,11 +62,8 @@ class DrawConfig {
   final Shader? shader;
   final StrokeCap strokeCap;
   final StrokeJoin strokeJoin;
-  final double strokeMiterLimit;
   final double strokeWidth;
   final PaintingStyle style;
-
-  PaintContent get getPaintContent => paintContent;
 
   /// 生成paint
   Paint get paint => Paint()
@@ -84,11 +78,11 @@ class DrawConfig {
     ..shader = shader
     ..strokeCap = strokeCap
     ..strokeJoin = strokeJoin
-    ..strokeMiterLimit = strokeMiterLimit
     ..strokeWidth = strokeWidth
     ..style = style;
 
   DrawConfig copyWith({
+    Type? contentType,
     BlendMode? blendMode,
     Color? color,
     ColorFilter? colorFilter,
@@ -100,14 +94,12 @@ class DrawConfig {
     Shader? shader,
     StrokeCap? strokeCap,
     StrokeJoin? strokeJoin,
-    double? strokeMiterLimit,
     double? strokeWidth,
     PaintingStyle? style,
-    PaintContent? paintContent,
     int? angle,
   }) {
     return DrawConfig(
-      paintContent: paintContent ?? this.paintContent,
+      contentType: contentType ?? this.contentType,
       angle: angle ?? this.angle,
       blendMode: blendMode ?? this.blendMode,
       color: color ?? this.color,
@@ -120,7 +112,6 @@ class DrawConfig {
       shader: shader ?? this.shader,
       strokeCap: strokeCap ?? this.strokeCap,
       strokeJoin: strokeJoin ?? this.strokeJoin,
-      strokeMiterLimit: strokeMiterLimit ?? this.strokeMiterLimit,
       strokeWidth: strokeWidth ?? this.strokeWidth,
       style: style ?? this.style,
     );
@@ -129,13 +120,15 @@ class DrawConfig {
 
 /// 绘制控制器
 class DrawingController {
-  DrawingController({DrawConfig? config}) {
+  DrawingController({DrawConfig? config, PaintContent? content}) {
     _history = <PaintContent>[];
     _currentIndex = 0;
     _brushPrecision = 0.4;
     realPainter = _RePaint();
     painter = _RePaint();
-    drawConfig = SafeValueNotifier<DrawConfig>(config ?? DrawConfig.def(paintContent: SimpleLine()));
+    drawConfig = SafeValueNotifier<DrawConfig>(
+        config ?? DrawConfig.def(contentType: SimpleLine));
+    setPaintContent = content ?? SimpleLine();
   }
 
   /// 画板数据Key
@@ -144,7 +137,10 @@ class DrawingController {
   /// 控制器
   late SafeValueNotifier<DrawConfig> drawConfig;
 
-  /// 表层绘制内容
+  /// 最后一次绘制的内容
+  late PaintContent _paintContent;
+
+  /// 当前绘制内容
   PaintContent? currentContent;
 
   /// 底层绘制内容(绘制记录)
@@ -179,40 +175,59 @@ class DrawingController {
   /// 获取当前颜色
   Color get getColor => drawConfig.value.color;
 
-  /// 设置绘制颜色
-  set setColor(Color color) {
-    if (color != drawConfig.value.color) {
-      drawConfig.value = drawConfig.value.copyWith(color: color);
-      currentContent = drawConfig.value.getPaintContent;
-    }
-  }
-
-  /// 获取线条粗细
-  double? get getThickness => currentContent?.paint?.strokeWidth;
-
-  ///设置线条粗细
-  set setThickness(double thickness) {
-    if (thickness != drawConfig.value.strokeWidth) {
-      drawConfig.value = drawConfig.value.copyWith(strokeWidth: thickness);
-      currentContent = drawConfig.value.getPaintContent;
-    }
+  /// 设置绘制样式
+  void setStyle({
+    BlendMode? blendMode,
+    Color? color,
+    ColorFilter? colorFilter,
+    FilterQuality? filterQuality,
+    ui.ImageFilter? imageFilter,
+    bool? invertColors,
+    bool? isAntiAlias,
+    MaskFilter? maskFilter,
+    Shader? shader,
+    StrokeCap? strokeCap,
+    StrokeJoin? strokeJoin,
+    double? strokeMiterLimit,
+    double? strokeWidth,
+    PaintingStyle? style,
+  }) {
+    drawConfig.value = drawConfig.value.copyWith(
+      blendMode: blendMode,
+      color: color,
+      colorFilter: colorFilter,
+      filterQuality: filterQuality,
+      imageFilter: imageFilter,
+      invertColors: invertColors,
+      isAntiAlias: isAntiAlias,
+      maskFilter: maskFilter,
+      shader: shader,
+      strokeCap: strokeCap,
+      strokeJoin: strokeJoin,
+      strokeWidth: strokeWidth,
+      style: style,
+    );
   }
 
   /// 设置绘制内容
   set setPaintContent(PaintContent content) {
-    content.paint ??= drawConfig.value.paint;
-    drawConfig.value = drawConfig.value.copyWith(paintContent: content);
+    content.paint = drawConfig.value.paint;
+    _paintContent = content;
+    drawConfig.value =
+        drawConfig.value.copyWith(contentType: content.runtimeType);
   }
 
   /// * 旋转画布
   /// * 设置角度
   void turn() {
-    drawConfig.value = drawConfig.value.copyWith(angle: (drawConfig.value.angle + 1) % 4);
+    drawConfig.value =
+        drawConfig.value.copyWith(angle: (drawConfig.value.angle + 1) % 4);
   }
 
   /// 开始绘制
   void startDraw(Offset startPoint) {
-    currentContent = drawConfig.value.getPaintContent.copy();
+    currentContent = _paintContent.copy();
+    currentContent?.paint = drawConfig.value.paint;
     currentContent?.startDraw(startPoint);
   }
 
@@ -266,8 +281,10 @@ class DrawingController {
   /// 获取图片数据
   Future<ByteData?> getImageData() async {
     try {
-      final RenderRepaintBoundary boundary = painterKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
-      final ui.Image image = await boundary.toImage(pixelRatio: ui.window.devicePixelRatio);
+      final RenderRepaintBoundary boundary = painterKey.currentContext!
+          .findRenderObject() as RenderRepaintBoundary;
+      final ui.Image image =
+          await boundary.toImage(pixelRatio: ui.window.devicePixelRatio);
       return await image.toByteData(format: ui.ImageByteFormat.png);
     } catch (e) {
       print('获取图片数据出错:$e');

@@ -82,17 +82,21 @@ class _PainterState extends State<Painter> {
       onPointerDown: (PointerDownEvent pde) => _fingerCount.value++,
       onPointerUp: (PointerUpEvent pue) => _fingerCount.value--,
       child: ExValueBuilder<int>(
-        child: Container(
+        child: SizedBox(
           width: double.infinity,
           height: double.infinity,
-          clipBehavior: widget.clipBehavior,
-          decoration: const BoxDecoration(color: Colors.transparent),
-          child: Stack(
-            fit: StackFit.expand,
-            children: <Widget>[
-              RepaintBoundary(child: CustomPaint(painter: _DeepPainter(controller: widget.drawingController))),
-              CustomPaint(painter: _UpPainter(controller: widget.drawingController)),
-            ],
+          child: ClipRect(
+            clipBehavior: widget.clipBehavior,
+            child: RepaintBoundary(
+              child: CustomPaint(
+                painter: _DeepPainter(controller: widget.drawingController),
+                child: RepaintBoundary(
+                  child: CustomPaint(
+                    painter: _UpPainter(controller: widget.drawingController),
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
         valueListenable: _fingerCount,
@@ -119,16 +123,17 @@ class _UpPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (controller.currentContent == null) return;
 
-    controller.currentContent?.draw(canvas, size);
+    controller.currentContent?.draw(canvas, size, false);
   }
 
   @override
-  bool shouldRepaint(covariant _UpPainter oldDelegate) => true;
+  bool shouldRepaint(covariant _UpPainter oldDelegate) => false;
 }
 
 /// 底层画板
 class _DeepPainter extends CustomPainter {
-  _DeepPainter({required this.controller}) : super(repaint: controller.realPainter);
+  _DeepPainter({required this.controller})
+      : super(repaint: controller.realPainter);
   final DrawingController controller;
 
   @override
@@ -142,12 +147,12 @@ class _DeepPainter extends CustomPainter {
     canvas.saveLayer(Offset.zero & size, Paint());
 
     for (int i = 0; i < controller.currentIndex; i++) {
-      _contents[i].draw(canvas, size);
+      _contents[i].draw(canvas, size, true);
     }
 
     canvas.restore();
   }
 
   @override
-  bool shouldRepaint(covariant _DeepPainter oldDelegate) => true;
+  bool shouldRepaint(covariant _DeepPainter oldDelegate) => false;
 }
