@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'color_pic_btn.dart';
 import 'drawing_controller.dart';
 
 import 'helper/color_pic.dart';
@@ -96,43 +97,19 @@ class DrawingBoard extends StatefulWidget {
 }
 
 class _DrawingBoardState extends State<DrawingBoard> with SafeState<DrawingBoard> {
-  ///线条粗细进度
-  late SafeValueNotifier<double> _indicator;
-
   ///画板控制器
   late DrawingController _drawingController;
 
   @override
   void initState() {
     super.initState();
-    _indicator = SafeValueNotifier<double>(1);
     _drawingController = widget.controller ?? DrawingController();
   }
 
   @override
   void dispose() {
-    _indicator.dispose();
-    if (widget.controller == null) {
-      _drawingController.dispose();
-    }
+    _drawingController.dispose();
     super.dispose();
-  }
-
-  /// 选择颜色
-  Future<void> _pickColor() async {
-    final Color? newColor = await showModalBottomSheet<Color?>(
-      context: context,
-      isScrollControlled: true,
-      enableDrag: false,
-      builder: (_) => ColorPic(nowColor: _drawingController.getColor),
-    );
-    if (newColor == null) {
-      return;
-    }
-
-    if (newColor != _drawingController.getColor) {
-      _drawingController.setStyle(color: newColor);
-    }
   }
 
   @override
@@ -225,23 +202,7 @@ class _DrawingBoardState extends State<DrawingBoard> with SafeState<DrawingBoard
                 },
               ),
             ),
-            SizedBox(
-              width: 24,
-              height: 24,
-              child: ExValueBuilder<DrawConfig>(
-                valueListenable: _drawingController.drawConfig,
-                shouldRebuild: (DrawConfig p, DrawConfig n) => p.color != n.color,
-                builder: (_, DrawConfig dc, ___) {
-                  return TextButton(
-                    onPressed: _pickColor,
-                    style: ButtonStyle(
-                      padding: MaterialStateProperty.all(EdgeInsets.zero),
-                    ),
-                    child: Container(color: dc.color),
-                  );
-                },
-              ),
-            ),
+            ColorPicBtn(controller: _drawingController),
             IconButton(
                 icon: const Icon(CupertinoIcons.arrow_turn_up_left),
                 onPressed: () => _drawingController.undo()),
@@ -276,16 +237,7 @@ class _DrawingBoardState extends State<DrawingBoard> with SafeState<DrawingBoard
             return Row(
               children: (widget.defaultToolsBuilder?.call(currType, _drawingController) ??
                       DrawingBoard.defaultTools(currType, _drawingController))
-                  .map(
-                    (DefToolItem item) => _DefToolItemWidget(
-                      isActive: item.isActive,
-                      icon: item.icon,
-                      onTap: item.onTap,
-                      color: item.color,
-                      activeColor: item.activeColor,
-                      iconSize: item.iconSize,
-                    ),
-                  )
+                  .map((DefToolItem item) => _DefToolItemWidget(item: item))
                   .toList(),
             );
           },
@@ -315,31 +267,24 @@ class DefToolItem {
   final Color activeColor;
 }
 
-/// 默认工具项Widget
+/// 默认工具项 Widget
 class _DefToolItemWidget extends StatelessWidget {
   const _DefToolItemWidget({
     Key? key,
-    required this.icon,
-    required this.isActive,
-    this.onTap,
-    this.color,
-    this.activeColor = Colors.blue,
-    this.iconSize,
+    required this.item,
   }) : super(key: key);
 
-  final Function()? onTap;
-  final bool isActive;
-
-  final IconData icon;
-  final double? iconSize;
-  final Color? color;
-  final Color activeColor;
+  final DefToolItem item;
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      onPressed: onTap,
-      icon: Icon(icon, color: isActive ? activeColor : color, size: iconSize),
+      onPressed: item.onTap,
+      icon: Icon(
+        item.icon,
+        color: item.isActive ? item.activeColor : item.color,
+        size: item.iconSize,
+      ),
     );
   }
 }
