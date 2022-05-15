@@ -73,7 +73,7 @@ class DrawingBoard extends StatefulWidget {
           onTap: () => controller.setPaintContent = SimpleLine()),
       DefToolItem(
           isActive: currType == SmoothLine,
-          icon: CupertinoIcons.infinite,
+          icon: Icons.brush,
           onTap: () => controller.setPaintContent = SmoothLine()),
       DefToolItem(
           isActive: currType == StraightLine,
