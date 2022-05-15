@@ -8,12 +8,17 @@ import 'helper/safe_state.dart';
 import 'helper/safe_value_notifier.dart';
 import 'paint_contents/circle.dart';
 import 'paint_contents/eraser.dart';
-import 'paint_contents/paint_content.dart';
 import 'paint_contents/rectangle.dart';
 import 'paint_contents/simple_line.dart';
 import 'paint_contents/smooth_line.dart';
 import 'paint_contents/straight_line.dart';
 import 'painter.dart';
+
+/// 默认工具栏构建器
+typedef DefaultToolsBuilder = List<DefToolItem> Function(
+  Type currType,
+  DrawingController controller,
+);
 
 /// 画板
 class DrawingBoard extends StatefulWidget {
@@ -27,6 +32,7 @@ class DrawingBoard extends StatefulWidget {
     this.onPanUpdate,
     this.onPanEnd,
     this.clipBehavior = Clip.antiAlias,
+    this.defaultToolsBuilder,
   }) : super(key: key);
 
   @override
@@ -55,6 +61,38 @@ class DrawingBoard extends StatefulWidget {
 
   /// 边缘裁剪方式
   final Clip clipBehavior;
+
+  final DefaultToolsBuilder? defaultToolsBuilder;
+
+  /// 默认工具项列表
+  static List<DefToolItem> defaultTools(Type currType, DrawingController controller) {
+    return <DefToolItem>[
+      DefToolItem(
+          isActive: currType == SimpleLine,
+          icon: CupertinoIcons.pencil,
+          onTap: () => controller.setPaintContent = SimpleLine()),
+      DefToolItem(
+          isActive: currType == SmoothLine,
+          icon: CupertinoIcons.infinite,
+          onTap: () => controller.setPaintContent = SmoothLine()),
+      DefToolItem(
+          isActive: currType == StraightLine,
+          icon: Icons.show_chart,
+          onTap: () => controller.setPaintContent = StraightLine()),
+      DefToolItem(
+          isActive: currType == Rectangle,
+          icon: CupertinoIcons.stop,
+          onTap: () => controller.setPaintContent = Rectangle()),
+      DefToolItem(
+          isActive: currType == Circle,
+          icon: CupertinoIcons.circle,
+          onTap: () => controller.setPaintContent = Circle()),
+      DefToolItem(
+          isActive: currType == Eraser,
+          icon: CupertinoIcons.bandage,
+          onTap: () => controller.setPaintContent = Eraser(color: Colors.white)),
+    ];
+  }
 }
 
 class _DrawingBoardState extends State<DrawingBoard> with SafeState<DrawingBoard> {
@@ -204,10 +242,18 @@ class _DrawingBoardState extends State<DrawingBoard> with SafeState<DrawingBoard
                 },
               ),
             ),
-            IconButton(icon: const Icon(CupertinoIcons.arrow_turn_up_left), onPressed: () => _drawingController.undo()),
-            IconButton(icon: const Icon(CupertinoIcons.arrow_turn_up_right), onPressed: () => _drawingController.redo()),
-            IconButton(icon: const Icon(CupertinoIcons.rotate_right), onPressed: () => _drawingController.turn()),
-            IconButton(icon: const Icon(CupertinoIcons.trash), onPressed: () => _drawingController.clear()),
+            IconButton(
+                icon: const Icon(CupertinoIcons.arrow_turn_up_left),
+                onPressed: () => _drawingController.undo()),
+            IconButton(
+                icon: const Icon(CupertinoIcons.arrow_turn_up_right),
+                onPressed: () => _drawingController.redo()),
+            IconButton(
+                icon: const Icon(CupertinoIcons.rotate_right),
+                onPressed: () => _drawingController.turn()),
+            IconButton(
+                icon: const Icon(CupertinoIcons.trash),
+                onPressed: () => _drawingController.clear()),
           ],
         ),
       ),
@@ -228,29 +274,72 @@ class _DrawingBoardState extends State<DrawingBoard> with SafeState<DrawingBoard
             final Type currType = dc.contentType;
 
             return Row(
-              children: <Widget>[
-                _buildToolItem<SimpleLine>(currType, CupertinoIcons.pencil, () => _drawingController.setPaintContent = SimpleLine()),
-                _buildToolItem<SmoothLine>(currType, CupertinoIcons.infinite, () => _drawingController.setPaintContent = SmoothLine()),
-                _buildToolItem<StraightLine>(currType, Icons.show_chart, () => _drawingController.setPaintContent = StraightLine()),
-                _buildToolItem<Rectangle>(currType, CupertinoIcons.stop, () => _drawingController.setPaintContent = Rectangle()),
-                _buildToolItem<Circle>(currType, CupertinoIcons.circle, () => _drawingController.setPaintContent = Circle()),
-                _buildToolItem<Eraser>(currType, CupertinoIcons.bandage, () => _drawingController.setPaintContent = Eraser(color: Colors.white)),
-              ],
+              children: (widget.defaultToolsBuilder?.call(currType, _drawingController) ??
+                      DrawingBoard.defaultTools(currType, _drawingController))
+                  .map(
+                    (DefToolItem item) => _DefToolItemWidget(
+                      isActive: item.isActive,
+                      icon: item.icon,
+                      onTap: item.onTap,
+                      color: item.color,
+                      activeColor: item.activeColor,
+                      iconSize: item.iconSize,
+                    ),
+                  )
+                  .toList(),
             );
           },
         ),
       ),
     );
   }
+}
 
-  /// 构建工具项
-  Widget _buildToolItem<T extends PaintContent>(Type currType, IconData icon, Function() onTap) {
+/// 默认工具项配置文件
+class DefToolItem {
+  DefToolItem({
+    required this.icon,
+    required this.isActive,
+    this.onTap,
+    this.color,
+    this.activeColor = Colors.blue,
+    this.iconSize,
+  });
+
+  final Function()? onTap;
+  final bool isActive;
+
+  final IconData icon;
+  final double? iconSize;
+  final Color? color;
+  final Color activeColor;
+}
+
+/// 默认工具项Widget
+class _DefToolItemWidget extends StatelessWidget {
+  const _DefToolItemWidget({
+    Key? key,
+    required this.icon,
+    required this.isActive,
+    this.onTap,
+    this.color,
+    this.activeColor = Colors.blue,
+    this.iconSize,
+  }) : super(key: key);
+
+  final Function()? onTap;
+  final bool isActive;
+
+  final IconData icon;
+  final double? iconSize;
+  final Color? color;
+  final Color activeColor;
+
+  @override
+  Widget build(BuildContext context) {
     return IconButton(
-      icon: Icon(
-        icon,
-        color: T == currType ? Colors.blue : null,
-      ),
       onPressed: onTap,
+      icon: Icon(icon, color: isActive ? activeColor : color, size: iconSize),
     );
   }
 }

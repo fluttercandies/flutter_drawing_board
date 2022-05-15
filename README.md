@@ -1,4 +1,4 @@
-# Flutter Drawing Board
+# Flutter Drawing Boar
 
 A Flutter package of drawing board.
 
@@ -8,7 +8,7 @@ A Flutter package of drawing board.
 [![CodeFactor](https://img.shields.io/codefactor/grade/github/fluttercandies/flutter_drawing_board?logo=codefactor&logoColor=%23ffffff&style=flat-square)](https://www.codefactor.io/repository/github/fluttercandies/flutter_drawing_board)
 <a target="_blank" href="https://jq.qq.com/?_wv=1027&k=5bcc0gy"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="FlutterCandies" title="FlutterCandies"></a>
 
-### 现已支持笔触绘制
+### 预览
 <img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/master/preview/an.gif" height=400>
 
 使用方法

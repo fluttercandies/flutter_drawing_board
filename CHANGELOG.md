@@ -53,3 +53,7 @@
 ## [0.2.7]
 
 - Pass static analysis, update colorpicker
+
+## [0.3.0]
+
+- Breaking change, Please read the documentation carefully

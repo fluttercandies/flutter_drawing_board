@@ -4,10 +4,16 @@ import 'paint_content.dart';
 
 /// 圆
 class Circle extends PaintContent {
-  Circle({this.isEllipse = false});
+  Circle({
+    this.isEllipse = false,
+    this.startFromCenter = true,
+  });
 
   /// 是否为椭圆
   final bool isEllipse;
+
+  /// 从圆心开始绘制
+  final bool startFromCenter;
 
   /// 圆心
   Offset center = Offset.zero;
@@ -31,7 +37,7 @@ class Circle extends PaintContent {
   void drawing(Offset nowPoint) {
     endPoint = nowPoint;
     center = Offset((startPoint.dx + endPoint.dx) / 2, (startPoint.dy + endPoint.dy) / 2);
-    radius = (endPoint - center).distance;
+    radius = (endPoint - (startFromCenter ? startPoint : center)).distance;
   }
 
   @override
@@ -39,7 +45,7 @@ class Circle extends PaintContent {
     if (isEllipse)
       canvas.drawOval(Rect.fromPoints(startPoint, endPoint), paint);
     else
-      canvas.drawCircle(center, radius, paint);
+      canvas.drawCircle(startFromCenter ? startPoint : center, radius, paint);
   }
 
   @override
