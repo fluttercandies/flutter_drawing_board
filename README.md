@@ -25,8 +25,6 @@ Flutter 画板
 
 * 在线体验:[https://painter.liugl.cn](https://painter.liugl.cn)  
 
-<iframe src="https://painter.liugl.cn" frameborder=0  width="500" height="600"></iframe>
-
 <br/>
 
 * 基础功能预览  
