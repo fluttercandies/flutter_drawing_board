@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'color_pic_btn.dart';
 import 'drawing_controller.dart';
 
-import 'helper/color_pic.dart';
 import 'helper/ex_value_builder.dart';
 import 'helper/safe_state.dart';
-import 'helper/safe_value_notifier.dart';
 import 'paint_contents/circle.dart';
 import 'paint_contents/eraser.dart';
 import 'paint_contents/rectangle.dart';
@@ -66,7 +64,8 @@ class DrawingBoard extends StatefulWidget {
   final DefaultToolsBuilder? defaultToolsBuilder;
 
   /// 默认工具项列表
-  static List<DefToolItem> defaultTools(Type currType, DrawingController controller) {
+  static List<DefToolItem> defaultTools(
+      Type currType, DrawingController controller) {
     return <DefToolItem>[
       DefToolItem(
           isActive: currType == SimpleLine,
@@ -91,12 +90,14 @@ class DrawingBoard extends StatefulWidget {
       DefToolItem(
           isActive: currType == Eraser,
           icon: CupertinoIcons.bandage,
-          onTap: () => controller.setPaintContent = Eraser(color: Colors.white)),
+          onTap: () =>
+              controller.setPaintContent = Eraser(color: Colors.white)),
     ];
   }
 }
 
-class _DrawingBoardState extends State<DrawingBoard> with SafeState<DrawingBoard> {
+class _DrawingBoardState extends State<DrawingBoard>
+    with SafeState<DrawingBoard> {
   ///画板控制器
   late DrawingController _drawingController;
 
@@ -191,13 +192,15 @@ class _DrawingBoardState extends State<DrawingBoard> with SafeState<DrawingBoard
               width: 160,
               child: ExValueBuilder<DrawConfig>(
                 valueListenable: _drawingController.drawConfig,
-                shouldRebuild: (DrawConfig p, DrawConfig n) => p.strokeWidth != n.strokeWidth,
+                shouldRebuild: (DrawConfig p, DrawConfig n) =>
+                    p.strokeWidth != n.strokeWidth,
                 builder: (_, DrawConfig dc, ___) {
                   return Slider(
                     value: dc.strokeWidth,
                     max: 50,
                     min: 1,
-                    onChanged: (double v) => _drawingController.setStyle(strokeWidth: v),
+                    onChanged: (double v) =>
+                        _drawingController.setStyle(strokeWidth: v),
                   );
                 },
               ),
@@ -230,12 +233,14 @@ class _DrawingBoardState extends State<DrawingBoard> with SafeState<DrawingBoard
         padding: EdgeInsets.zero,
         child: ExValueBuilder<DrawConfig>(
           valueListenable: _drawingController.drawConfig,
-          shouldRebuild: (DrawConfig p, DrawConfig n) => p.contentType != n.contentType,
+          shouldRebuild: (DrawConfig p, DrawConfig n) =>
+              p.contentType != n.contentType,
           builder: (_, DrawConfig dc, ___) {
             final Type currType = dc.contentType;
 
             return Row(
-              children: (widget.defaultToolsBuilder?.call(currType, _drawingController) ??
+              children: (widget.defaultToolsBuilder
+                          ?.call(currType, _drawingController) ??
                       DrawingBoard.defaultTools(currType, _drawingController))
                   .map((DefToolItem item) => _DefToolItemWidget(item: item))
                   .toList(),

@@ -41,7 +41,8 @@ class ColorPicBtn extends StatelessWidget {
         valueListenable: controller.drawConfig,
         shouldRebuild: (DrawConfig p, DrawConfig n) => p.color != n.color,
         builder: (_, DrawConfig dc, __) =>
-            builder?.call(dc.color) ?? Container(width: 24, height: 24, color: dc.color),
+            builder?.call(dc.color) ??
+            Container(width: 24, height: 24, color: dc.color),
       ),
     );
   }
