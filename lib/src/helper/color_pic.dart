@@ -32,7 +32,7 @@ class ColorPic extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: ColorPicker(
-                color: _pickColor!,
+                color: _pickColor ?? Colors.red,
                 onChanged: (Color c) => _pickColor = c,
               ),
             ),

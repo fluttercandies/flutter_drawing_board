@@ -6,6 +6,42 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_drawing_board/flutter_drawing_board.dart';
 
+/// 自定义绘制三角形
+class Triangle extends PaintContent {
+  Triangle();
+
+  Offset startPoint = Offset.zero;
+
+  Offset A = Offset.zero;
+  Offset B = Offset.zero;
+  Offset C = Offset.zero;
+
+  @override
+  void startDraw(Offset startPoint) => this.startPoint = startPoint;
+
+  @override
+  void drawing(Offset nowPoint) {
+    A = Offset(
+        startPoint.dx + (nowPoint.dx - startPoint.dx) / 2, startPoint.dy);
+    B = Offset(startPoint.dx, nowPoint.dy);
+    C = nowPoint;
+  }
+
+  @override
+  void draw(Canvas canvas, Size size, bool deeper) {
+    final Path path = Path()
+      ..moveTo(A.dx, A.dy)
+      ..lineTo(B.dx, B.dy)
+      ..lineTo(C.dx, C.dy)
+      ..close();
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  Triangle copy() => Triangle();
+}
+
 void main() {
   FlutterError.onError = (FlutterErrorDetails details) {
     FlutterError.dumpErrorToConsole(details);
@@ -36,17 +72,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  ///绘制控制器
-  final DrawingController _drawingController = DrawingController(
-    ///配置
-    config: DrawConfig(
-      paintType: PaintType.simpleLine,
-      color: Colors.red,
-      thickness: 2.0,
-      angle: 0,
-      text: '输入文本',
-    ),
-  );
+  /// 绘制控制器
+  final DrawingController _drawingController = DrawingController();
 
   @override
   void dispose() {
@@ -54,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.dispose();
   }
 
-  ///获取画板数据 `getImageData()`
+  /// 获取画板数据 `getImageData()`
   Future<void> _getImageData() async {
     final Uint8List? data =
         (await _drawingController.getImageData())?.buffer.asUint8List();
@@ -95,6 +122,18 @@ class _MyHomePageState extends State<MyHomePage> {
                   Container(width: 400, height: 400, color: Colors.white),
               showDefaultActions: true,
               showDefaultTools: true,
+              defaultToolsBuilder: (Type t, _) {
+                return DrawingBoard.defaultTools(t, _drawingController)
+                  ..insert(
+                    1,
+                    DefToolItem(
+                      icon: Icons.change_history_rounded,
+                      isActive: t == Triangle,
+                      onTap: () =>
+                          _drawingController.setPaintContent = Triangle(),
+                    ),
+                  );
+              },
             ),
           ),
           const Padding(
