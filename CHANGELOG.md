@@ -60,4 +60,8 @@
 
 ## [0.3.0+1]
 
-- Breaking change, Please read the documentation carefully
+- fix readme
+
+## [0.3.0+2]
+
+- fix readme
