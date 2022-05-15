@@ -23,12 +23,12 @@ Flutter 画板
 
 * 基础功能预览  
 
-<img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/0.3.0/preview/pre1.gif" height=300>
-<img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/0.3.0/preview/pre2.gif" height=300>
-<img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/0.3.0/preview/pre3.gif" height=300>
-<img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/0.3.0/preview/pre4.gif" height=300>
-<img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/0.3.0/preview/pre5.gif" height=300>
-<img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/0.3.0/preview/pre6.gif" height=300>  
+<img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/master/preview/pre1.gif" height=300>
+<img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/master/preview/pre2.gif" height=300>
+<img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/master/preview/pre3.gif" height=300>
+<img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/master/preview/pre4.gif" height=300>
+<img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/master/preview/pre5.gif" height=300>
+<img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/master/preview/pre6.gif" height=300>  
 
 &nbsp;
 
@@ -193,4 +193,4 @@ DrawingBoard(
 
 * 效果预览  
 
-<img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/0.3.0/preview/pre7.gif" height=300>
+<img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/master/preview/pre7.gif" height=300>
