@@ -57,3 +57,7 @@
 ## [0.3.0]
 
 - Breaking change, Please read the documentation carefully
+
+## [0.3.0+1]
+
+- Breaking change, Please read the documentation carefully

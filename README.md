@@ -9,9 +9,7 @@ Flutter 画板
 [![CodeFactor](https://img.shields.io/codefactor/grade/github/fluttercandies/flutter_drawing_board?logo=codefactor&logoColor=%23ffffff&style=flat-square)](https://www.codefactor.io/repository/github/fluttercandies/flutter_drawing_board)
 <a target="_blank" href="https://jq.qq.com/?_wv=1027&k=5bcc0gy"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="FlutterCandies" title="FlutterCandies"></a>
 
-> `0.3.0` 存在破坏性更新，移除了文本添加，文本的添加与编辑请移步 [![pub package](https://img.shields.io/pub/v/stack_board?logo=dart&label=stack_board&style=flat-square)](https://pub.dev/packages/stack_board)
-
-<br/>
+> `0.3.0` 存在破坏性更新，移除了文本添加，文本的添加与编辑请移步 [![pub package](https://img.shields.io/pub/v/stack_board?logo=dart&label=stack_board&style=flat-square)](https://pub.dev/packages/stack_board)  
 
 ### 特性
 * 基础绘制
@@ -19,13 +17,9 @@ Flutter 画板
 * 画布旋转、多指移动缩放
 * 撤销、重做
 
-<br/>
-
 ### 预览
 
 * 在线体验:[https://painter.liugl.cn](https://painter.liugl.cn)  
-
-<br/>
 
 * 基础功能预览  
 
@@ -34,12 +28,11 @@ Flutter 画板
 <img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/0.3.0/preview/pre3.gif" height=300>
 <img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/0.3.0/preview/pre4.gif" height=300>
 <img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/0.3.0/preview/pre5.gif" height=300>
-<img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/0.3.0/preview/pre6.gif" height=300>
+<img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/0.3.0/preview/pre6.gif" height=300>  
 
-<br/>
+&nbsp;
 
 ### 使用方法  
-<br/>
 
 * 创建
 
