@@ -126,7 +126,7 @@ _drawingController.clear();
 
 ### 自定义绘制
 
-* 创建继承自 [PaintContent](https://github.com/fluttercandies/flutter_drawing_board/blob/0.3.1/lib/src/paint_contents/paint_content.dart) 的自定义绘制类 (以三角形为例)
+* 创建继承自 [PaintContent](https://github.com/fluttercandies/flutter_drawing_board/blob/master/lib/src/paint_contents/paint_content.dart) 的自定义绘制类 (以三角形为例)
 
 ```dart
 /// 自定义绘制三角形
