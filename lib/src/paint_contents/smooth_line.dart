@@ -55,7 +55,8 @@ class SmoothLine extends PaintContent {
         Path()
           ..moveTo(points[i - 1].dx, points[i - 1].dy)
           ..lineTo(points[i].dx, points[i].dy),
-        paint.copyWith(strokeWidth: strokeWidthList[i]),
+        paint.copyWith(
+            strokeWidth: strokeWidthList[i], blendMode: BlendMode.src),
       );
     }
   }

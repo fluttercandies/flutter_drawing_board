@@ -65,3 +65,7 @@
 ## [0.3.0+2]
 
 - fix readme
+
+## [0.3.1]
+
+- fix SmoothLine color
