@@ -32,6 +32,19 @@ class DrawingBoard extends StatefulWidget {
     this.onPanEnd,
     this.clipBehavior = Clip.antiAlias,
     this.defaultToolsBuilder,
+    this.boardClipBehavior = Clip.hardEdge,
+    this.boardAlignPanAxis = false,
+    this.boardBoundaryMargin,
+    this.boardConstrained = true,
+    this.maxScale = 20,
+    this.minScale = 0.2,
+    this.boardPanEnabled = true,
+    this.boardScaleEnabled = true,
+    this.boardScaleFactor = 200.0,
+    this.onInteractionEnd,
+    this.onInteractionStart,
+    this.onInteractionUpdate,
+    this.transformationController,
   }) : super(key: key);
 
   @override
@@ -62,6 +75,21 @@ class DrawingBoard extends StatefulWidget {
   final Clip clipBehavior;
 
   final DefaultToolsBuilder? defaultToolsBuilder;
+
+  /// 缩放板属性
+  final Clip boardClipBehavior;
+  final bool boardAlignPanAxis;
+  final EdgeInsets? boardBoundaryMargin;
+  final bool boardConstrained;
+  final double maxScale;
+  final double minScale;
+  final void Function(ScaleEndDetails)? onInteractionEnd;
+  final void Function(ScaleStartDetails)? onInteractionStart;
+  final void Function(ScaleUpdateDetails)? onInteractionUpdate;
+  final bool boardPanEnabled;
+  final bool boardScaleEnabled;
+  final double boardScaleFactor;
+  final TransformationController? transformationController;
 
   /// 默认工具项列表
   static List<DefToolItem> defaultTools(
@@ -121,9 +149,20 @@ class _DrawingBoardState extends State<DrawingBoard>
       child: Center(child: AspectRatio(aspectRatio: 1, child: _buildBoard)),
       builder: (_, DrawConfig dc, Widget? child) {
         return InteractiveViewer(
-          maxScale: 20,
-          minScale: 0.2,
-          boundaryMargin: EdgeInsets.all(MediaQuery.of(context).size.width),
+          maxScale: widget.maxScale,
+          minScale: widget.minScale,
+          boundaryMargin: widget.boardBoundaryMargin ??
+              EdgeInsets.all(MediaQuery.of(context).size.width),
+          clipBehavior: widget.boardClipBehavior,
+          alignPanAxis: widget.boardAlignPanAxis,
+          constrained: widget.boardConstrained,
+          onInteractionStart: widget.onInteractionStart,
+          onInteractionUpdate: widget.onInteractionUpdate,
+          onInteractionEnd: widget.onInteractionEnd,
+          scaleFactor: widget.boardScaleFactor,
+          panEnabled: widget.boardPanEnabled,
+          scaleEnabled: widget.boardScaleEnabled,
+          transformationController: widget.transformationController,
           child: child!,
         );
       },
