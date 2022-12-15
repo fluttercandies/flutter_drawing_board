@@ -5,8 +5,12 @@ import 'package:flutter/painting.dart';
 abstract class PaintContent {
   PaintContent();
 
+  PaintContent.paint(this.paint);
+
   /// 画笔
   late Paint paint;
+
+  PaintContent fromJson(Map<String, dynamic> data);
 
   /// 复制实例，避免对象传递
   PaintContent copy();
@@ -22,4 +26,6 @@ abstract class PaintContent {
 
   /// 开始绘制
   void startDraw(Offset startPoint);
+
+  Map<String, dynamic> toJson();
 }

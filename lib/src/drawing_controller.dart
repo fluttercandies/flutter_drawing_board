@@ -126,8 +126,7 @@ class DrawingController {
     _brushPrecision = 0.4;
     realPainter = _RePaint();
     painter = _RePaint();
-    drawConfig = SafeValueNotifier<DrawConfig>(
-        config ?? DrawConfig.def(contentType: SimpleLine));
+    drawConfig = SafeValueNotifier<DrawConfig>(config ?? DrawConfig.def(contentType: SimpleLine));
     setPaintContent = content ?? SimpleLine();
   }
 
@@ -216,15 +215,13 @@ class DrawingController {
   set setPaintContent(PaintContent content) {
     content.paint = drawConfig.value.paint;
     _paintContent = content;
-    drawConfig.value =
-        drawConfig.value.copyWith(contentType: content.runtimeType);
+    drawConfig.value = drawConfig.value.copyWith(contentType: content.runtimeType);
   }
 
   /// * 旋转画布
   /// * 设置角度
   void turn() {
-    drawConfig.value =
-        drawConfig.value.copyWith(angle: (drawConfig.value.angle + 1) % 4);
+    drawConfig.value = drawConfig.value.copyWith(angle: (drawConfig.value.angle + 1) % 4);
   }
 
   /// 开始绘制
@@ -284,15 +281,17 @@ class DrawingController {
   /// 获取图片数据
   Future<ByteData?> getImageData() async {
     try {
-      final RenderRepaintBoundary boundary = painterKey.currentContext!
-          .findRenderObject() as RenderRepaintBoundary;
-      final ui.Image image =
-          await boundary.toImage(pixelRatio: ui.window.devicePixelRatio);
+      final RenderRepaintBoundary boundary = painterKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+      final ui.Image image = await boundary.toImage(pixelRatio: ui.window.devicePixelRatio);
       return await image.toByteData(format: ui.ImageByteFormat.png);
     } catch (e) {
       print('获取图片数据出错:$e');
       return null;
     }
+  }
+
+  List<Map<String, dynamic>> getJsonList() {
+    return _history.map((PaintContent e) => e.toJson()).toList();
   }
 
   /// 刷新表层画板

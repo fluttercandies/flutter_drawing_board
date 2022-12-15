@@ -1,4 +1,6 @@
 import 'package:flutter/painting.dart';
+import 'package:flutter_drawing_board/src/paint_extension/ex_offset.dart';
+import 'package:flutter_drawing_board/src/paint_extension/ex_paint.dart';
 
 import 'paint_content.dart';
 
@@ -8,6 +10,16 @@ class Circle extends PaintContent {
     this.isEllipse = false,
     this.startFromCenter = true,
   });
+
+  Circle.fromJson({
+    this.isEllipse = false,
+    this.startFromCenter = true,
+    required this.center,
+    required this.radius,
+    required this.startPoint,
+    required this.endPoint,
+    required Paint paint,
+  }) : super.paint(paint);
 
   /// 是否为椭圆
   final bool isEllipse;
@@ -36,8 +48,7 @@ class Circle extends PaintContent {
   @override
   void drawing(Offset nowPoint) {
     endPoint = nowPoint;
-    center = Offset(
-        (startPoint.dx + endPoint.dx) / 2, (startPoint.dy + endPoint.dy) / 2);
+    center = Offset((startPoint.dx + endPoint.dx) / 2, (startPoint.dy + endPoint.dy) / 2);
     radius = (endPoint - (startFromCenter ? startPoint : center)).distance;
   }
 
@@ -51,4 +62,31 @@ class Circle extends PaintContent {
 
   @override
   Circle copy() => Circle(isEllipse: isEllipse);
+
+  @override
+  Circle fromJson(Map<String, dynamic> data) {
+    return Circle.fromJson(
+      isEllipse: data['isEllipse'] as bool,
+      startFromCenter: data['startFromCenter'] as bool,
+      center: jsonToOffset(data['center'] as Map<String, dynamic>),
+      radius: data['radius'] as double,
+      startPoint: jsonToOffset(data['startPoint'] as Map<String, dynamic>),
+      endPoint: jsonToOffset(data['endPoint'] as Map<String, dynamic>),
+      paint: jsonToPaint(data['paint'] as Map<String, dynamic>),
+    );
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'type': 'Circle',
+      'isEllipse': isEllipse,
+      'startFromCenter': startFromCenter,
+      'center': center.toJson(),
+      'radius': radius,
+      'startPoint': startPoint.toJson(),
+      'endPoint': endPoint.toJson(),
+      'paint': paint.toJson(),
+    };
+  }
 }

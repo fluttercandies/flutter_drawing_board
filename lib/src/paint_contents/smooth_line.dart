@@ -1,5 +1,6 @@
 import 'dart:ui';
-import 'package:flutter_drawing_board/src/helper/ex_paint.dart';
+import 'package:flutter_drawing_board/src/paint_extension/ex_offset.dart';
+import 'package:flutter_drawing_board/src/paint_extension/ex_paint.dart';
 import 'paint_content.dart';
 
 /// 笔触线条
@@ -8,6 +9,13 @@ class SmoothLine extends PaintContent {
     /// 绘制影响因子，值越小线条越平滑，粗细变化越慢
     this.brushPrecision = 0.4,
   });
+
+  SmoothLine.fromJson({
+    this.brushPrecision = 0.4,
+    required this.points,
+    required this.strokeWidthList,
+    required Paint paint,
+  }) : super.paint(paint);
 
   final double brushPrecision;
 
@@ -55,12 +63,32 @@ class SmoothLine extends PaintContent {
         Path()
           ..moveTo(points[i - 1].dx, points[i - 1].dy)
           ..lineTo(points[i].dx, points[i].dy),
-        paint.copyWith(
-            strokeWidth: strokeWidthList[i], blendMode: BlendMode.src),
+        paint.copyWith(strokeWidth: strokeWidthList[i], blendMode: BlendMode.src),
       );
     }
   }
 
   @override
-  PaintContent copy() => SmoothLine(brushPrecision: brushPrecision);
+  SmoothLine copy() => SmoothLine(brushPrecision: brushPrecision);
+
+  @override
+  SmoothLine fromJson(Map<String, dynamic> data) {
+    return SmoothLine.fromJson(
+      brushPrecision: data['brushPrecision'] as double,
+      points: (data['points'] as List<dynamic>).map((dynamic e) => jsonToOffset(e as Map<String, dynamic>)).toList(),
+      strokeWidthList: (data['strokeWidthList'] as List<dynamic>).map((dynamic e) => e as double).toList(),
+      paint: jsonToPaint(data['paint'] as Map<String, dynamic>),
+    );
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'type': 'SmoothLine',
+      'brushPrecision': brushPrecision,
+      'points': points.map((Offset e) => e.toJson()).toList(),
+      'strokeWidthList': strokeWidthList,
+      'paint': paint.toJson(),
+    };
+  }
 }

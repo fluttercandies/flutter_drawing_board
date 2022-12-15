@@ -1,4 +1,6 @@
 import 'package:flutter/painting.dart';
+import 'package:flutter_drawing_board/src/draw_path/draw_path.dart';
+import 'package:flutter_drawing_board/src/paint_extension/ex_paint.dart';
 
 import 'paint_content.dart';
 
@@ -6,20 +8,40 @@ import 'paint_content.dart';
 class SimpleLine extends PaintContent {
   SimpleLine();
 
+  SimpleLine.fromJson({
+    required this.path,
+    required Paint paint,
+  }) : super.paint(paint);
+
   /// 绘制路径
-  Path path = Path();
+  DrawPath path = DrawPath();
 
   @override
-  void startDraw(Offset startPoint) =>
-      path.moveTo(startPoint.dx, startPoint.dy);
+  void startDraw(Offset startPoint) => path.moveTo(startPoint.dx, startPoint.dy);
 
   @override
   void drawing(Offset nowPoint) => path.lineTo(nowPoint.dx, nowPoint.dy);
 
   @override
-  void draw(Canvas canvas, Size size, bool deeper) =>
-      canvas.drawPath(path, paint);
+  void draw(Canvas canvas, Size size, bool deeper) => canvas.drawPath(path, paint);
 
   @override
   SimpleLine copy() => SimpleLine();
+
+  @override
+  SimpleLine fromJson(Map<String, dynamic> data) {
+    return SimpleLine.fromJson(
+      path: DrawPath.fromJson(data['path'] as Map<String, dynamic>),
+      paint: jsonToPaint(data['paint'] as Map<String, dynamic>),
+    );
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'type': 'SimpleLine',
+      'path': path.toJson(),
+      'paint': paint.toJson(),
+    };
+  }
 }

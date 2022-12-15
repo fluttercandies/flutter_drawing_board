@@ -69,3 +69,10 @@
 ## [0.3.1]
 
 - fix SmoothLine color
+
+## [0.4.0]
+
+- Add PaintContent fromJson()
+- Add PaintContent toJson()
+- Add Paint toJson()
+- Add Tool of style serialization 
