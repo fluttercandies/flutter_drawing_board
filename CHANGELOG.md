@@ -76,3 +76,7 @@
 - Add PaintContent toJson()
 - Add Paint toJson()
 - Add Tool of style serialization 
+
+## [0.4.0+1]
+
+- Complete the InteractiveViewer parameters
