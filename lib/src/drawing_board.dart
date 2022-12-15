@@ -4,7 +4,6 @@ import 'color_pic_btn.dart';
 import 'drawing_controller.dart';
 
 import 'helper/ex_value_builder.dart';
-import 'helper/safe_state.dart';
 import 'paint_contents/circle.dart';
 import 'paint_contents/eraser.dart';
 import 'paint_contents/rectangle.dart';
@@ -20,16 +19,16 @@ typedef DefaultToolsBuilder = List<DefToolItem> Function(
 );
 
 /// 画板
-class DrawingBoard extends StatefulWidget {
+class DrawingBoard extends StatelessWidget {
   const DrawingBoard({
     Key? key,
     required this.background,
     this.controller,
     this.showDefaultActions = false,
     this.showDefaultTools = false,
-    this.onPanStart,
-    this.onPanUpdate,
-    this.onPanEnd,
+    this.onPointerDown,
+    this.onPointerMove,
+    this.onPointerUp,
     this.clipBehavior = Clip.antiAlias,
     this.defaultToolsBuilder,
     this.boardClipBehavior = Clip.hardEdge,
@@ -47,9 +46,6 @@ class DrawingBoard extends StatefulWidget {
     this.transformationController,
   }) : super(key: key);
 
-  @override
-  _DrawingBoardState createState() => _DrawingBoardState();
-
   /// 画板背景控件
   final Widget background;
 
@@ -63,17 +59,18 @@ class DrawingBoard extends StatefulWidget {
   final bool showDefaultTools;
 
   /// 开始拖动
-  final Function(DragStartDetails dsd)? onPanStart;
+  final Function(PointerDownEvent pde)? onPointerDown;
 
   /// 正在拖动
-  final Function(DragUpdateDetails dud)? onPanUpdate;
+  final Function(PointerMoveEvent pme)? onPointerMove;
 
   /// 结束拖动
-  final Function(DragEndDetails ded)? onPanEnd;
+  final Function(PointerUpEvent pue)? onPointerUp;
 
   /// 边缘裁剪方式
   final Clip clipBehavior;
 
+  /// 默认工具栏构建器
   final DefaultToolsBuilder? defaultToolsBuilder;
 
   /// 缩放板属性
@@ -122,72 +119,62 @@ class DrawingBoard extends StatefulWidget {
               controller.setPaintContent = Eraser(color: Colors.white)),
     ];
   }
-}
 
-class _DrawingBoardState extends State<DrawingBoard>
-    with SafeState<DrawingBoard> {
-  ///画板控制器
-  late DrawingController _drawingController;
-
-  @override
-  void initState() {
-    super.initState();
-    _drawingController = widget.controller ?? DrawingController();
-  }
-
-  @override
-  void dispose() {
-    _drawingController.dispose();
-    super.dispose();
-  }
+  DrawingController get _controller => controller ?? DrawingController.def();
 
   @override
   Widget build(BuildContext context) {
     Widget content = ExValueBuilder<DrawConfig>(
-      valueListenable: _drawingController.drawConfig,
+      valueListenable: _controller.drawConfig,
       shouldRebuild: (DrawConfig p, DrawConfig n) => p.angle != n.angle,
-      child: Center(child: AspectRatio(aspectRatio: 1, child: _buildBoard)),
       builder: (_, DrawConfig dc, Widget? child) {
         return InteractiveViewer(
-          maxScale: widget.maxScale,
-          minScale: widget.minScale,
-          boundaryMargin: widget.boardBoundaryMargin ??
+          maxScale: maxScale,
+          minScale: minScale,
+          boundaryMargin: boardBoundaryMargin ??
               EdgeInsets.all(MediaQuery.of(context).size.width),
-          clipBehavior: widget.boardClipBehavior,
-          alignPanAxis: widget.boardAlignPanAxis,
-          constrained: widget.boardConstrained,
-          onInteractionStart: widget.onInteractionStart,
-          onInteractionUpdate: widget.onInteractionUpdate,
-          onInteractionEnd: widget.onInteractionEnd,
-          scaleFactor: widget.boardScaleFactor,
-          panEnabled: widget.boardPanEnabled,
-          scaleEnabled: widget.boardScaleEnabled,
-          transformationController: widget.transformationController,
+          clipBehavior: boardClipBehavior,
+          alignPanAxis: boardAlignPanAxis,
+          constrained: boardConstrained,
+          onInteractionStart: onInteractionStart,
+          onInteractionUpdate: onInteractionUpdate,
+          onInteractionEnd: onInteractionEnd,
+          scaleFactor: boardScaleFactor,
+          panEnabled: boardPanEnabled,
+          scaleEnabled: boardScaleEnabled,
+          transformationController: transformationController,
           child: child!,
         );
       },
+      child: Center(child: AspectRatio(aspectRatio: 1, child: _buildBoard)),
     );
 
-    if (widget.showDefaultActions || widget.showDefaultTools) {
+    if (showDefaultActions || showDefaultTools) {
       content = Column(
         children: <Widget>[
           Expanded(child: content),
-          if (widget.showDefaultActions) _buildDefaultActions,
-          if (widget.showDefaultTools) _buildDefaultTools,
+          if (showDefaultActions) _buildDefaultActions,
+          if (showDefaultTools) _buildDefaultTools,
         ],
       );
     }
 
-    return content;
+    return Listener(
+      onPointerDown: (PointerDownEvent pde) =>
+          _controller.addFingerCount(pde.localPosition),
+      onPointerUp: (PointerUpEvent pue) =>
+          _controller.reduceFingerCount(pue.localPosition),
+      child: content,
+    );
   }
 
   /// 构建画板
   Widget get _buildBoard {
     return Center(
       child: RepaintBoundary(
-        key: _drawingController.painterKey,
+        key: _controller.painterKey,
         child: ExValueBuilder<DrawConfig>(
-          valueListenable: _drawingController.drawConfig,
+          valueListenable: _controller.drawConfig,
           shouldRebuild: (DrawConfig p, DrawConfig n) => p.angle != n.angle,
           child: Stack(children: <Widget>[_buildImage, _buildPainter]),
           builder: (_, DrawConfig dc, Widget? child) {
@@ -199,20 +186,16 @@ class _DrawingBoardState extends State<DrawingBoard>
   }
 
   /// 构建背景
-  Widget get _buildImage => widget.background;
+  Widget get _buildImage => background;
 
   /// 构建绘制层
   Widget get _buildPainter {
-    return Positioned(
-      top: 0,
-      bottom: 0,
-      left: 0,
-      right: 0,
+    return Positioned.fill(
       child: Painter(
-        drawingController: _drawingController,
-        onPanStart: widget.onPanStart,
-        onPanUpdate: widget.onPanUpdate,
-        onPanEnd: widget.onPanEnd,
+        drawingController: _controller,
+        onPointerDown: onPointerDown,
+        onPointerMove: onPointerMove,
+        onPointerUp: onPointerUp,
       ),
     );
   }
@@ -230,7 +213,7 @@ class _DrawingBoardState extends State<DrawingBoard>
               height: 24,
               width: 160,
               child: ExValueBuilder<DrawConfig>(
-                valueListenable: _drawingController.drawConfig,
+                valueListenable: _controller.drawConfig,
                 shouldRebuild: (DrawConfig p, DrawConfig n) =>
                     p.strokeWidth != n.strokeWidth,
                 builder: (_, DrawConfig dc, ___) {
@@ -239,24 +222,24 @@ class _DrawingBoardState extends State<DrawingBoard>
                     max: 50,
                     min: 1,
                     onChanged: (double v) =>
-                        _drawingController.setStyle(strokeWidth: v),
+                        _controller.setStyle(strokeWidth: v),
                   );
                 },
               ),
             ),
-            ColorPicBtn(controller: _drawingController),
+            ColorPicBtn(controller: _controller),
             IconButton(
                 icon: const Icon(CupertinoIcons.arrow_turn_up_left),
-                onPressed: () => _drawingController.undo()),
+                onPressed: () => _controller.undo()),
             IconButton(
                 icon: const Icon(CupertinoIcons.arrow_turn_up_right),
-                onPressed: () => _drawingController.redo()),
+                onPressed: () => _controller.redo()),
             IconButton(
                 icon: const Icon(CupertinoIcons.rotate_right),
-                onPressed: () => _drawingController.turn()),
+                onPressed: () => _controller.turn()),
             IconButton(
                 icon: const Icon(CupertinoIcons.trash),
-                onPressed: () => _drawingController.clear()),
+                onPressed: () => _controller.clear()),
           ],
         ),
       ),
@@ -271,16 +254,15 @@ class _DrawingBoardState extends State<DrawingBoard>
         scrollDirection: Axis.horizontal,
         padding: EdgeInsets.zero,
         child: ExValueBuilder<DrawConfig>(
-          valueListenable: _drawingController.drawConfig,
+          valueListenable: _controller.drawConfig,
           shouldRebuild: (DrawConfig p, DrawConfig n) =>
               p.contentType != n.contentType,
           builder: (_, DrawConfig dc, ___) {
             final Type currType = dc.contentType;
 
             return Row(
-              children: (widget.defaultToolsBuilder
-                          ?.call(currType, _drawingController) ??
-                      DrawingBoard.defaultTools(currType, _drawingController))
+              children: (defaultToolsBuilder?.call(currType, _controller) ??
+                      DrawingBoard.defaultTools(currType, _controller))
                   .map((DefToolItem item) => _DefToolItemWidget(item: item))
                   .toList(),
             );

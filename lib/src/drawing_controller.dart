@@ -12,6 +12,7 @@ class DrawConfig {
   DrawConfig({
     required this.contentType,
     this.angle = 0,
+    this.fingerCount = 0,
     this.blendMode = BlendMode.srcOver,
     this.color = Colors.red,
     this.colorFilter,
@@ -30,6 +31,7 @@ class DrawConfig {
   DrawConfig.def({
     required this.contentType,
     this.angle = 0,
+    this.fingerCount = 0,
     this.blendMode = BlendMode.srcOver,
     this.color = Colors.red,
     this.colorFilter,
@@ -49,6 +51,8 @@ class DrawConfig {
   final int angle;
 
   final Type contentType;
+
+  final int fingerCount;
 
   /// Paint相关
   final BlendMode blendMode;
@@ -97,6 +101,7 @@ class DrawConfig {
     double? strokeWidth,
     PaintingStyle? style,
     int? angle,
+    int? fingerCount,
   }) {
     return DrawConfig(
       contentType: contentType ?? this.contentType,
@@ -114,13 +119,17 @@ class DrawConfig {
       strokeJoin: strokeJoin ?? this.strokeJoin,
       strokeWidth: strokeWidth ?? this.strokeWidth,
       style: style ?? this.style,
+      fingerCount: fingerCount ?? this.fingerCount,
     );
   }
 }
 
 /// 绘制控制器
 class DrawingController {
-  DrawingController({DrawConfig? config, PaintContent? content}) {
+  DrawingController({
+    DrawConfig? config,
+    PaintContent? content,
+  }) : tag = '' {
     _history = <PaintContent>[];
     _currentIndex = 0;
     _brushPrecision = 0.4;
@@ -130,6 +139,30 @@ class DrawingController {
         config ?? DrawConfig.def(contentType: SimpleLine));
     setPaintContent = content ?? SimpleLine();
   }
+
+  DrawingController._def({
+    DrawConfig? config,
+    PaintContent? content,
+  }) : tag = 'def' {
+    _history = <PaintContent>[];
+    _currentIndex = 0;
+    _brushPrecision = 0.4;
+    realPainter = _RePaint();
+    painter = _RePaint();
+    drawConfig = SafeValueNotifier<DrawConfig>(
+        config ?? DrawConfig.def(contentType: SimpleLine));
+    setPaintContent = content ?? SimpleLine();
+  }
+
+  factory DrawingController.def() => _defController;
+
+  static final DrawingController _defController = DrawingController._def();
+
+  /// 控制器标识
+  final String tag;
+
+  /// 绘制开始点
+  Offset? _startPoint;
 
   /// 画板数据Key
   late GlobalKey painterKey = GlobalKey();
@@ -177,6 +210,27 @@ class DrawingController {
 
   /// 获取当前颜色
   Color get getColor => drawConfig.value.color;
+
+  /// 能否进行绘制
+  bool get couldDraw => drawConfig.value.fingerCount <= 1;
+
+  /// 能否开始进行绘制
+  bool couldStart(int count) => drawConfig.value.fingerCount + count <= 1;
+
+  /// 开始绘制点
+  Offset? get startPoint => _startPoint;
+
+  /// 手指落下
+  void addFingerCount(Offset offset) {
+    drawConfig.value = drawConfig.value
+        .copyWith(fingerCount: drawConfig.value.fingerCount + 1);
+  }
+
+  /// 手指抬起
+  void reduceFingerCount(Offset offset) {
+    drawConfig.value = drawConfig.value
+        .copyWith(fingerCount: drawConfig.value.fingerCount - 1);
+  }
 
   /// 设置绘制样式
   void setStyle({
@@ -243,9 +297,16 @@ class DrawingController {
 
   /// 开始绘制
   void startDraw(Offset startPoint) {
+    _startPoint = startPoint;
     currentContent = _paintContent.copy();
     currentContent?.paint = drawConfig.value.paint;
     currentContent?.startDraw(startPoint);
+  }
+
+  /// 取消绘制
+  void cancelDraw() {
+    _startPoint = null;
+    currentContent = null;
   }
 
   /// 正在绘制
@@ -256,6 +317,7 @@ class DrawingController {
 
   /// 结束绘制
   void endDraw() {
+    _startPoint = null;
     final int hisLen = _history.length;
 
     if (hisLen > _currentIndex) {
@@ -324,9 +386,15 @@ class DrawingController {
     realPainter?._refresh();
   }
 
+  /// 是否有相同的Tag
+  bool isTagSameWith(DrawingController controller) => tag == controller.tag;
+
   /// 销毁控制器
   void dispose() {
     if (!_mounted) return;
+
+    if (tag == 'def')
+      throw Exception('The default controller cannot be disposed');
 
     drawConfig.dispose();
     realPainter?.dispose();

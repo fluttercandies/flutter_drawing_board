@@ -231,6 +231,8 @@ class _MyHomePageState extends State<MyHomePage> {
         children: <Widget>[
           Expanded(
             child: DrawingBoard(
+              // boardPanEnabled: false,
+              // boardScaleEnabled: false,
               controller: _drawingController,
               background:
                   Container(width: 400, height: 400, color: Colors.white),

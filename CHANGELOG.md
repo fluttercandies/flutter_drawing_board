@@ -80,3 +80,9 @@
 ## [0.4.0+1]
 
 - Complete the InteractiveViewer parameters
+
+## [0.4.1]
+
+- Improved response time
+- Fix [#19](https://github.com/fluttercandies/flutter_drawing_board/issues/19)
+- Optimized multi-finger operation
