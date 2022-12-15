@@ -8,11 +8,19 @@ import 'paint_content.dart';
 class Eraser extends PaintContent {
   Eraser({this.color = const Color(0xff000000)});
 
-  Eraser.fromJson({
+  Eraser.data({
     required this.color,
     required this.path,
     required Paint paint,
   }) : super.paint(paint);
+
+  factory Eraser.fromJson(Map<String, dynamic> data) {
+    return Eraser.data(
+      color: Color(data['color'] as int),
+      path: DrawPath.fromJson(data['path'] as Map<String, dynamic>),
+      paint: jsonToPaint(data['paint'] as Map<String, dynamic>),
+    );
+  }
 
   /// 擦除路径
   DrawPath path = DrawPath();
@@ -36,15 +44,6 @@ class Eraser extends PaintContent {
 
   @override
   Eraser copy() => Eraser(color: color);
-
-  @override
-  Eraser fromJson(Map<String, dynamic> data) {
-    return Eraser.fromJson(
-      color: Color(data['color'] as int),
-      path: DrawPath.fromJson(data['path'] as Map<String, dynamic>),
-      paint: jsonToPaint(data['paint'] as Map<String, dynamic>),
-    );
-  }
 
   @override
   Map<String, dynamic> toJson() {

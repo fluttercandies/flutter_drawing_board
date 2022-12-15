@@ -9,7 +9,7 @@ Flutter 画板
 [![CodeFactor](https://img.shields.io/codefactor/grade/github/fluttercandies/flutter_drawing_board?logo=codefactor&logoColor=%23ffffff&style=flat-square)](https://www.codefactor.io/repository/github/fluttercandies/flutter_drawing_board)
 <a target="_blank" href="https://jq.qq.com/?_wv=1027&k=5bcc0gy"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="FlutterCandies" title="FlutterCandies"></a>
 
-> `0.3.0` 存在破坏性更新，移除了文本添加，文本的添加与编辑请移步 [![pub package](https://img.shields.io/pub/v/stack_board?logo=dart&label=stack_board&style=flat-square)](https://pub.dev/packages/stack_board)  
+> `0.3.0` 后存在破坏性更新，移除了文本添加，文本的添加与编辑请移步 [![pub package](https://img.shields.io/pub/v/stack_board?logo=dart&label=stack_board&style=flat-square)](https://pub.dev/packages/stack_board)  
 
 ### 特性
 * 基础绘制
@@ -65,6 +65,125 @@ DrawingBoard(
 /// 获取画板数据
 Future<void> _getImageData() async {
   print((await _drawingController.getImageData()).buffer.asInt8List());
+}
+```
+
+* 通过 DrawingController.getJsonList 获取内容 Json
+
+```dart
+import 'package:flutter_drawing_board/flutter_drawing_board.dart';
+
+final DrawingController _drawingController = DrawingController();
+
+DrawingBoard(
+  controller: _drawingController,
+  background: Container(width: 400, height: 400, color: Colors.white),
+  showDefaultActions: true,
+  showDefaultTools: true,
+),
+
+/// 获取内容 Json
+Future<void> _getJsonList() async {
+  print(const JsonEncoder.withIndent('  ').convert(_drawingController.getJsonList()));
+}
+```
+<details>
+  <summary>View Json</summary>
+
+```json
+[
+  {
+    "type": "StraightLine",
+    "startPoint": {
+      "dx": 114.5670061088183,
+      "dy": 117.50547159585983
+    },
+    "endPoint": {
+      "dx": 252.9362813512929,
+      "dy": 254.91849554320638
+    },
+    "paint": {
+      "blendMode": 3,
+      "color": 4294198070,
+      "filterQuality": 3,
+      "invertColors": false,
+      "isAntiAlias": false,
+      "strokeCap": 1,
+      "strokeJoin": 1,
+      "strokeWidth": 4.0,
+      "style": 1
+    }
+  },
+  {
+    "type": "StraightLine",
+    "startPoint": {
+      "dx": 226.6379349225167,
+      "dy": 152.11430225316613
+    },
+    "endPoint": {
+      "dx": 135.67632523940733,
+      "dy": 210.35948249064901
+    },
+    "paint": {
+      "blendMode": 3,
+      "color": 4294198070,
+      "filterQuality": 3,
+      "invertColors": false,
+      "isAntiAlias": false,
+      "strokeCap": 1,
+      "strokeJoin": 1,
+      "strokeWidth": 4.0,
+      "style": 1
+    }
+  }
+]
+```
+</details>
+
+
+* 通过 `Json` 添加绘制内容
+
+```dart
+const Map<String, dynamic> _testLine1 = <String, dynamic>{
+  'type': 'StraightLine',
+  'startPoint': <String, dynamic>{'dx': 68.94337550070736, 'dy': 62.05980083656557},
+  'endPoint': <String, dynamic>{'dx': 277.1373386828114, 'dy': 277.32029957032194},
+  'paint': <String, dynamic>{
+    'blendMode': 3,
+    'color': 4294198070,
+    'filterQuality': 3,
+    'invertColors': false,
+    'isAntiAlias': false,
+    'strokeCap': 1,
+    'strokeJoin': 1,
+    'strokeWidth': 4.0,
+    'style': 1
+  }
+};
+
+const Map<String, dynamic> _testLine2 = <String, dynamic>{
+  'type': 'StraightLine',
+  'startPoint': <String, dynamic>{'dx': 106.35164817830423, 'dy': 255.9575653134524},
+  'endPoint': <String, dynamic>{'dx': 292.76034659254094, 'dy': 92.125586665872},
+  'paint': <String, dynamic>{
+    'blendMode': 3,
+    'color': 4294198070,
+    'filterQuality': 3,
+    'invertColors': false,
+    'isAntiAlias': false,
+    'strokeCap': 1,
+    'strokeJoin': 1,
+    'strokeWidth': 4.0,
+    'style': 1
+  }
+};
+
+  ...
+
+/// 添加Json测试内容
+void _addTestLine() {
+  _drawingController.addContent(StraightLine.fromJson(_testLine1));
+  _drawingController.addContents(<PaintContent>[StraightLine.fromJson(_testLine2)]);
 }
 ```
 
@@ -133,6 +252,24 @@ _drawingController.clear();
 class Triangle extends PaintContent {
   Triangle();
 
+  Triangle.data({
+    required this.startPoint,
+    required this.A,
+    required this.B,
+    required this.C,
+    required Paint paint,
+  }) : super.paint(paint);
+
+  factory Triangle.fromJson(Map<String, dynamic> data) {
+    return Triangle.data(
+      startPoint: jsonToOffset(data['startPoint'] as Map<String, dynamic>),
+      A: jsonToOffset(data['A'] as Map<String, dynamic>),
+      B: jsonToOffset(data['B'] as Map<String, dynamic>),
+      C: jsonToOffset(data['C'] as Map<String, dynamic>),
+      paint: jsonToPaint(data['paint'] as Map<String, dynamic>),
+    );
+  }
+
   Offset startPoint = Offset.zero;
 
   Offset A = Offset.zero;
@@ -162,6 +299,17 @@ class Triangle extends PaintContent {
 
   @override
   Triangle copy() => Triangle();
+
+  @override
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'startPoint': startPoint.toJson(),
+      'A': A.toJson(),
+      'B': B.toJson(),
+      'C': C.toJson(),
+      'paint': paint.toJson(),
+    };
+  }
 }
 ```
 

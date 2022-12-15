@@ -25,7 +25,8 @@ ImageFilter? stringToImageFilter(String data) {
     final ImageFilter filter = ImageFilter.blur(
       sigmaX: double.parse(sigmaX),
       sigmaY: double.parse(sigmaY),
-      tileMode: ExEnum.tryParse<TileMode>(TileMode.values, mode) ?? TileMode.clamp,
+      tileMode:
+          ExEnum.tryParse<TileMode>(TileMode.values, mode) ?? TileMode.clamp,
     );
 
     return filter;
@@ -61,14 +62,18 @@ ImageFilter? stringToImageFilter(String data) {
   } else if (data.startsWith('ImageFilter.matrix')) {
     final String matrix = data.split('(')[1].split(')')[0];
 
-    final List<double> matrixListData = matrix.split(',').map((String e) => double.parse(e)).toList();
+    final List<double> matrixListData =
+        matrix.split(',').map((String e) => double.parse(e)).toList();
     final Float64List matrixList = Float64List.fromList(matrixListData);
 
-    final String filterQuality = data.split(')')[1].split(',')[1].trim().split(')')[0];
+    final String filterQuality =
+        data.split(')')[1].split(',')[1].trim().split(')')[0];
 
     return ImageFilter.matrix(
       matrixList,
-      filterQuality: ExEnum.tryParse<FilterQuality>(FilterQuality.values, filterQuality) ?? FilterQuality.low,
+      filterQuality:
+          ExEnum.tryParse<FilterQuality>(FilterQuality.values, filterQuality) ??
+              FilterQuality.low,
     );
   }
 

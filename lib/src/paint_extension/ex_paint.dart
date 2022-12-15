@@ -60,12 +60,18 @@ Paint jsonToPaint(Map<String, dynamic> data) {
   return Paint()
     ..blendMode = BlendMode.values[data['blendMode'] as int]
     ..color = Color(data['color'] as int)
-    ..colorFilter = data['colorFilter'] == null ? null : stringToColorFilter(data['colorFilter'] as String)
+    ..colorFilter = data['colorFilter'] == null
+        ? null
+        : stringToColorFilter(data['colorFilter'] as String)
     ..filterQuality = FilterQuality.values[data['filterQuality'] as int]
-    ..imageFilter = data['imageFilter'] == null ? null : stringToImageFilter(data['imageFilter'] as String)
+    ..imageFilter = data['imageFilter'] == null
+        ? null
+        : stringToImageFilter(data['imageFilter'] as String)
     ..invertColors = data['invertColors'] as bool
     ..isAntiAlias = data['isAntiAlias'] as bool
-    ..maskFilter = data['maskFilter'] == null ? null : stringToMaskFilter(data['maskFilter'] as String)
+    ..maskFilter = data['maskFilter'] == null
+        ? null
+        : stringToMaskFilter(data['maskFilter'] as String)
     // ..shader = data['shader'] as Shader? // 无法解析
     ..strokeCap = StrokeCap.values[data['strokeCap'] as int]
     ..strokeJoin = StrokeJoin.values[data['strokeJoin'] as int]

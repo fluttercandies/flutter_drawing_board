@@ -29,7 +29,8 @@ class DrawPath extends Path {
 
   factory DrawPath.fromJson(
     Map<String, dynamic> data, {
-    OperationStep Function(String type, Map<String, dynamic> jsonStepMap)? stepFactory,
+    OperationStep Function(String type, Map<String, dynamic> jsonStepMap)?
+        stepFactory,
   }) {
     final List<OperationStep> steps = <OperationStep>[];
 
@@ -98,7 +99,9 @@ class DrawPath extends Path {
 
     return DrawPath(
       steps: steps,
-      type: data['fillType'] == null ? null : PathFillType.values[data['fillType'] as int],
+      type: data['fillType'] == null
+          ? null
+          : PathFillType.values[data['fillType'] as int],
     );
   }
 
@@ -111,7 +114,8 @@ class DrawPath extends Path {
   }
 
   @override
-  void arcTo(Rect rect, double startAngle, double sweepAngle, bool forceMoveTo) {
+  void arcTo(
+      Rect rect, double startAngle, double sweepAngle, bool forceMoveTo) {
     steps.add(ArcTo(
       rect: rect,
       startAngle: startAngle,
@@ -147,7 +151,8 @@ class DrawPath extends Path {
   }
 
   @override
-  void cubicTo(double x1, double y1, double x2, double y2, double x3, double y3) {
+  void cubicTo(
+      double x1, double y1, double x2, double y2, double x3, double y3) {
     steps.add(CubicTo(x1, y1, x2, y2, x3, y3));
     super.cubicTo(x1, y1, x2, y2, x3, y3);
   }
@@ -172,7 +177,8 @@ class DrawPath extends Path {
     bool largeArc = false,
     bool clockwise = true,
   }) {
-    steps.add(RelativeArcToPoint(arcEndDelta, radius, rotation, largeArc, clockwise));
+    steps.add(
+        RelativeArcToPoint(arcEndDelta, radius, rotation, largeArc, clockwise));
     super.relativeArcToPoint(
       arcEndDelta,
       radius: radius,
@@ -189,7 +195,8 @@ class DrawPath extends Path {
   }
 
   @override
-  void relativeCubicTo(double x1, double y1, double x2, double y2, double x3, double y3) {
+  void relativeCubicTo(
+      double x1, double y1, double x2, double y2, double x3, double y3) {
     steps.add(RelativeCubicTo(x1, y1, x2, y2, x3, y3));
     super.relativeCubicTo(x1, y1, x2, y2, x3, y3);
   }

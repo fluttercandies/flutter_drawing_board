@@ -32,7 +32,8 @@ ColorFilter? stringToColorFilter(String data) {
   } else if (data.startsWith('ColorFilter.mode')) {
     final Color? color = stringToColor(data.split(',')[0].split('(')[1]);
     final String blendMode = data.split(',')[1].trim().split(')')[0];
-    final BlendMode? mode = ExEnum.tryParse<BlendMode>(BlendMode.values, blendMode);
+    final BlendMode? mode =
+        ExEnum.tryParse<BlendMode>(BlendMode.values, blendMode);
 
     if (color != null && mode != null) return ColorFilter.mode(color, mode);
 
@@ -40,7 +41,8 @@ ColorFilter? stringToColorFilter(String data) {
   } else if (data.startsWith('ColorFilter.matrix')) {
     final String matrix = data.split('(')[1].split(')')[0];
 
-    final List<double> matrixList = matrix.split(',').map((String e) => double.parse(e)).toList();
+    final List<double> matrixList =
+        matrix.split(',').map((String e) => double.parse(e)).toList();
 
     return ColorFilter.matrix(matrixList);
   }

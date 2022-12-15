@@ -10,8 +10,6 @@ abstract class PaintContent {
   /// 画笔
   late Paint paint;
 
-  PaintContent fromJson(Map<String, dynamic> data);
-
   /// 复制实例，避免对象传递
   PaintContent copy();
 
@@ -27,5 +25,6 @@ abstract class PaintContent {
   /// 开始绘制
   void startDraw(Offset startPoint);
 
+  /// toJson
   Map<String, dynamic> toJson();
 }

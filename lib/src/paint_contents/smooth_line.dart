@@ -10,12 +10,25 @@ class SmoothLine extends PaintContent {
     this.brushPrecision = 0.4,
   });
 
-  SmoothLine.fromJson({
+  SmoothLine.data({
     this.brushPrecision = 0.4,
     required this.points,
     required this.strokeWidthList,
     required Paint paint,
   }) : super.paint(paint);
+
+  factory SmoothLine.fromJson(Map<String, dynamic> data) {
+    return SmoothLine.data(
+      brushPrecision: data['brushPrecision'] as double,
+      points: (data['points'] as List<dynamic>)
+          .map((dynamic e) => jsonToOffset(e as Map<String, dynamic>))
+          .toList(),
+      strokeWidthList: (data['strokeWidthList'] as List<dynamic>)
+          .map((dynamic e) => e as double)
+          .toList(),
+      paint: jsonToPaint(data['paint'] as Map<String, dynamic>),
+    );
+  }
 
   final double brushPrecision;
 
@@ -63,23 +76,14 @@ class SmoothLine extends PaintContent {
         Path()
           ..moveTo(points[i - 1].dx, points[i - 1].dy)
           ..lineTo(points[i].dx, points[i].dy),
-        paint.copyWith(strokeWidth: strokeWidthList[i], blendMode: BlendMode.src),
+        paint.copyWith(
+            strokeWidth: strokeWidthList[i], blendMode: BlendMode.src),
       );
     }
   }
 
   @override
   SmoothLine copy() => SmoothLine(brushPrecision: brushPrecision);
-
-  @override
-  SmoothLine fromJson(Map<String, dynamic> data) {
-    return SmoothLine.fromJson(
-      brushPrecision: data['brushPrecision'] as double,
-      points: (data['points'] as List<dynamic>).map((dynamic e) => jsonToOffset(e as Map<String, dynamic>)).toList(),
-      strokeWidthList: (data['strokeWidthList'] as List<dynamic>).map((dynamic e) => e as double).toList(),
-      paint: jsonToPaint(data['paint'] as Map<String, dynamic>),
-    );
-  }
 
   @override
   Map<String, dynamic> toJson() {
