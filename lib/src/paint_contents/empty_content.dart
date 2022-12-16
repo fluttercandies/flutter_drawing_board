@@ -5,6 +5,8 @@ import 'paint_content.dart';
 class EmptyContent extends PaintContent {
   EmptyContent();
 
+  factory EmptyContent.fromJson(Map<String, dynamic> _) => EmptyContent();
+
   @override
   PaintContent copy() => EmptyContent();
 
