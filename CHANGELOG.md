@@ -86,3 +86,7 @@
 - Improved response time
 - Fix [#19](https://github.com/fluttercandies/flutter_drawing_board/issues/19)
 - Optimized multi-finger operation
+
+## [0.4.1+1]
+
+- Del `DrawingController.def()`

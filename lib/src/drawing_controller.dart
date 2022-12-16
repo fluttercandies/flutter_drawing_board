@@ -129,7 +129,7 @@ class DrawingController {
   DrawingController({
     DrawConfig? config,
     PaintContent? content,
-  }) : tag = '' {
+  }) {
     _history = <PaintContent>[];
     _currentIndex = 0;
     _brushPrecision = 0.4;
@@ -139,27 +139,6 @@ class DrawingController {
         config ?? DrawConfig.def(contentType: SimpleLine));
     setPaintContent = content ?? SimpleLine();
   }
-
-  DrawingController._def({
-    DrawConfig? config,
-    PaintContent? content,
-  }) : tag = 'def' {
-    _history = <PaintContent>[];
-    _currentIndex = 0;
-    _brushPrecision = 0.4;
-    realPainter = _RePaint();
-    painter = _RePaint();
-    drawConfig = SafeValueNotifier<DrawConfig>(
-        config ?? DrawConfig.def(contentType: SimpleLine));
-    setPaintContent = content ?? SimpleLine();
-  }
-
-  factory DrawingController.def() => _defController;
-
-  static final DrawingController _defController = DrawingController._def();
-
-  /// 控制器标识
-  final String tag;
 
   /// 绘制开始点
   Offset? _startPoint;
@@ -386,15 +365,9 @@ class DrawingController {
     realPainter?._refresh();
   }
 
-  /// 是否有相同的Tag
-  bool isTagSameWith(DrawingController controller) => tag == controller.tag;
-
   /// 销毁控制器
   void dispose() {
     if (!_mounted) return;
-
-    if (tag == 'def')
-      throw Exception('The default controller cannot be disposed');
 
     drawConfig.dispose();
     realPainter?.dispose();

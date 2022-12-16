@@ -19,7 +19,7 @@ typedef DefaultToolsBuilder = List<DefToolItem> Function(
 );
 
 /// 画板
-class DrawingBoard extends StatelessWidget {
+class DrawingBoard extends StatefulWidget {
   const DrawingBoard({
     Key? key,
     required this.background,
@@ -120,7 +120,19 @@ class DrawingBoard extends StatelessWidget {
     ];
   }
 
-  DrawingController get _controller => controller ?? DrawingController.def();
+  @override
+  State<DrawingBoard> createState() => _DrawingBoardState();
+}
+
+class _DrawingBoardState extends State<DrawingBoard> {
+  late final DrawingController _controller =
+      widget.controller ?? DrawingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -129,32 +141,32 @@ class DrawingBoard extends StatelessWidget {
       shouldRebuild: (DrawConfig p, DrawConfig n) => p.angle != n.angle,
       builder: (_, DrawConfig dc, Widget? child) {
         return InteractiveViewer(
-          maxScale: maxScale,
-          minScale: minScale,
-          boundaryMargin: boardBoundaryMargin ??
+          maxScale: widget.maxScale,
+          minScale: widget.minScale,
+          boundaryMargin: widget.boardBoundaryMargin ??
               EdgeInsets.all(MediaQuery.of(context).size.width),
-          clipBehavior: boardClipBehavior,
-          alignPanAxis: boardAlignPanAxis,
-          constrained: boardConstrained,
-          onInteractionStart: onInteractionStart,
-          onInteractionUpdate: onInteractionUpdate,
-          onInteractionEnd: onInteractionEnd,
-          scaleFactor: boardScaleFactor,
-          panEnabled: boardPanEnabled,
-          scaleEnabled: boardScaleEnabled,
-          transformationController: transformationController,
+          clipBehavior: widget.boardClipBehavior,
+          alignPanAxis: widget.boardAlignPanAxis,
+          constrained: widget.boardConstrained,
+          onInteractionStart: widget.onInteractionStart,
+          onInteractionUpdate: widget.onInteractionUpdate,
+          onInteractionEnd: widget.onInteractionEnd,
+          scaleFactor: widget.boardScaleFactor,
+          panEnabled: widget.boardPanEnabled,
+          scaleEnabled: widget.boardScaleEnabled,
+          transformationController: widget.transformationController,
           child: child!,
         );
       },
       child: Center(child: AspectRatio(aspectRatio: 1, child: _buildBoard)),
     );
 
-    if (showDefaultActions || showDefaultTools) {
+    if (widget.showDefaultActions || widget.showDefaultTools) {
       content = Column(
         children: <Widget>[
           Expanded(child: content),
-          if (showDefaultActions) _buildDefaultActions,
-          if (showDefaultTools) _buildDefaultTools,
+          if (widget.showDefaultActions) _buildDefaultActions,
+          if (widget.showDefaultTools) _buildDefaultTools,
         ],
       );
     }
@@ -186,16 +198,16 @@ class DrawingBoard extends StatelessWidget {
   }
 
   /// 构建背景
-  Widget get _buildImage => background;
+  Widget get _buildImage => widget.background;
 
   /// 构建绘制层
   Widget get _buildPainter {
     return Positioned.fill(
       child: Painter(
         drawingController: _controller,
-        onPointerDown: onPointerDown,
-        onPointerMove: onPointerMove,
-        onPointerUp: onPointerUp,
+        onPointerDown: widget.onPointerDown,
+        onPointerMove: widget.onPointerMove,
+        onPointerUp: widget.onPointerUp,
       ),
     );
   }
@@ -261,10 +273,11 @@ class DrawingBoard extends StatelessWidget {
             final Type currType = dc.contentType;
 
             return Row(
-              children: (defaultToolsBuilder?.call(currType, _controller) ??
-                      DrawingBoard.defaultTools(currType, _controller))
-                  .map((DefToolItem item) => _DefToolItemWidget(item: item))
-                  .toList(),
+              children:
+                  (widget.defaultToolsBuilder?.call(currType, _controller) ??
+                          DrawingBoard.defaultTools(currType, _controller))
+                      .map((DefToolItem item) => _DefToolItemWidget(item: item))
+                      .toList(),
             );
           },
         ),
