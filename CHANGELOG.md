@@ -90,3 +90,7 @@
 ## [0.4.1+1]
 
 - Del `DrawingController.def()`
+
+## [0.4.1+2]
+
+- Fix `DrawingController` abnormal destruction
