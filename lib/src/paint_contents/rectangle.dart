@@ -44,6 +44,7 @@ class Rectangle extends PaintContent {
   @override
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
+      'type': 'Rectangle',
       'startPoint': startPoint.toJson(),
       'endPoint': endPoint.toJson(),
       'paint': paint.toJson(),
