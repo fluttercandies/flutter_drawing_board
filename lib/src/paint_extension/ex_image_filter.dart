@@ -11,9 +11,9 @@
   String toString() => 'ImageFilter.matrix($data, $filterQuality)';
 */
 
+import 'dart:typed_data';
 import 'dart:ui';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter_drawing_board/src/helper/ex_enum.dart';
 
 ImageFilter? stringToImageFilter(String data) {
