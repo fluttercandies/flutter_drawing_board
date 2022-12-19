@@ -30,23 +30,25 @@ ImageFilter? stringToImageFilter(String data) {
     );
 
     return filter;
-  } else if (data.startsWith('ImageFilter.dilate')) {
-    final String radiusX = data.split(',')[0].split('(')[1];
-    final String radiusY = data.split(',')[1].trim().split(')')[0];
+  }
+  // else if (data.startsWith('ImageFilter.dilate')) {
+  //   final String radiusX = data.split(',')[0].split('(')[1];
+  //   final String radiusY = data.split(',')[1].trim().split(')')[0];
 
-    return ImageFilter.dilate(
-      radiusX: double.parse(radiusX),
-      radiusY: double.parse(radiusY),
-    );
-  } else if (data.startsWith('ImageFilter.erode')) {
-    final String radiusX = data.split(',')[0].split('(')[1];
-    final String radiusY = data.split(',')[1].trim().split(')')[0];
+  //   return ImageFilter.dilate(
+  //     radiusX: double.parse(radiusX),
+  //     radiusY: double.parse(radiusY),
+  //   );
+  // } else if (data.startsWith('ImageFilter.erode')) {
+  //   final String radiusX = data.split(',')[0].split('(')[1];
+  //   final String radiusY = data.split(',')[1].trim().split(')')[0];
 
-    return ImageFilter.erode(
-      radiusX: double.parse(radiusX),
-      radiusY: double.parse(radiusY),
-    );
-  } else if (data.startsWith('ImageFilter.compose')) {
+  //   return ImageFilter.erode(
+  //     radiusX: double.parse(radiusX),
+  //     radiusY: double.parse(radiusY),
+  //   );
+  // }
+  else if (data.startsWith('ImageFilter.compose')) {
     final String source = data.split('source -> ')[1].split(' -> result')[0];
     final String result = data.split(' -> result')[1].split(')')[0];
 

@@ -85,6 +85,8 @@ class DrawingBoard extends StatefulWidget {
   final void Function(ScaleUpdateDetails)? onInteractionUpdate;
   final bool boardPanEnabled;
   final bool boardScaleEnabled;
+
+  /// Not working in Flutter 3.0.0 or below
   final double boardScaleFactor;
   final TransformationController? transformationController;
 
@@ -151,7 +153,7 @@ class _DrawingBoardState extends State<DrawingBoard> {
           onInteractionStart: widget.onInteractionStart,
           onInteractionUpdate: widget.onInteractionUpdate,
           onInteractionEnd: widget.onInteractionEnd,
-          scaleFactor: widget.boardScaleFactor,
+          // scaleFactor: widget.boardScaleFactor,
           panEnabled: widget.boardPanEnabled,
           scaleEnabled: widget.boardScaleEnabled,
           transformationController: widget.transformationController,
