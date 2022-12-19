@@ -1,3 +1,12 @@
+## [0.4.1+5]
+
+- Modify version dependencies
+- Flutter SDK 3.0.0 and below please use git dependencies:
+  flutter_drawing_board:
+    git:
+      url: https://github.com/fluttercandies/flutter_drawing_board
+      ref: 2.10.5
+
 ## [0.4.1+4]
 
 - Modification details
