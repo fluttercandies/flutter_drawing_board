@@ -10,36 +10,37 @@ class Eraser extends PaintContent {
 
   Eraser.data({
     required this.color,
-    required this.path,
+    required this.drawPath,
     required Paint paint,
   }) : super.paint(paint);
 
   factory Eraser.fromJson(Map<String, dynamic> data) {
     return Eraser.data(
       color: Color(data['color'] as int),
-      path: DrawPath.fromJson(data['path'] as Map<String, dynamic>),
+      drawPath: DrawPath.fromJson(data['path'] as Map<String, dynamic>),
       paint: jsonToPaint(data['paint'] as Map<String, dynamic>),
     );
   }
 
   /// 擦除路径
-  DrawPath path = DrawPath();
+  DrawPath drawPath = DrawPath();
   final Color color;
 
   @override
   void startDraw(Offset startPoint) {
-    path.moveTo(startPoint.dx, startPoint.dy);
+    drawPath.moveTo(startPoint.dx, startPoint.dy);
   }
 
   @override
-  void drawing(Offset nowPoint) => path.lineTo(nowPoint.dx, nowPoint.dy);
+  void drawing(Offset nowPoint) => drawPath.lineTo(nowPoint.dx, nowPoint.dy);
 
   @override
   void draw(Canvas canvas, Size size, bool deeper) {
     if (deeper)
-      canvas.drawPath(path, paint.copyWith(blendMode: BlendMode.clear));
+      canvas.drawPath(
+          drawPath.path, paint.copyWith(blendMode: BlendMode.clear));
     else
-      canvas.drawPath(path, paint.copyWith(color: color));
+      canvas.drawPath(drawPath.path, paint.copyWith(color: color));
   }
 
   @override
@@ -50,7 +51,7 @@ class Eraser extends PaintContent {
     return <String, dynamic>{
       'type': 'Eraser',
       'color': color.value,
-      'path': path.toJson(),
+      'path': drawPath.toJson(),
       'paint': paint.toJson(),
     };
   }

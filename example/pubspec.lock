@@ -61,7 +61,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.4.1+4"
+    version: "0.4.1+5"
   flutter_hsvcolor_picker:
     dependency: transitive
     description:

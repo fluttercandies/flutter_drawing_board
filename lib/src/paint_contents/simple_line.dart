@@ -32,7 +32,7 @@ class SimpleLine extends PaintContent {
 
   @override
   void draw(Canvas canvas, Size size, bool deeper) =>
-      canvas.drawPath(path, paint);
+      canvas.drawPath(path.path, paint);
 
   @override
   SimpleLine copy() => SimpleLine();

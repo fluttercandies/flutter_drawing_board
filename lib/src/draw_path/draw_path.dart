@@ -17,13 +17,13 @@ import 'steps/relative_line_to.dart';
 import 'steps/relative_move_to.dart';
 import 'steps/relative_quadratic_bezier_to.dart';
 
-class DrawPath extends Path {
+class DrawPath {
   DrawPath({
     List<OperationStep>? steps,
     PathFillType? type,
   }) : steps = steps ?? <OperationStep>[] {
     if (type != null) {
-      fillType = type;
+      path.fillType = type;
     }
   }
 
@@ -106,14 +106,13 @@ class DrawPath extends Path {
   }
 
   final List<OperationStep> steps;
+  final Path path = Path();
 
-  @override
   void moveTo(double x, double y) {
     steps.add(MoveTo(x, y));
-    super.moveTo(x, y);
+    path.moveTo(x, y);
   }
 
-  @override
   void arcTo(
       Rect rect, double startAngle, double sweepAngle, bool forceMoveTo) {
     steps.add(ArcTo(
@@ -123,10 +122,9 @@ class DrawPath extends Path {
       forceMoveTo: forceMoveTo,
     ));
 
-    super.arcTo(rect, startAngle, sweepAngle, forceMoveTo);
+    path.arcTo(rect, startAngle, sweepAngle, forceMoveTo);
   }
 
-  @override
   void arcToPoint(
     Offset arcEnd, {
     Radius radius = Radius.zero,
@@ -135,7 +133,7 @@ class DrawPath extends Path {
     bool clockwise = true,
   }) {
     steps.add(ArcToPoint(arcEnd, radius, rotation, largeArc, clockwise));
-    super.arcToPoint(
+    path.arcToPoint(
       arcEnd,
       radius: radius,
       rotation: rotation,
@@ -144,32 +142,27 @@ class DrawPath extends Path {
     );
   }
 
-  @override
   void conicTo(double x1, double y1, double x2, double y2, double w) {
     steps.add(ConicTo(x1, y1, x2, y2, w));
-    super.conicTo(x1, y1, x2, y2, w);
+    path.conicTo(x1, y1, x2, y2, w);
   }
 
-  @override
   void cubicTo(
       double x1, double y1, double x2, double y2, double x3, double y3) {
     steps.add(CubicTo(x1, y1, x2, y2, x3, y3));
-    super.cubicTo(x1, y1, x2, y2, x3, y3);
+    path.cubicTo(x1, y1, x2, y2, x3, y3);
   }
 
-  @override
   void lineTo(double x, double y) {
     steps.add(LineTo(x, y));
-    super.lineTo(x, y);
+    path.lineTo(x, y);
   }
 
-  @override
   void quadraticBezierTo(double x1, double y1, double x2, double y2) {
     steps.add(QuadraticBezierTo(x1, y1, x2, y2));
-    super.quadraticBezierTo(x1, y1, x2, y2);
+    path.quadraticBezierTo(x1, y1, x2, y2);
   }
 
-  @override
   void relativeArcToPoint(
     Offset arcEndDelta, {
     Radius radius = Radius.zero,
@@ -179,7 +172,7 @@ class DrawPath extends Path {
   }) {
     steps.add(
         RelativeArcToPoint(arcEndDelta, radius, rotation, largeArc, clockwise));
-    super.relativeArcToPoint(
+    path.relativeArcToPoint(
       arcEndDelta,
       radius: radius,
       rotation: rotation,
@@ -188,58 +181,50 @@ class DrawPath extends Path {
     );
   }
 
-  @override
   void relativeConicTo(double x1, double y1, double x2, double y2, double w) {
     steps.add(RelativeConicTo(x1, y1, x2, y2, w));
-    super.relativeConicTo(x1, y1, x2, y2, w);
+    path.relativeConicTo(x1, y1, x2, y2, w);
   }
 
-  @override
   void relativeCubicTo(
       double x1, double y1, double x2, double y2, double x3, double y3) {
     steps.add(RelativeCubicTo(x1, y1, x2, y2, x3, y3));
-    super.relativeCubicTo(x1, y1, x2, y2, x3, y3);
+    path.relativeCubicTo(x1, y1, x2, y2, x3, y3);
   }
 
-  @override
   void relativeLineTo(double dx, double dy) {
     steps.add(RelativeLineTo(dx, dy));
-    super.relativeLineTo(dx, dy);
+    path.relativeLineTo(dx, dy);
   }
 
-  @override
   void relativeQuadraticBezierTo(double x1, double y1, double x2, double y2) {
     steps.add(RelativeQuadraticBezierTo(x1, y1, x2, y2));
-    super.relativeQuadraticBezierTo(x1, y1, x2, y2);
+    path.relativeQuadraticBezierTo(x1, y1, x2, y2);
   }
 
-  @override
   void relativeMoveTo(double dx, double dy) {
     steps.add(RelativeMoveTo(dx, dy));
-    super.relativeMoveTo(dx, dy);
+    path.relativeMoveTo(dx, dy);
   }
 
-  @override
   Path shift(Offset offset) {
     steps.add(PathShift(offset));
-    return super.shift(offset);
+    return path.shift(offset);
   }
 
-  @override
   void close() {
     steps.add(PathClose());
-    super.close();
+    path.close();
   }
 
-  @override
   void reset() {
     steps.clear();
-    super.reset();
+    path.reset();
   }
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
-      'fillType': fillType.index,
+      'fillType': path.fillType.index,
       'steps': steps.map((OperationStep step) => step.toJson()).toList(),
     };
   }

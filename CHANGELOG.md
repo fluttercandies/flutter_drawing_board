@@ -1,3 +1,7 @@
+## [0.4.2]
+
+- Fix web platform operation exception
+
 ## [0.4.1+5]
 
 - Modify version dependencies
