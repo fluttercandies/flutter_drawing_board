@@ -1,9 +1,12 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'color_pic_btn.dart';
 import 'drawing_controller.dart';
 
 import 'helper/ex_value_builder.dart';
+import 'helper/get_size.dart';
 import 'paint_contents/circle.dart';
 import 'paint_contents/eraser.dart';
 import 'paint_contents/rectangle.dart';
@@ -34,7 +37,7 @@ class DrawingBoard extends StatefulWidget {
     this.boardClipBehavior = Clip.hardEdge,
     this.boardAlignPanAxis = false,
     this.boardBoundaryMargin,
-    this.boardConstrained = true,
+    this.boardConstrained = false,
     this.maxScale = 20,
     this.minScale = 0.2,
     this.boardPanEnabled = true,
@@ -44,6 +47,7 @@ class DrawingBoard extends StatefulWidget {
     this.onInteractionStart,
     this.onInteractionUpdate,
     this.transformationController,
+    this.alignment = Alignment.center,
   }) : super(key: key);
 
   /// 画板背景控件
@@ -87,6 +91,7 @@ class DrawingBoard extends StatefulWidget {
   final bool boardScaleEnabled;
   final double boardScaleFactor;
   final TransformationController? transformationController;
+  final AlignmentGeometry alignment;
 
   /// 默认工具项列表
   static List<DefToolItem> defaultTools(
@@ -136,33 +141,27 @@ class _DrawingBoardState extends State<DrawingBoard> {
 
   @override
   Widget build(BuildContext context) {
-    Widget content = ExValueBuilder<DrawConfig>(
-      valueListenable: _controller.drawConfig,
-      shouldRebuild: (DrawConfig p, DrawConfig n) => p.angle != n.angle,
-      builder: (_, DrawConfig dc, Widget? child) {
-        return InteractiveViewer(
-          maxScale: widget.maxScale,
-          minScale: widget.minScale,
-          boundaryMargin: widget.boardBoundaryMargin ??
-              EdgeInsets.all(MediaQuery.of(context).size.width),
-          clipBehavior: widget.boardClipBehavior,
-          alignPanAxis: widget.boardAlignPanAxis,
-          constrained: widget.boardConstrained,
-          onInteractionStart: widget.onInteractionStart,
-          onInteractionUpdate: widget.onInteractionUpdate,
-          onInteractionEnd: widget.onInteractionEnd,
-          scaleFactor: widget.boardScaleFactor,
-          panEnabled: widget.boardPanEnabled,
-          scaleEnabled: widget.boardScaleEnabled,
-          transformationController: widget.transformationController,
-          child: child!,
-        );
-      },
-      child: Center(child: AspectRatio(aspectRatio: 1, child: _buildBoard)),
+    Widget content = InteractiveViewer(
+      maxScale: widget.maxScale,
+      minScale: widget.minScale,
+      boundaryMargin: widget.boardBoundaryMargin ??
+          EdgeInsets.all(MediaQuery.of(context).size.width),
+      clipBehavior: widget.boardClipBehavior,
+      alignPanAxis: widget.boardAlignPanAxis,
+      constrained: widget.boardConstrained,
+      onInteractionStart: widget.onInteractionStart,
+      onInteractionUpdate: widget.onInteractionUpdate,
+      onInteractionEnd: widget.onInteractionEnd,
+      scaleFactor: widget.boardScaleFactor,
+      panEnabled: widget.boardPanEnabled,
+      scaleEnabled: widget.boardScaleEnabled,
+      transformationController: widget.transformationController,
+      child: Align(alignment: widget.alignment, child: _buildBoard),
     );
 
     if (widget.showDefaultActions || widget.showDefaultTools) {
       content = Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Expanded(child: content),
           if (widget.showDefaultActions) _buildDefaultActions,
@@ -182,23 +181,27 @@ class _DrawingBoardState extends State<DrawingBoard> {
 
   /// 构建画板
   Widget get _buildBoard {
-    return Center(
-      child: RepaintBoundary(
-        key: _controller.painterKey,
-        child: ExValueBuilder<DrawConfig>(
-          valueListenable: _controller.drawConfig,
-          shouldRebuild: (DrawConfig p, DrawConfig n) => p.angle != n.angle,
-          child: Stack(children: <Widget>[_buildImage, _buildPainter]),
-          builder: (_, DrawConfig dc, Widget? child) {
-            return RotatedBox(quarterTurns: dc.angle, child: child);
-          },
+    return RepaintBoundary(
+      key: _controller.painterKey,
+      child: ExValueBuilder<DrawConfig>(
+        valueListenable: _controller.drawConfig,
+        shouldRebuild: (DrawConfig p, DrawConfig n) => p.angle != n.angle,
+        builder: (_, DrawConfig dc, Widget? child) {
+          return Transform.rotate(angle: dc.angle * pi / 2, child: child);
+        },
+        child: Stack(
+          alignment: Alignment.center,
+          children: <Widget>[_buildImage, _buildPainter],
         ),
       ),
     );
   }
 
   /// 构建背景
-  Widget get _buildImage => widget.background;
+  Widget get _buildImage => GetSize(
+        onChange: (Size? size) => _controller.setBoardSize(size),
+        child: widget.background,
+      );
 
   /// 构建绘制层
   Widget get _buildPainter {

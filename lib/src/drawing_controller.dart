@@ -13,6 +13,7 @@ class DrawConfig {
     required this.contentType,
     this.angle = 0,
     this.fingerCount = 0,
+    this.size,
     this.blendMode = BlendMode.srcOver,
     this.color = Colors.red,
     this.colorFilter,
@@ -32,6 +33,7 @@ class DrawConfig {
     required this.contentType,
     this.angle = 0,
     this.fingerCount = 0,
+    this.size,
     this.blendMode = BlendMode.srcOver,
     this.color = Colors.red,
     this.colorFilter,
@@ -53,6 +55,8 @@ class DrawConfig {
   final Type contentType;
 
   final int fingerCount;
+
+  final Size? size;
 
   /// Paint相关
   final BlendMode blendMode;
@@ -102,6 +106,7 @@ class DrawConfig {
     PaintingStyle? style,
     int? angle,
     int? fingerCount,
+    Size? size,
   }) {
     return DrawConfig(
       contentType: contentType ?? this.contentType,
@@ -120,6 +125,7 @@ class DrawConfig {
       strokeWidth: strokeWidth ?? this.strokeWidth,
       style: style ?? this.style,
       fingerCount: fingerCount ?? this.fingerCount,
+      size: size ?? this.size,
     );
   }
 }
@@ -198,6 +204,11 @@ class DrawingController {
 
   /// 开始绘制点
   Offset? get startPoint => _startPoint;
+
+  /// 设置画板大小
+  void setBoardSize(Size? size) {
+    drawConfig.value = drawConfig.value.copyWith(size: size);
+  }
 
   /// 手指落下
   void addFingerCount(Offset offset) {

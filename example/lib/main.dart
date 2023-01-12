@@ -235,8 +235,11 @@ class _MyHomePageState extends State<MyHomePage> {
               // boardPanEnabled: false,
               // boardScaleEnabled: false,
               controller: _drawingController,
-              background:
-                  Container(width: 400, height: 400, color: Colors.white),
+              background: Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                color: Colors.white,
+              ),
               showDefaultActions: true,
               showDefaultTools: true,
               defaultToolsBuilder: (Type t, _) {

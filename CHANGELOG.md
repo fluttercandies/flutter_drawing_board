@@ -1,3 +1,9 @@
+## [0.4.3]
+
+- Lift the ratio limit
+- Fix rotation anomaly
+- Adjust the layout
+
 ## [0.4.2]
 
 - Fix web platform operation exception
