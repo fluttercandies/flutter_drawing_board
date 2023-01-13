@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'color_pic_btn.dart';
@@ -45,7 +47,7 @@ class DrawingBoard extends StatefulWidget {
     this.onInteractionStart,
     this.onInteractionUpdate,
     this.transformationController,
-    this.alignment = Alignment.center,
+    this.alignment = Alignment.topCenter,
   }) : super(key: key);
 
   /// 画板背景控件
@@ -186,26 +188,31 @@ class _DrawingBoardState extends State<DrawingBoard> {
         shouldRebuild: (DrawConfig p, DrawConfig n) =>
             p.angle != n.angle || p.size != n.size,
         builder: (_, DrawConfig dc, Widget? child) {
-          Widget c = RotatedBox(
-            quarterTurns: dc.angle,
-            child: child,
-          );
+          Widget c = child!;
 
           if (dc.size != null) {
-            final double w = dc.size!.width;
-            final double h = dc.size!.height;
+            final bool isHorizontal = dc.angle.toDouble() % 2 == 0;
+            final double max = dc.size!.longestSide;
 
-            c = Padding(
-              padding: EdgeInsets.only(left: dc.angle % 2 * (w - h) / 2),
-              child: c,
-            );
+            if (!isHorizontal) {
+              c = SizedBox(
+                width: max,
+                height: max,
+                child: c,
+              );
+            }
           }
 
-          return c;
+          return Transform.rotate(
+            angle: dc.angle * pi / 2,
+            child: c,
+          );
         },
-        child: Stack(
-          alignment: Alignment.center,
-          children: <Widget>[_buildImage, _buildPainter],
+        child: Center(
+          child: Stack(
+            alignment: Alignment.center,
+            children: <Widget>[_buildImage, _buildPainter],
+          ),
         ),
       ),
     );
@@ -219,7 +226,16 @@ class _DrawingBoardState extends State<DrawingBoard> {
 
   /// 构建绘制层
   Widget get _buildPainter {
-    return Positioned.fill(
+    return ExValueBuilder<DrawConfig>(
+      valueListenable: _controller.drawConfig,
+      shouldRebuild: (DrawConfig p, DrawConfig n) => p.size != n.size,
+      builder: (_, DrawConfig dc, Widget? child) {
+        return SizedBox(
+          width: dc.size?.width,
+          height: dc.size?.height,
+          child: child,
+        );
+      },
       child: Painter(
         drawingController: _controller,
         onPointerDown: widget.onPointerDown,

@@ -231,28 +231,32 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Column(
         children: <Widget>[
           Expanded(
-            child: DrawingBoard(
-              // boardPanEnabled: false,
-              // boardScaleEnabled: false,
-              controller: _drawingController,
-              background: Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                color: Colors.white,
-              ),
-              showDefaultActions: true,
-              showDefaultTools: true,
-              defaultToolsBuilder: (Type t, _) {
-                return DrawingBoard.defaultTools(t, _drawingController)
-                  ..insert(
-                    1,
-                    DefToolItem(
-                      icon: Icons.change_history_rounded,
-                      isActive: t == Triangle,
-                      onTap: () =>
-                          _drawingController.setPaintContent = Triangle(),
-                    ),
-                  );
+            child: LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                return DrawingBoard(
+                  // boardPanEnabled: false,
+                  // boardScaleEnabled: false,
+                  controller: _drawingController,
+                  background: Container(
+                    width: constraints.maxWidth,
+                    height: constraints.maxHeight,
+                    color: Colors.white,
+                  ),
+                  showDefaultActions: true,
+                  showDefaultTools: true,
+                  defaultToolsBuilder: (Type t, _) {
+                    return DrawingBoard.defaultTools(t, _drawingController)
+                      ..insert(
+                        1,
+                        DefToolItem(
+                          icon: Icons.change_history_rounded,
+                          isActive: t == Triangle,
+                          onTap: () =>
+                              _drawingController.setPaintContent = Triangle(),
+                        ),
+                      );
+                  },
+                );
               },
             ),
           ),

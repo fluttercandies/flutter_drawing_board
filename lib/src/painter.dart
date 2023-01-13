@@ -83,18 +83,14 @@ class Painter extends StatelessWidget {
       onPointerUp: _onPointerUp,
       behavior: HitTestBehavior.opaque,
       child: ExValueBuilder<DrawConfig>(
-        child: SizedBox(
-          width: double.infinity,
-          height: double.infinity,
-          child: ClipRect(
-            clipBehavior: clipBehavior,
-            child: RepaintBoundary(
-              child: CustomPaint(
-                painter: _DeepPainter(controller: drawingController),
-                child: RepaintBoundary(
-                  child: CustomPaint(
-                    painter: _UpPainter(controller: drawingController),
-                  ),
+        child: ClipRect(
+          clipBehavior: clipBehavior,
+          child: RepaintBoundary(
+            child: CustomPaint(
+              painter: _DeepPainter(controller: drawingController),
+              child: RepaintBoundary(
+                child: CustomPaint(
+                  painter: _UpPainter(controller: drawingController),
                 ),
               ),
             ),
