@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:example/test_data.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -209,6 +210,8 @@ class _MyHomePageState extends State<MyHomePage> {
     _drawingController.addContent(StraightLine.fromJson(_testLine1));
     _drawingController
         .addContents(<PaintContent>[StraightLine.fromJson(_testLine2)]);
+    _drawingController.addContent(SimpleLine.fromJson(tData[0]));
+    _drawingController.addContent(Eraser.fromJson(tData[1]));
   }
 
   @override

@@ -266,6 +266,7 @@ class DrawingController {
 
   /// 添加一条绘制数据
   void addContent(PaintContent content) {
+    print('addContent:${content.toJson()}');
     _history.add(content);
     _currentIndex++;
     _refreshDeep();
