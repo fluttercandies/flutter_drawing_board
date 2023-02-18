@@ -1,3 +1,7 @@
+## [0.4.4]
+
+- Fix rotation anomaly
+
 ## [0.4.3+2]
 
 - Fix rotation anomaly
