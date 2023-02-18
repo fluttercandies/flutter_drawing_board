@@ -1,6 +1,7 @@
 ## [0.4.4]
 
-- Fix rotation anomaly
+- Fix #23
+- Update Flutter SDK
 
 ## [0.4.3+2]
 
