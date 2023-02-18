@@ -1,3 +1,7 @@
+## [0.4.4+1]
+
+- Delete unnecessary log
+
 ## [0.4.4]
 
 - Fix #23
