@@ -1,3 +1,7 @@
+## [0.4.4+2]
+
+- Format code
+
 ## [0.4.4+1]
 
 - Delete unnecessary log
