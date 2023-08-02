@@ -39,9 +39,8 @@ class StraightLine extends PaintContent {
   StraightLine copy() => StraightLine();
 
   @override
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toContentJson() {
     return <String, dynamic>{
-      'type': 'StraightLine',
       'startPoint': startPoint.toJson(),
       'endPoint': endPoint.toJson(),
       'paint': paint.toJson(),

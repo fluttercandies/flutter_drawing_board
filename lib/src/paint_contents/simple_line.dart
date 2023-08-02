@@ -38,9 +38,8 @@ class SimpleLine extends PaintContent {
   SimpleLine copy() => SimpleLine();
 
   @override
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toContentJson() {
     return <String, dynamic>{
-      'type': 'SimpleLine',
       'path': path.toJson(),
       'paint': paint.toJson(),
     };

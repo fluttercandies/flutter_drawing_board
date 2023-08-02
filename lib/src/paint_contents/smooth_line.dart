@@ -88,9 +88,8 @@ class SmoothLine extends PaintContent {
   SmoothLine copy() => SmoothLine(brushPrecision: brushPrecision);
 
   @override
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toContentJson() {
     return <String, dynamic>{
-      'type': 'SmoothLine',
       'brushPrecision': brushPrecision,
       'points': points.map((Offset e) => e.toJson()).toList(),
       'strokeWidthList': strokeWidthList,

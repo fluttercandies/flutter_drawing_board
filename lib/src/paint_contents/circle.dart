@@ -78,9 +78,8 @@ class Circle extends PaintContent {
   Circle copy() => Circle(isEllipse: isEllipse);
 
   @override
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toContentJson() {
     return <String, dynamic>{
-      'type': 'Circle',
       'isEllipse': isEllipse,
       'startFromCenter': startFromCenter,
       'center': center.toJson(),

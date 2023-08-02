@@ -42,9 +42,8 @@ class Rectangle extends PaintContent {
   Rectangle copy() => Rectangle();
 
   @override
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toContentJson() {
     return <String, dynamic>{
-      'type': 'Rectangle',
       'startPoint': startPoint.toJson(),
       'endPoint': endPoint.toJson(),
       'paint': paint.toJson(),

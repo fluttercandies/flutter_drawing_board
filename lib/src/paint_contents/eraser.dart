@@ -48,9 +48,8 @@ class Eraser extends PaintContent {
   Eraser copy() => Eraser(color: color);
 
   @override
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toContentJson() {
     return <String, dynamic>{
-      'type': 'Eraser',
       'color': color.value,
       'path': drawPath.toJson(),
       'paint': paint.toJson(),

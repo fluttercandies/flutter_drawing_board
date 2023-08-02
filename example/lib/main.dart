@@ -110,7 +110,7 @@ class Triangle extends PaintContent {
   Triangle copy() => Triangle();
 
   @override
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toContentJson() {
     return <String, dynamic>{
       'startPoint': startPoint.toJson(),
       'A': A.toJson(),
