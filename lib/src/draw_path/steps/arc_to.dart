@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:flutter_drawing_board/src/paint_extension/ex_rect.dart';
+import '../../paint_extension/ex_rect.dart';
 
 import 'operation_step.dart';
 

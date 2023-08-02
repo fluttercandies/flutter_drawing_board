@@ -138,12 +138,11 @@ class DrawingController {
   }) {
     _history = <PaintContent>[];
     _currentIndex = 0;
-    _brushPrecision = 0.4;
-    realPainter = _RePaint();
-    painter = _RePaint();
+    realPainter = RePaintNotifier();
+    painter = RePaintNotifier();
     drawConfig = SafeValueNotifier<DrawConfig>(
         config ?? DrawConfig.def(contentType: SimpleLine));
-    setPaintContent = content ?? SimpleLine();
+    setPaintContent(content ?? SimpleLine());
   }
 
   /// 绘制开始点
@@ -164,19 +163,8 @@ class DrawingController {
   /// 底层绘制内容(绘制记录)
   late List<PaintContent> _history;
 
-  /// 笔触精度
-  late double _brushPrecision;
-
   /// 当前controller是否存在
   bool _mounted = true;
-
-  /// * 设置笔触精度
-  /// * 此值仅对`smoothLine`生效
-  /// * 此值越小，精度越高，笔触越平滑
-  set setBrushPrecision(double value) => _brushPrecision = value;
-
-  /// 获取当前笔触精度
-  double get getBrushPrecision => _brushPrecision;
 
   /// 获取绘制图层/历史
   List<PaintContent> get getHistory => _history;
@@ -185,10 +173,10 @@ class DrawingController {
   late int _currentIndex;
 
   /// 表层画布刷新控制
-  _RePaint? painter;
+  RePaintNotifier? painter;
 
   /// 底层画布刷新控制
-  _RePaint? realPainter;
+  RePaintNotifier? realPainter;
 
   /// 获取当前步骤索引
   int get currentIndex => _currentIndex;
@@ -257,7 +245,7 @@ class DrawingController {
   }
 
   /// 设置绘制内容
-  set setPaintContent(PaintContent content) {
+  void setPaintContent(PaintContent content) {
     content.paint = drawConfig.value.paint;
     _paintContent = content;
     drawConfig.value =
@@ -351,12 +339,12 @@ class DrawingController {
   Future<ByteData?> getImageData() async {
     try {
       final RenderRepaintBoundary boundary = painterKey.currentContext!
-          .findRenderObject() as RenderRepaintBoundary;
-      final ui.Image image =
-          await boundary.toImage(pixelRatio: ui.window.devicePixelRatio);
+          .findRenderObject()! as RenderRepaintBoundary;
+      final ui.Image image = await boundary.toImage(
+          pixelRatio: View.of(painterKey.currentContext!).devicePixelRatio);
       return await image.toByteData(format: ui.ImageByteFormat.png);
     } catch (e) {
-      print('获取图片数据出错:$e');
+      debugPrint('获取图片数据出错:$e');
       return null;
     }
   }
@@ -378,7 +366,9 @@ class DrawingController {
 
   /// 销毁控制器
   void dispose() {
-    if (!_mounted) return;
+    if (!_mounted) {
+      return;
+    }
 
     drawConfig.dispose();
     realPainter?.dispose();
@@ -389,7 +379,7 @@ class DrawingController {
 }
 
 /// 画布刷新控制器
-class _RePaint extends ChangeNotifier {
+class RePaintNotifier extends ChangeNotifier {
   void _refresh() {
     notifyListeners();
   }

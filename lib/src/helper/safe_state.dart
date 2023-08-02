@@ -21,7 +21,9 @@ mixin SafeState<T extends StatefulWidget> on State<T> {
   void initState() {
     super.initState();
     Future<void>.delayed(Duration.zero, () async {
-      if (mounted) await contextReady();
+      if (mounted) {
+        await contextReady();
+      }
     });
   }
 

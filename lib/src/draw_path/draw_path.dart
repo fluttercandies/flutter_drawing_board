@@ -52,7 +52,6 @@ class DrawPath {
           steps.add(arcTo);
           genPath.arcTo(arcTo.rect, arcTo.startAngle, arcTo.sweepAngle,
               arcTo.forceMoveTo);
-          break;
         case 'arcToPoint':
           // steps.add(ArcToPoint.fromJson(jsonStepMap));
           final ArcToPoint arcToPoint = ArcToPoint.fromJson(jsonStepMap);
@@ -64,45 +63,38 @@ class DrawPath {
             largeArc: arcToPoint.largeArc,
             clockwise: arcToPoint.clockwise,
           );
-          break;
         case 'conicTo':
           // steps.add(ConicTo.fromJson(jsonStepMap));
           final ConicTo conicTo = ConicTo.fromJson(jsonStepMap);
           steps.add(conicTo);
           genPath.conicTo(
               conicTo.x1, conicTo.y1, conicTo.x2, conicTo.y2, conicTo.w);
-          break;
         case 'cubicTo':
           // steps.add(CubicTo.fromJson(jsonStepMap));
           final CubicTo cubicTo = CubicTo.fromJson(jsonStepMap);
           steps.add(cubicTo);
           genPath.cubicTo(cubicTo.x1, cubicTo.y1, cubicTo.x2, cubicTo.y2,
               cubicTo.x3, cubicTo.y3);
-          break;
         case 'lineTo':
           // steps.add(LineTo.fromJson(jsonStepMap));
           final LineTo lineTo = LineTo.fromJson(jsonStepMap);
           steps.add(lineTo);
           genPath.lineTo(lineTo.x, lineTo.y);
-          break;
         case 'moveTo':
           // steps.add(MoveTo.fromJson(jsonStepMap));
           final MoveTo moveTo = MoveTo.fromJson(jsonStepMap);
           steps.add(moveTo);
           genPath.moveTo(moveTo.x, moveTo.y);
-          break;
         case 'close':
           // steps.add(PathClose.fromJson(jsonStepMap));
           final PathClose pathClose = PathClose.fromJson(jsonStepMap);
           steps.add(pathClose);
           genPath.close();
-          break;
         case 'shift':
           // steps.add(PathShift.fromJson(jsonStepMap));
           final PathShift pathShift = PathShift.fromJson(jsonStepMap);
           steps.add(pathShift);
           genPath.shift(pathShift.offset);
-          break;
         case 'quadraticBezierTo':
           // steps.add(QuadraticBezierTo.fromJson(jsonStepMap));
           final QuadraticBezierTo quadraticBezierTo =
@@ -114,7 +106,6 @@ class DrawPath {
             quadraticBezierTo.x2,
             quadraticBezierTo.y2,
           );
-          break;
         case 'relativeArcToPoint':
           // steps.add(RelativeArcToPoint.fromJson(jsonStepMap));
           final RelativeArcToPoint relativeArcToPoint =
@@ -127,7 +118,6 @@ class DrawPath {
             largeArc: relativeArcToPoint.largeArc,
             clockwise: relativeArcToPoint.clockwise,
           );
-          break;
         case 'relativeConicTo':
           // steps.add(RelativeConicTo.fromJson(jsonStepMap));
           final RelativeConicTo relativeConicTo =
@@ -140,7 +130,6 @@ class DrawPath {
             relativeConicTo.y2,
             relativeConicTo.w,
           );
-          break;
         case 'relativeCubicTo':
           // steps.add(RelativeCubicTo.fromJson(jsonStepMap));
           final RelativeCubicTo relativeCubicTo =
@@ -154,21 +143,18 @@ class DrawPath {
             relativeCubicTo.x3,
             relativeCubicTo.y3,
           );
-          break;
         case 'relativeLineTo':
           // steps.add(RelativeLineTo.fromJson(jsonStepMap));
           final RelativeLineTo relativeLineTo =
               RelativeLineTo.fromJson(jsonStepMap);
           steps.add(relativeLineTo);
           genPath.relativeLineTo(relativeLineTo.dx, relativeLineTo.dy);
-          break;
         case 'relativeMoveTo':
           // steps.add(RelativeMoveTo.fromJson(jsonStepMap));
           final RelativeMoveTo relativeMoveTo =
               RelativeMoveTo.fromJson(jsonStepMap);
           steps.add(relativeMoveTo);
           genPath.relativeMoveTo(relativeMoveTo.dx, relativeMoveTo.dy);
-          break;
         case 'relativeQuadraticBezierTo':
           // steps.add(RelativeQuadraticBezierTo.fromJson(jsonStepMap));
           final RelativeQuadraticBezierTo relativeQuadraticBezierTo =
@@ -180,7 +166,6 @@ class DrawPath {
             relativeQuadraticBezierTo.x2,
             relativeQuadraticBezierTo.y2,
           );
-          break;
         default:
           final OperationStep? step =
               stepFactory?.call(type, jsonStepMap, genPath);

@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'color_pic_btn.dart';
 import 'drawing_controller.dart';
 
 import 'helper/ex_value_builder.dart';
@@ -24,7 +23,7 @@ typedef DefaultToolsBuilder = List<DefToolItem> Function(
 /// 画板
 class DrawingBoard extends StatefulWidget {
   const DrawingBoard({
-    Key? key,
+    super.key,
     required this.background,
     this.controller,
     this.showDefaultActions = false,
@@ -48,7 +47,7 @@ class DrawingBoard extends StatefulWidget {
     this.onInteractionUpdate,
     this.transformationController,
     this.alignment = Alignment.topCenter,
-  }) : super(key: key);
+  });
 
   /// 画板背景控件
   final Widget background;
@@ -100,28 +99,27 @@ class DrawingBoard extends StatefulWidget {
       DefToolItem(
           isActive: currType == SimpleLine,
           icon: CupertinoIcons.pencil,
-          onTap: () => controller.setPaintContent = SimpleLine()),
+          onTap: () => controller.setPaintContent(SimpleLine())),
       DefToolItem(
           isActive: currType == SmoothLine,
           icon: Icons.brush,
-          onTap: () => controller.setPaintContent = SmoothLine()),
+          onTap: () => controller.setPaintContent(SmoothLine())),
       DefToolItem(
           isActive: currType == StraightLine,
           icon: Icons.show_chart,
-          onTap: () => controller.setPaintContent = StraightLine()),
+          onTap: () => controller.setPaintContent(StraightLine())),
       DefToolItem(
           isActive: currType == Rectangle,
           icon: CupertinoIcons.stop,
-          onTap: () => controller.setPaintContent = Rectangle()),
+          onTap: () => controller.setPaintContent(Rectangle())),
       DefToolItem(
           isActive: currType == Circle,
           icon: CupertinoIcons.circle,
-          onTap: () => controller.setPaintContent = Circle()),
+          onTap: () => controller.setPaintContent(Circle())),
       DefToolItem(
           isActive: currType == Eraser,
           icon: CupertinoIcons.bandage,
-          onTap: () =>
-              controller.setPaintContent = Eraser(color: Colors.white)),
+          onTap: () => controller.setPaintContent(Eraser(color: Colors.white))),
     ];
   }
 
@@ -135,7 +133,9 @@ class _DrawingBoardState extends State<DrawingBoard> {
 
   @override
   void dispose() {
-    if (widget.controller == null) _controller.dispose();
+    if (widget.controller == null) {
+      _controller.dispose();
+    }
     super.dispose();
   }
 
@@ -161,7 +161,6 @@ class _DrawingBoardState extends State<DrawingBoard> {
 
     if (widget.showDefaultActions || widget.showDefaultTools) {
       content = Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Expanded(child: content),
           if (widget.showDefaultActions) _buildDefaultActions,
@@ -272,7 +271,6 @@ class _DrawingBoardState extends State<DrawingBoard> {
                 },
               ),
             ),
-            ColorPicBtn(controller: _controller),
             IconButton(
                 icon: const Icon(CupertinoIcons.arrow_turn_up_left),
                 onPressed: () => _controller.undo()),
@@ -342,9 +340,8 @@ class DefToolItem {
 /// 默认工具项 Widget
 class _DefToolItemWidget extends StatelessWidget {
   const _DefToolItemWidget({
-    Key? key,
     required this.item,
-  }) : super(key: key);
+  });
 
   final DefToolItem item;
 

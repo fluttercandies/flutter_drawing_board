@@ -1,6 +1,6 @@
 import 'package:flutter/painting.dart';
-import 'package:flutter_drawing_board/src/draw_path/draw_path.dart';
-import 'package:flutter_drawing_board/src/paint_extension/ex_paint.dart';
+import '../draw_path/draw_path.dart';
+import '../paint_extension/ex_paint.dart';
 
 import 'paint_content.dart';
 

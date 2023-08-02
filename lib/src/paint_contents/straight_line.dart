@@ -1,6 +1,6 @@
 import 'package:flutter/painting.dart';
-import 'package:flutter_drawing_board/src/paint_extension/ex_offset.dart';
-import 'package:flutter_drawing_board/src/paint_extension/ex_paint.dart';
+import '../paint_extension/ex_offset.dart';
+import '../paint_extension/ex_paint.dart';
 
 import 'paint_content.dart';
 

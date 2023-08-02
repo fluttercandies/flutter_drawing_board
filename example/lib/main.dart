@@ -1,13 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:example/test_data.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_drawing_board/flutter_drawing_board.dart';
 import 'package:flutter_drawing_board/paint_contents.dart';
 import 'package:flutter_drawing_board/paint_extension.dart';
+
+import 'test_data.dart';
 
 const Map<String, dynamic> _testLine1 = <String, dynamic>{
   'type': 'StraightLine',
@@ -128,10 +129,12 @@ void main() {
     }
   };
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -146,7 +149,7 @@ class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -164,19 +167,22 @@ class _MyHomePageState extends State<MyHomePage> {
     final Uint8List? data =
         (await _drawingController.getImageData())?.buffer.asUint8List();
     if (data == null) {
-      print('获取图片数据失败');
+      debugPrint('获取图片数据失败');
       return;
     }
-    showDialog<void>(
-      context: context,
-      builder: (BuildContext c) {
-        return Material(
-          color: Colors.transparent,
-          child:
-              InkWell(onTap: () => Navigator.pop(c), child: Image.memory(data)),
-        );
-      },
-    );
+
+    if (mounted) {
+      showDialog<void>(
+        context: context,
+        builder: (BuildContext c) {
+          return Material(
+            color: Colors.transparent,
+            child: InkWell(
+                onTap: () => Navigator.pop(c), child: Image.memory(data)),
+          );
+        },
+      );
+    }
   }
 
   /// 获取画板内容 Json `getJsonList()`
@@ -255,7 +261,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           icon: Icons.change_history_rounded,
                           isActive: t == Triangle,
                           onTap: () =>
-                              _drawingController.setPaintContent = Triangle(),
+                              _drawingController.setPaintContent(Triangle()),
                         ),
                       );
                   },
@@ -266,7 +272,7 @@ class _MyHomePageState extends State<MyHomePage> {
           const Padding(
             padding: EdgeInsets.all(8.0),
             child: SelectableText(
-              'https://github.com/xSILENCEx/flutter_drawing_board',
+              'https://github.com/fluttercandies/flutter_drawing_board',
               style: TextStyle(fontSize: 10, color: Colors.white),
             ),
           ),

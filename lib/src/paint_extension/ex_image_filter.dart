@@ -14,7 +14,7 @@
 import 'dart:typed_data';
 import 'dart:ui';
 
-import 'package:flutter_drawing_board/src/helper/ex_enum.dart';
+import '../helper/ex_enum.dart';
 
 ImageFilter? stringToImageFilter(String data) {
   if (data.startsWith('ImageFilter.blur')) {

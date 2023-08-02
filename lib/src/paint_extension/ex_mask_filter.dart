@@ -8,7 +8,7 @@
 
 import 'dart:ui';
 
-import 'package:flutter_drawing_board/src/helper/ex_enum.dart';
+import '../helper/ex_enum.dart';
 
 MaskFilter? stringToMaskFilter(String data) {
   final String style = data.substring(data.indexOf('('), data.indexOf(','));
