@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_drawing_board/src/helper/ex_enum.dart';
+import '../helper/ex_enum.dart';
 
 import 'ex_color.dart';
 
@@ -35,7 +35,9 @@ ColorFilter? stringToColorFilter(String data) {
     final BlendMode? mode =
         ExEnum.tryParse<BlendMode>(BlendMode.values, blendMode);
 
-    if (color != null && mode != null) return ColorFilter.mode(color, mode);
+    if (color != null && mode != null) {
+      return ColorFilter.mode(color, mode);
+    }
 
     return null;
   } else if (data.startsWith('ColorFilter.matrix')) {

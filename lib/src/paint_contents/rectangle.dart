@@ -1,6 +1,6 @@
 import 'package:flutter/painting.dart';
-import 'package:flutter_drawing_board/src/paint_extension/ex_offset.dart';
-import 'package:flutter_drawing_board/src/paint_extension/ex_paint.dart';
+import '../paint_extension/ex_offset.dart';
+import '../paint_extension/ex_paint.dart';
 
 import 'paint_content.dart';
 
@@ -42,9 +42,8 @@ class Rectangle extends PaintContent {
   Rectangle copy() => Rectangle();
 
   @override
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toContentJson() {
     return <String, dynamic>{
-      'type': 'Rectangle',
       'startPoint': startPoint.toJson(),
       'endPoint': endPoint.toJson(),
       'paint': paint.toJson(),

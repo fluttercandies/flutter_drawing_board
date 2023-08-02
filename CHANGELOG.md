@@ -1,3 +1,10 @@
+## [0.5.0]
+
+- Upgrade to dart 3.0.0
+- remove flutter_hsvcolor_picker
+- remove useless files
+- Format code
+
 ## [0.4.4+2]
 
 - Format code

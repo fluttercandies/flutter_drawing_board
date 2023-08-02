@@ -1,5 +1,3 @@
-library paint_contents;
-
 export 'src/paint_contents/circle.dart';
 export 'src/paint_contents/empty_content.dart';
 export 'src/paint_contents/eraser.dart';

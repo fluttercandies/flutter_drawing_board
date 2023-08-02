@@ -9,11 +9,17 @@ class ExEnum {
   }
 
   static T? tryParse<T extends Object>(List<T> values, String? item) {
-    if (item == null) return null;
-    if (!_isEnum<T>(item)) throw Exception('Item $item is not ${T.toString()}');
+    if (item == null) {
+      return null;
+    }
+    if (!_isEnum<T>(item)) {
+      throw Exception('Item $item is not $T');
+    }
 
     for (final T value in values) {
-      if (value.toString() == item) return value;
+      if (value.toString() == item) {
+        return value;
+      }
     }
 
     return null;

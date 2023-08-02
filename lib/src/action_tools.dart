@@ -9,10 +9,10 @@ typedef ActionBuilder = Widget Function(DrawConfig config);
 /// 操作栏
 class ActionBar extends StatelessWidget {
   const ActionBar({
-    Key? key,
+    super.key,
     required this.controller,
     required this.builder,
-  }) : super(key: key);
+  });
 
   /// 控制器
   final DrawingController controller;
@@ -36,11 +36,11 @@ typedef ToolsBuilder = Widget Function(
 /// 工具栏
 class ToolsBar extends StatelessWidget {
   const ToolsBar({
-    Key? key,
+    super.key,
     required this.controller,
     this.shouldRebuild,
     required this.builder,
-  }) : super(key: key);
+  });
 
   /// 控制器
   final DrawingController controller;

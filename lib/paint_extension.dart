@@ -1,5 +1,3 @@
-library paint_extension;
-
 export 'src/paint_extension/ex_color.dart';
 export 'src/paint_extension/ex_color_filter.dart';
 export 'src/paint_extension/ex_image_filter.dart';

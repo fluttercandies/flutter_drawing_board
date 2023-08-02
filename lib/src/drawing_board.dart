@@ -9,7 +9,6 @@ import 'package:flutter_svg/svg.dart';
 import '../components/filled_button.dart';
 import '../components/styles/button_size.dart';
 import 'drawing_controller.dart';
-
 import 'helper/ex_value_builder.dart';
 import 'helper/get_size.dart';
 import 'paint_contents/circle.dart';
@@ -29,7 +28,7 @@ typedef DefaultToolsBuilder = List<DefToolItem> Function(
 /// 画板
 class DrawingBoard extends StatefulWidget {
   const DrawingBoard({
-    Key? key,
+    super.key,
     required this.background,
     this.controller,
     this.showDefaultActions = false,
@@ -53,7 +52,7 @@ class DrawingBoard extends StatefulWidget {
     this.onInteractionUpdate,
     this.transformationController,
     this.alignment = Alignment.topCenter,
-  }) : super(key: key);
+  });
 
   /// 画板背景控件
   final Widget background;
@@ -149,7 +148,9 @@ class _DrawingBoardState extends State<DrawingBoard> {
 
   @override
   void dispose() {
-    if (widget.controller == null) _controller.dispose();
+    if (widget.controller == null) {
+      _controller.dispose();
+    }
     super.dispose();
   }
 
@@ -174,7 +175,6 @@ class _DrawingBoardState extends State<DrawingBoard> {
 
     if (widget.showDefaultActions || widget.showDefaultTools) {
       content = Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Expanded(child: content),
 
@@ -386,9 +386,8 @@ class DefToolItem {
 /// 默认工具项 Widget
 class _DefToolItemWidget extends StatelessWidget {
   const _DefToolItemWidget({
-    Key? key,
     required this.item,
-  }) : super(key: key);
+  });
 
   final DefToolItem item;
 

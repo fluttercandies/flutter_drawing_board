@@ -1,6 +1,6 @@
 import 'dart:ui';
-import 'package:flutter_drawing_board/src/paint_extension/ex_offset.dart';
-import 'package:flutter_drawing_board/src/paint_extension/ex_paint.dart';
+import '../paint_extension/ex_offset.dart';
+import '../paint_extension/ex_paint.dart';
 import 'paint_content.dart';
 
 /// 笔触线条
@@ -53,7 +53,9 @@ class SmoothLine extends PaintContent {
 
     double strokeWidth = s * (s * 2 / (s * distance));
 
-    if (strokeWidth > s * 2) strokeWidth = s * 2;
+    if (strokeWidth > s * 2) {
+      strokeWidth = s * 2;
+    }
 
     //上一个线宽
     final double preWidth = strokeWidthList.last;
@@ -86,9 +88,8 @@ class SmoothLine extends PaintContent {
   SmoothLine copy() => SmoothLine(brushPrecision: brushPrecision);
 
   @override
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toContentJson() {
     return <String, dynamic>{
-      'type': 'SmoothLine',
       'brushPrecision': brushPrecision,
       'points': points.map((Offset e) => e.toJson()).toList(),
       'strokeWidthList': strokeWidthList,

@@ -1,5 +1,3 @@
-library path_steps;
-
 export 'src/draw_path/draw_path.dart';
 export 'src/draw_path/steps/arc_to.dart';
 export 'src/draw_path/steps/arc_to_point.dart';

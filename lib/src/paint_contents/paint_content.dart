@@ -26,5 +26,13 @@ abstract class PaintContent {
   void startDraw(Offset startPoint);
 
   /// toJson
-  Map<String, dynamic> toJson();
+  Map<String, dynamic> toContentJson();
+
+  /// toJson
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'type': runtimeType.toString(),
+      ...toContentJson(),
+    };
+  }
 }

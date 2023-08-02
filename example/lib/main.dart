@@ -8,6 +8,8 @@ import 'package:flutter_drawing_board/flutter_drawing_board.dart';
 import 'package:flutter_drawing_board/paint_contents.dart';
 import 'package:flutter_drawing_board/paint_extension.dart';
 
+import 'test_data.dart';
+
 const Map<String, dynamic> _testLine1 = <String, dynamic>{
   'type': 'StraightLine',
   'startPoint': <String, dynamic>{'dx': 68.94337550070736, 'dy': 62.05980083656557},
@@ -95,7 +97,7 @@ class Triangle extends PaintContent {
   Triangle copy() => Triangle();
 
   @override
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toContentJson() {
     return <String, dynamic>{
       'startPoint': startPoint.toJson(),
       'A': A.toJson(),
@@ -114,10 +116,12 @@ void main() {
     }
   };
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -132,7 +136,7 @@ class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -149,7 +153,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> _getImageData() async {
     final Uint8List? data = (await _drawingController.getImageData())?.buffer.asUint8List();
     if (data == null) {
-      print('获取图片数据失败');
+      debugPrint('获取图片数据失败');
       return;
     }
     showDialog<void>(

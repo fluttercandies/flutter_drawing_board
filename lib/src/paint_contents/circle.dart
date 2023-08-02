@@ -1,6 +1,6 @@
 import 'package:flutter/painting.dart';
-import 'package:flutter_drawing_board/src/paint_extension/ex_offset.dart';
-import 'package:flutter_drawing_board/src/paint_extension/ex_paint.dart';
+import '../paint_extension/ex_offset.dart';
+import '../paint_extension/ex_paint.dart';
 
 import 'paint_content.dart';
 
@@ -67,19 +67,19 @@ class Circle extends PaintContent {
 
   @override
   void draw(Canvas canvas, Size size, bool deeper) {
-    if (isEllipse)
+    if (isEllipse) {
       canvas.drawOval(Rect.fromPoints(startPoint, endPoint), paint);
-    else
+    } else {
       canvas.drawCircle(startFromCenter ? startPoint : center, radius, paint);
+    }
   }
 
   @override
   Circle copy() => Circle(isEllipse: isEllipse);
 
   @override
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toContentJson() {
     return <String, dynamic>{
-      'type': 'Circle',
       'isEllipse': isEllipse,
       'startFromCenter': startFromCenter,
       'center': center.toJson(),

@@ -1,6 +1,6 @@
 import 'package:flutter/painting.dart';
-import 'package:flutter_drawing_board/src/draw_path/draw_path.dart';
-import 'package:flutter_drawing_board/src/paint_extension/ex_paint.dart';
+import '../draw_path/draw_path.dart';
+import '../paint_extension/ex_paint.dart';
 
 import 'paint_content.dart';
 
@@ -38,9 +38,8 @@ class SimpleLine extends PaintContent {
   SimpleLine copy() => SimpleLine();
 
   @override
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toContentJson() {
     return <String, dynamic>{
-      'type': 'SimpleLine',
       'path': path.toJson(),
       'paint': paint.toJson(),
     };

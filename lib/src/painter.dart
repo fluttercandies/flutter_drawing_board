@@ -7,13 +7,13 @@ import 'paint_contents/paint_content.dart';
 /// 绘图板
 class Painter extends StatelessWidget {
   const Painter({
-    Key? key,
+    super.key,
     required this.drawingController,
     this.clipBehavior = Clip.antiAlias,
     this.onPointerDown,
     this.onPointerMove,
     this.onPointerUp,
-  }) : super(key: key);
+  });
 
   /// 绘制控制器
   final DrawingController drawingController;
@@ -83,6 +83,17 @@ class Painter extends StatelessWidget {
       onPointerUp: _onPointerUp,
       behavior: HitTestBehavior.opaque,
       child: ExValueBuilder<DrawConfig>(
+        valueListenable: drawingController.drawConfig,
+        shouldRebuild: (DrawConfig p, DrawConfig n) =>
+            p.fingerCount != n.fingerCount,
+        builder: (_, DrawConfig config, Widget? child) {
+          return GestureDetector(
+            onPanDown: config.fingerCount <= 1 ? _onPanDown : null,
+            onPanUpdate: config.fingerCount <= 1 ? _onPanUpdate : null,
+            onPanEnd: config.fingerCount <= 1 ? _onPanEnd : null,
+            child: child,
+          );
+        },
         child: ClipRect(
           clipBehavior: clipBehavior,
           child: RepaintBoundary(
@@ -96,17 +107,6 @@ class Painter extends StatelessWidget {
             ),
           ),
         ),
-        valueListenable: drawingController.drawConfig,
-        shouldRebuild: (DrawConfig p, DrawConfig n) =>
-            p.fingerCount != n.fingerCount,
-        builder: (_, DrawConfig config, Widget? child) {
-          return GestureDetector(
-            child: child,
-            onPanDown: config.fingerCount <= 1 ? _onPanDown : null,
-            onPanUpdate: config.fingerCount <= 1 ? _onPanUpdate : null,
-            onPanEnd: config.fingerCount <= 1 ? _onPanEnd : null,
-          );
-        },
       ),
     );
   }
@@ -120,7 +120,9 @@ class _UpPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (controller.currentContent == null) return;
+    if (controller.currentContent == null) {
+      return;
+    }
 
     controller.currentContent?.draw(canvas, size, false);
   }
@@ -137,16 +139,16 @@ class _DeepPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final List<PaintContent> _contents = controller.getHistory;
+    final List<PaintContent> contents = controller.getHistory;
 
-    if (_contents.isEmpty) {
+    if (contents.isEmpty) {
       return;
     }
 
     canvas.saveLayer(Offset.zero & size, Paint());
 
     for (int i = 0; i < controller.currentIndex; i++) {
-      _contents[i].draw(canvas, size, true);
+      contents[i].draw(canvas, size, true);
     }
 
     canvas.restore();

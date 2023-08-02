@@ -3,19 +3,19 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_drawing_board/src/helper/safe_state.dart';
+import 'safe_state.dart';
 
 typedef ValueWidgetBuilder<T> = Widget Function(
     BuildContext context, T value, Widget? child);
 
 class ExValueBuilder<T> extends StatefulWidget {
   const ExValueBuilder({
-    Key? key,
+    super.key,
     required this.valueListenable,
     required this.builder,
     this.child,
     this.shouldRebuild,
-  }) : super(key: key);
+  });
 
   final ValueListenable<T> valueListenable;
 
