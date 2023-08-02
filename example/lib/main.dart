@@ -10,14 +10,8 @@ import 'package:flutter_drawing_board/paint_extension.dart';
 
 const Map<String, dynamic> _testLine1 = <String, dynamic>{
   'type': 'StraightLine',
-  'startPoint': <String, dynamic>{
-    'dx': 68.94337550070736,
-    'dy': 62.05980083656557
-  },
-  'endPoint': <String, dynamic>{
-    'dx': 277.1373386828114,
-    'dy': 277.32029957032194
-  },
+  'startPoint': <String, dynamic>{'dx': 68.94337550070736, 'dy': 62.05980083656557},
+  'endPoint': <String, dynamic>{'dx': 277.1373386828114, 'dy': 277.32029957032194},
   'paint': <String, dynamic>{
     'blendMode': 3,
     'color': 4294198070,
@@ -33,14 +27,8 @@ const Map<String, dynamic> _testLine1 = <String, dynamic>{
 
 const Map<String, dynamic> _testLine2 = <String, dynamic>{
   'type': 'StraightLine',
-  'startPoint': <String, dynamic>{
-    'dx': 106.35164817830423,
-    'dy': 255.9575653134524
-  },
-  'endPoint': <String, dynamic>{
-    'dx': 292.76034659254094,
-    'dy': 92.125586665872
-  },
+  'startPoint': <String, dynamic>{'dx': 106.35164817830423, 'dy': 255.9575653134524},
+  'endPoint': <String, dynamic>{'dx': 292.76034659254094, 'dy': 92.125586665872},
   'paint': <String, dynamic>{
     'blendMode': 3,
     'color': 4294198070,
@@ -87,8 +75,7 @@ class Triangle extends PaintContent {
 
   @override
   void drawing(Offset nowPoint) {
-    A = Offset(
-        startPoint.dx + (nowPoint.dx - startPoint.dx) / 2, startPoint.dy);
+    A = Offset(startPoint.dx + (nowPoint.dx - startPoint.dx) / 2, startPoint.dy);
     B = Offset(startPoint.dx, nowPoint.dy);
     C = nowPoint;
   }
@@ -160,8 +147,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   /// 获取画板数据 `getImageData()`
   Future<void> _getImageData() async {
-    final Uint8List? data =
-        (await _drawingController.getImageData())?.buffer.asUint8List();
+    final Uint8List? data = (await _drawingController.getImageData())?.buffer.asUint8List();
     if (data == null) {
       print('获取图片数据失败');
       return;
@@ -171,8 +157,7 @@ class _MyHomePageState extends State<MyHomePage> {
       builder: (BuildContext c) {
         return Material(
           color: Colors.transparent,
-          child:
-              InkWell(onTap: () => Navigator.pop(c), child: Image.memory(data)),
+          child: InkWell(onTap: () => Navigator.pop(c), child: Image.memory(data)),
         );
       },
     );
@@ -189,12 +174,10 @@ class _MyHomePageState extends State<MyHomePage> {
             child: InkWell(
               onTap: () => Navigator.pop(c),
               child: Container(
-                constraints:
-                    const BoxConstraints(maxWidth: 500, maxHeight: 800),
+                constraints: const BoxConstraints(maxWidth: 500, maxHeight: 800),
                 padding: const EdgeInsets.all(20.0),
                 child: SelectableText(
-                  const JsonEncoder.withIndent('  ')
-                      .convert(_drawingController.getJsonList()),
+                  const JsonEncoder.withIndent('  ').convert(_drawingController.getJsonList()),
                 ),
               ),
             ),
@@ -202,15 +185,6 @@ class _MyHomePageState extends State<MyHomePage> {
         );
       },
     );
-  }
-
-  /// 添加Json测试内容
-  void _addTestLine() {
-    _drawingController.addContent(StraightLine.fromJson(_testLine1));
-    _drawingController
-        .addContents(<PaintContent>[StraightLine.fromJson(_testLine2)]);
-    _drawingController.addContent(SimpleLine.fromJson(tData[0]));
-    _drawingController.addContent(Eraser.fromJson(tData[1]));
   }
 
   @override
@@ -222,10 +196,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: const Text('Drawing Test'),
         systemOverlayStyle: SystemUiOverlayStyle.light,
         actions: <Widget>[
-          IconButton(
-              icon: const Icon(Icons.line_axis), onPressed: _addTestLine),
-          IconButton(
-              icon: const Icon(Icons.javascript_outlined), onPressed: _getJson),
+          IconButton(icon: const Icon(Icons.javascript_outlined), onPressed: _getJson),
           IconButton(icon: const Icon(Icons.check), onPressed: _getImageData),
           const SizedBox(width: 40),
         ],
@@ -247,16 +218,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   showDefaultActions: true,
                   showDefaultTools: true,
                   defaultToolsBuilder: (Type t, _) {
-                    return DrawingBoard.defaultTools(t, _drawingController)
-                      ..insert(
-                        1,
-                        DefToolItem(
-                          icon: Icons.change_history_rounded,
-                          isActive: t == Triangle,
-                          onTap: () =>
-                              _drawingController.setPaintContent = Triangle(),
-                        ),
-                      );
+                    return DrawingBoard.defaultTools(t, _drawingController);
                   },
                 );
               },

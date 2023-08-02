@@ -99,8 +99,7 @@ class DrawingBoard extends StatefulWidget {
   final AlignmentGeometry alignment;
 
   /// 默认工具项列表
-  static List<DefToolItem> defaultTools(
-      Type currType, DrawingController controller) {
+  static List<DefToolItem> defaultTools(Type currType, DrawingController controller) {
     return <DefToolItem>[
       DefToolItem(
           isActive: currType == SimpleLine,
@@ -146,8 +145,7 @@ class DrawingBoard extends StatefulWidget {
 }
 
 class _DrawingBoardState extends State<DrawingBoard> {
-  late final DrawingController _controller =
-      widget.controller ?? DrawingController();
+  late final DrawingController _controller = widget.controller ?? DrawingController();
 
   @override
   void dispose() {
@@ -160,8 +158,7 @@ class _DrawingBoardState extends State<DrawingBoard> {
     Widget content = InteractiveViewer(
       maxScale: widget.maxScale,
       minScale: widget.minScale,
-      boundaryMargin: widget.boardBoundaryMargin ??
-          EdgeInsets.all(MediaQuery.of(context).size.width),
+      boundaryMargin: widget.boardBoundaryMargin ?? EdgeInsets.all(MediaQuery.of(context).size.width),
       clipBehavior: widget.boardClipBehavior,
       panAxis: widget.panAxis,
       constrained: widget.boardConstrained,
@@ -189,10 +186,8 @@ class _DrawingBoardState extends State<DrawingBoard> {
     }
 
     return Listener(
-      onPointerDown: (PointerDownEvent pde) =>
-          _controller.addFingerCount(pde.localPosition),
-      onPointerUp: (PointerUpEvent pue) =>
-          _controller.reduceFingerCount(pue.localPosition),
+      onPointerDown: (PointerDownEvent pde) => _controller.addFingerCount(pde.localPosition),
+      onPointerUp: (PointerUpEvent pue) => _controller.reduceFingerCount(pue.localPosition),
       child: content,
     );
   }
@@ -203,8 +198,7 @@ class _DrawingBoardState extends State<DrawingBoard> {
       key: _controller.painterKey,
       child: ExValueBuilder<DrawConfig>(
         valueListenable: _controller.drawConfig,
-        shouldRebuild: (DrawConfig p, DrawConfig n) =>
-            p.angle != n.angle || p.size != n.size,
+        shouldRebuild: (DrawConfig p, DrawConfig n) => p.angle != n.angle || p.size != n.size,
         builder: (_, DrawConfig dc, Widget? child) {
           Widget c = child!;
 
@@ -308,8 +302,7 @@ class _DrawingBoardState extends State<DrawingBoard> {
         padding: EdgeInsets.zero,
         child: ExValueBuilder<DrawConfig>(
           valueListenable: _controller.drawConfig,
-          shouldRebuild: (DrawConfig p, DrawConfig n) =>
-              p.contentType != n.contentType,
+          shouldRebuild: (DrawConfig p, DrawConfig n) => p.contentType != n.contentType,
           builder: (_, DrawConfig dc, ___) {
             final Type currType = dc.contentType;
             return BottomAppBar(
@@ -401,7 +394,7 @@ class _DefToolItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: item.onTap,
       child: Container(
         margin: const EdgeInsets.only(right: 8),
