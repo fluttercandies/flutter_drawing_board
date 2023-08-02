@@ -15,7 +15,7 @@ class DrawConfig {
     this.fingerCount = 0,
     this.size,
     this.blendMode = BlendMode.srcOver,
-    this.color = Colors.red,
+    this.color = Colors.black,
     this.colorFilter,
     this.filterQuality = FilterQuality.high,
     this.imageFilter,
@@ -35,7 +35,9 @@ class DrawConfig {
     this.fingerCount = 0,
     this.size,
     this.blendMode = BlendMode.srcOver,
-    this.color = Colors.red,
+
+    /// màu cọ
+    this.color = Colors.black,
     this.colorFilter,
     this.filterQuality = FilterQuality.high,
     this.imageFilter,
@@ -45,6 +47,8 @@ class DrawConfig {
     this.shader,
     this.strokeCap = StrokeCap.round,
     this.strokeJoin = StrokeJoin.round,
+
+    /// kích thước cọ
     this.strokeWidth = 4,
     this.style = PaintingStyle.stroke,
   });

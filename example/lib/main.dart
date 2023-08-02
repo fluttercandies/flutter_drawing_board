@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:example/test_data.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -237,8 +236,8 @@ class _MyHomePageState extends State<MyHomePage> {
             child: LayoutBuilder(
               builder: (BuildContext context, BoxConstraints constraints) {
                 return DrawingBoard(
-                  // boardPanEnabled: false,
-                  // boardScaleEnabled: false,
+                  boardPanEnabled: false,
+                  boardScaleEnabled: false,
                   controller: _drawingController,
                   background: Container(
                     width: constraints.maxWidth,
@@ -261,13 +260,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   },
                 );
               },
-            ),
-          ),
-          const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: SelectableText(
-              'https://github.com/xSILENCEx/flutter_drawing_board',
-              style: TextStyle(fontSize: 10, color: Colors.white),
             ),
           ),
         ],

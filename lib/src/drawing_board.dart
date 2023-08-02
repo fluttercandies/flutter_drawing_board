@@ -2,7 +2,12 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'color_pic_btn.dart';
+import 'package:flutter_drawing_board/components/icon.dart';
+import 'package:flutter_drawing_board/components/styles/icon_data.dart';
+import 'package:flutter_drawing_board/src/color_pic_btn.dart';
+import 'package:flutter_svg/svg.dart';
+import '../components/filled_button.dart';
+import '../components/styles/button_size.dart';
 import 'drawing_controller.dart';
 
 import 'helper/ex_value_builder.dart';
@@ -99,29 +104,40 @@ class DrawingBoard extends StatefulWidget {
     return <DefToolItem>[
       DefToolItem(
           isActive: currType == SimpleLine,
-          icon: CupertinoIcons.pencil,
-          onTap: () => controller.setPaintContent = SimpleLine()),
+          icon: FCustom.pen,
+          onTap: () {
+            controller.setPaintContent = SimpleLine();
+            controller.setStyle(strokeWidth: 4);
+          }),
       DefToolItem(
           isActive: currType == SmoothLine,
-          icon: Icons.brush,
-          onTap: () => controller.setPaintContent = SmoothLine()),
-      DefToolItem(
-          isActive: currType == StraightLine,
-          icon: Icons.show_chart,
-          onTap: () => controller.setPaintContent = StraightLine()),
-      DefToolItem(
-          isActive: currType == Rectangle,
-          icon: CupertinoIcons.stop,
-          onTap: () => controller.setPaintContent = Rectangle()),
-      DefToolItem(
-          isActive: currType == Circle,
-          icon: CupertinoIcons.circle,
-          onTap: () => controller.setPaintContent = Circle()),
+          icon: FCustom.marker,
+          onTap: () {
+            controller.setPaintContent = SmoothLine();
+            controller.setStyle(strokeWidth: 6);
+          }),
+
+      /// <---------- Temporarily hide function ---------->
+      // DefToolItem(
+      //     isActive: currType == StraightLine,
+      //     icon: Icons.show_chart,
+      //     onTap: () => controller.setPaintContent = StraightLine()),
+      // DefToolItem(
+      //     isActive: currType == Rectangle,
+      //     icon: CupertinoIcons.stop,
+      //     onTap: () => controller.setPaintContent = Rectangle()),
+      // DefToolItem(
+      //     isActive: currType == Circle,
+      //     icon: CupertinoIcons.circle,
+      //     onTap: () => controller.setPaintContent = Circle()),
       DefToolItem(
           isActive: currType == Eraser,
-          icon: CupertinoIcons.bandage,
-          onTap: () =>
-              controller.setPaintContent = Eraser(color: Colors.white)),
+          icon: FCustom.eraser,
+          onTap: () {
+            /// màu tẩy
+            controller.setPaintContent = Eraser(color: Colors.white);
+            controller.setStyle(strokeWidth: 10);
+          }),
     ];
   }
 
@@ -164,7 +180,9 @@ class _DrawingBoardState extends State<DrawingBoard> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Expanded(child: content),
-          if (widget.showDefaultActions) _buildDefaultActions,
+
+          /// <---------- Temporarily hide function ---------->
+          // if (widget.showDefaultActions) _buildDefaultActions,
           if (widget.showDefaultTools) _buildDefaultTools,
         ],
       );
@@ -259,32 +277,22 @@ class _DrawingBoardState extends State<DrawingBoard> {
               width: 160,
               child: ExValueBuilder<DrawConfig>(
                 valueListenable: _controller.drawConfig,
-                shouldRebuild: (DrawConfig p, DrawConfig n) =>
-                    p.strokeWidth != n.strokeWidth,
+                shouldRebuild: (DrawConfig p, DrawConfig n) => p.strokeWidth != n.strokeWidth,
                 builder: (_, DrawConfig dc, ___) {
                   return Slider(
                     value: dc.strokeWidth,
                     max: 50,
                     min: 1,
-                    onChanged: (double v) =>
-                        _controller.setStyle(strokeWidth: v),
+                    onChanged: (double v) => _controller.setStyle(strokeWidth: v),
                   );
                 },
               ),
             ),
             ColorPicBtn(controller: _controller),
-            IconButton(
-                icon: const Icon(CupertinoIcons.arrow_turn_up_left),
-                onPressed: () => _controller.undo()),
-            IconButton(
-                icon: const Icon(CupertinoIcons.arrow_turn_up_right),
-                onPressed: () => _controller.redo()),
-            IconButton(
-                icon: const Icon(CupertinoIcons.rotate_right),
-                onPressed: () => _controller.turn()),
-            IconButton(
-                icon: const Icon(CupertinoIcons.trash),
-                onPressed: () => _controller.clear()),
+            IconButton(icon: const Icon(CupertinoIcons.arrow_turn_up_left), onPressed: () => _controller.undo()),
+            IconButton(icon: const Icon(CupertinoIcons.arrow_turn_up_right), onPressed: () => _controller.redo()),
+            IconButton(icon: const Icon(CupertinoIcons.rotate_right), onPressed: () => _controller.turn()),
+            IconButton(icon: const Icon(CupertinoIcons.trash), onPressed: () => _controller.clear()),
           ],
         ),
       ),
@@ -304,13 +312,56 @@ class _DrawingBoardState extends State<DrawingBoard> {
               p.contentType != n.contentType,
           builder: (_, DrawConfig dc, ___) {
             final Type currType = dc.contentType;
-
-            return Row(
-              children:
-                  (widget.defaultToolsBuilder?.call(currType, _controller) ??
-                          DrawingBoard.defaultTools(currType, _controller))
-                      .map((DefToolItem item) => _DefToolItemWidget(item: item))
-                      .toList(),
+            return BottomAppBar(
+              color: Colors.black,
+              elevation: 0,
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: 88,
+                padding: const EdgeInsets.fromLTRB(64, 0, 64, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Row(
+                      children: (widget.defaultToolsBuilder?.call(currType, _controller) ??
+                              DrawingBoard.defaultTools(currType, _controller))
+                          .map((DefToolItem item) => _DefToolItemWidget(item: item))
+                          .toList(),
+                    ),
+                    Row(
+                      children: <Widget>[
+                        FFilledButton.icon(
+                          onPressed: () => _controller.undo(),
+                          size: FButtonSize.size48,
+                          backgroundColor: const Color(0xff1C2530),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: FIcon(
+                              icon: FOutlined.curved_arrow_left,
+                              size: 30,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        FFilledButton.icon(
+                          onPressed: () => _controller.redo(),
+                          size: FButtonSize.size48,
+                          backgroundColor: const Color(0xff1C2530),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: FIcon(
+                              icon: FOutlined.curved_arrow_right,
+                              size: 30,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             );
           },
         ),
@@ -333,10 +384,10 @@ class DefToolItem {
   final Function()? onTap;
   final bool isActive;
 
-  final IconData icon;
   final double? iconSize;
   final Color? color;
   final Color activeColor;
+  final String icon;
 }
 
 /// 默认工具项 Widget
@@ -350,12 +401,17 @@ class _DefToolItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: item.onTap,
-      icon: Icon(
-        item.icon,
-        color: item.isActive ? item.activeColor : item.color,
-        size: item.iconSize,
+    return InkWell(
+      onTap: item.onTap,
+      child: Container(
+        margin: const EdgeInsets.only(right: 8),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          transform: Transform.translate(
+            offset: Offset(0, item.isActive ? 11 : 25),
+          ).transform,
+          child: SvgPicture.string(item.icon),
+        ),
       ),
     );
   }
