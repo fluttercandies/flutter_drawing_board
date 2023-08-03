@@ -239,7 +239,7 @@ class _DrawingBoardState extends State<DrawingBoard> {
   /// 构建默认操作栏
   Widget get _buildDefaultActions {
     return Material(
-      color: Colors.white,
+      color: Colors.green,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         padding: EdgeInsets.zero,
