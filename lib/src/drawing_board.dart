@@ -21,6 +21,11 @@ typedef DefaultToolsBuilder = List<DefToolItem> Function(
   DrawingController controller,
 );
 
+typedef ToolbarBuilder = Widget Function(
+  BuildContext context,
+  List<Widget> children,
+);
+
 /// 画板
 class DrawingBoard extends StatefulWidget {
   const DrawingBoard({
@@ -47,6 +52,7 @@ class DrawingBoard extends StatefulWidget {
     this.onInteractionStart,
     this.onInteractionUpdate,
     this.transformationController,
+    this.actionBarBuilder,
     this.alignment = Alignment.topCenter,
   }) : super(key: key);
 
@@ -92,6 +98,7 @@ class DrawingBoard extends StatefulWidget {
   final double boardScaleFactor;
   final TransformationController? transformationController;
   final AlignmentGeometry alignment;
+  final ToolbarBuilder? actionBarBuilder;
 
   /// 默认工具项列表
   static List<DefToolItem> defaultTools(Type currType, DrawingController controller) {
@@ -119,6 +126,19 @@ class DrawingBoard extends StatefulWidget {
           icon: CupertinoIcons.bandage,
           onTap: () => controller.setPaintContent = Eraser(color: Colors.white)),
     ];
+  }
+
+  static Widget defaultActionBarBuilder(BuildContext context, List<Widget> children) {
+    return Material(
+      color: Colors.white,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: EdgeInsets.zero,
+        child: Row(
+          children: children,
+        ),
+      ),
+    );
   }
 
   @override
@@ -238,44 +258,36 @@ class _DrawingBoardState extends State<DrawingBoard> {
 
   /// 构建默认操作栏
   Widget get _buildDefaultActions {
-    return Material(
-      color: Colors.green,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.zero,
-        child: Row(
-          children: <Widget>[
-            SizedBox(
-              height: 24,
-              width: 160,
-              child: ExValueBuilder<DrawConfig>(
-                valueListenable: _controller.drawConfig,
-                shouldRebuild: (DrawConfig p, DrawConfig n) => p.strokeWidth != n.strokeWidth,
-                builder: (_, DrawConfig dc, ___) {
-                  return Slider(
-                    value: dc.strokeWidth,
-                    max: 50,
-                    min: 1,
-                    onChanged: (double v) => _controller.setStyle(strokeWidth: v),
-                  );
-                },
-              ),
-            ),
-            ColorPicBtn(controller: _controller),
-            IconButton(icon: const Icon(CupertinoIcons.arrow_turn_up_left), onPressed: () => _controller.undo()),
-            IconButton(icon: const Icon(CupertinoIcons.arrow_turn_up_right), onPressed: () => _controller.redo()),
-            IconButton(icon: const Icon(CupertinoIcons.rotate_right), onPressed: () => _controller.turn()),
-            IconButton(icon: const Icon(CupertinoIcons.trash), onPressed: () => _controller.clear()),
-          ],
+    final List<Widget> children = [
+      SizedBox(
+        height: 24,
+        width: 160,
+        child: ExValueBuilder<DrawConfig>(
+          valueListenable: _controller.drawConfig,
+          shouldRebuild: (DrawConfig p, DrawConfig n) => p.strokeWidth != n.strokeWidth,
+          builder: (_, DrawConfig dc, ___) {
+            return Slider(
+              value: dc.strokeWidth,
+              max: 50,
+              min: 1,
+              onChanged: (double v) => _controller.setStyle(strokeWidth: v),
+            );
+          },
         ),
       ),
-    );
+      ColorPicBtn(controller: _controller),
+      IconButton(icon: const Icon(CupertinoIcons.arrow_turn_up_left), onPressed: () => _controller.undo()),
+      IconButton(icon: const Icon(CupertinoIcons.arrow_turn_up_right), onPressed: () => _controller.redo()),
+      IconButton(icon: const Icon(CupertinoIcons.rotate_right), onPressed: () => _controller.turn()),
+      IconButton(icon: const Icon(CupertinoIcons.trash), onPressed: () => _controller.clear()),
+    ];
+    return widget.actionBarBuilder?.call(context, children) ?? DrawingBoard.defaultActionBarBuilder(context, children);
   }
 
   /// 构建默认工具栏
   Widget get _buildDefaultTools {
     return Material(
-      color: Colors.green,
+      color: Colors.white,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         padding: EdgeInsets.zero,
