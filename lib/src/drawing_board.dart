@@ -24,6 +24,8 @@ typedef DefaultToolsBuilder = List<DefToolItem> Function(
   DrawingController controller,
 );
 
+typedef DefaultActionsBuilder = List<Widget> Function(DrawingController controller);
+
 typedef BarBuilder = Widget Function(
   BuildContext context,
   List<Widget> children,
@@ -65,10 +67,7 @@ class DrawingBoard extends StatefulWidget {
     this.actionBarBuilder,
     this.toolsBarBuilder,
     this.boardLayoutBuilder,
-    this.colorPicDecoration,
-    this.verticalSlider = false,
-    this.closeAfterColorPicked = false,
-    this.colorPickerBuilder,
+    this.defaultActionsBuilder,
     this.alignment = Alignment.topCenter,
   }) : super(key: key);
 
@@ -98,6 +97,7 @@ class DrawingBoard extends StatefulWidget {
 
   /// 默认工具栏构建器
   final DefaultToolsBuilder? defaultToolsBuilder;
+  final DefaultActionsBuilder? defaultActionsBuilder;
 
   /// 缩放板属性
   final Clip boardClipBehavior;
@@ -117,10 +117,6 @@ class DrawingBoard extends StatefulWidget {
   final BarBuilder? actionBarBuilder;
   final BarBuilder? toolsBarBuilder;
   final BoardLayoutBuilder? boardLayoutBuilder;
-  final bool verticalSlider;
-  final BoxDecoration? colorPicDecoration;
-  final ColorPickerBuilder? colorPickerBuilder;
-  final bool closeAfterColorPicked;
 
   /// 默认工具项列表
   static List<DefToolItem> defaultTools(
@@ -190,6 +186,73 @@ class DrawingBoard extends StatefulWidget {
           activeColor: activeColor,
           color: color,
           iconSize: iconSize,
+        ),
+    ];
+  }
+
+  /// 构建默认操作栏
+  static List<Widget> defaultActions(
+    DrawingController controller, {
+    final bool verticalSlider = false,
+    final BoxDecoration? colorPicDecoration,
+    final ColorPickerBuilder? colorPickerBuilder,
+    final bool closeAfterColorPicked = false,
+    final bool showUndoRedo = true,
+    final bool showClear = true,
+    final bool showStrokeWidth = true,
+    final bool showColorPicker = true,
+  }) {
+    return <Widget>[
+      if (showStrokeWidth)
+        ExValueBuilder<DrawConfig>(
+          valueListenable: controller.drawConfig,
+          shouldRebuild: (DrawConfig p, DrawConfig n) => p.strokeWidth != n.strokeWidth,
+          builder: (_, DrawConfig dc, ___) {
+            const double maximum = 20.0;
+            const double minimum = 1.0;
+            if (verticalSlider) {
+              return SfSlider.vertical(
+                max: maximum,
+                min: minimum,
+                value: dc.strokeWidth,
+                onChanged: (dynamic v) => controller.setStyle(strokeWidth: v as double?),
+              );
+            }
+            return SfSlider(
+              max: maximum,
+              min: minimum,
+              value: dc.strokeWidth,
+              onChanged: (dynamic v) => controller.setStyle(strokeWidth: v as double?),
+            );
+          },
+        ),
+      if (showColorPicker)
+        ColorPicBtn(
+          controller: controller,
+          decoration: colorPicDecoration,
+          colorPickerBuilder: colorPickerBuilder,
+          closeAfterPicked: closeAfterColorPicked,
+        ),
+      if (showUndoRedo)
+        IconButton(
+          icon: const Icon(
+            CupertinoIcons.arrow_turn_up_left,
+          ),
+          onPressed: () => controller.undo(),
+        ),
+      if (showUndoRedo)
+        IconButton(
+          icon: const Icon(
+            CupertinoIcons.arrow_turn_up_right,
+          ),
+          onPressed: () => controller.redo(),
+        ),
+      if (showClear)
+        IconButton(
+          icon: const Icon(
+            CupertinoIcons.trash,
+          ),
+          onPressed: () => controller.clear(),
         ),
     ];
   }
@@ -361,54 +424,7 @@ class _DrawingBoardState extends State<DrawingBoard> {
 
   /// 构建默认操作栏
   Widget get _buildDefaultActions {
-    final List<Widget> children = <Widget>[
-      ExValueBuilder<DrawConfig>(
-        valueListenable: _controller.drawConfig,
-        shouldRebuild: (DrawConfig p, DrawConfig n) => p.strokeWidth != n.strokeWidth,
-        builder: (_, DrawConfig dc, ___) {
-          const double maximum = 20.0;
-          const double minimum = 1.0;
-          if (widget.verticalSlider) {
-            return SfSlider.vertical(
-              max: maximum,
-              min: minimum,
-              value: dc.strokeWidth,
-              onChanged: (dynamic v) => _controller.setStyle(strokeWidth: v as double?),
-            );
-          }
-          return SfSlider(
-            max: maximum,
-            min: minimum,
-            value: dc.strokeWidth,
-            onChanged: (dynamic v) => _controller.setStyle(strokeWidth: v as double?),
-          );
-        },
-      ),
-      ColorPicBtn(
-        controller: _controller,
-        decoration: widget.colorPicDecoration,
-        colorPickerBuilder: widget.colorPickerBuilder,
-        closeAfterPicked: widget.closeAfterColorPicked,
-      ),
-      IconButton(
-        icon: const Icon(
-          CupertinoIcons.arrow_turn_up_left,
-        ),
-        onPressed: () => _controller.undo(),
-      ),
-      IconButton(
-        icon: const Icon(
-          CupertinoIcons.arrow_turn_up_right,
-        ),
-        onPressed: () => _controller.redo(),
-      ),
-      IconButton(
-        icon: const Icon(
-          CupertinoIcons.trash,
-        ),
-        onPressed: () => _controller.clear(),
-      ),
-    ];
+    final List<Widget> children = (widget.defaultActionsBuilder ?? DrawingBoard.defaultActions).call(_controller);
     return widget.actionBarBuilder?.call(
           context,
           children,
