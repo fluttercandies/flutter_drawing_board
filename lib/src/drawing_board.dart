@@ -202,28 +202,37 @@ class DrawingBoard extends StatefulWidget {
     final bool showClear = true,
     final bool showStrokeWidth = true,
     final bool showColorPicker = true,
+    final double maximum = 20.0,
+    final double minimum = 1.0,
+    final double? initialValue,
+    final double? sliderSize,
   }) {
+    controller.setStyle(strokeWidth: initialValue);
     return <Widget>[
       if (showStrokeWidth)
         ExValueBuilder<DrawConfig>(
           valueListenable: controller.drawConfig,
           shouldRebuild: (DrawConfig p, DrawConfig n) => p.strokeWidth != n.strokeWidth,
           builder: (_, DrawConfig dc, ___) {
-            const double maximum = 20.0;
-            const double minimum = 1.0;
             if (verticalSlider) {
-              return SfSlider.vertical(
+              return SizedBox(
+                height: sliderSize,
+                child: SfSlider.vertical(
+                  max: maximum,
+                  min: minimum,
+                  value: dc.strokeWidth,
+                  onChanged: (dynamic v) => controller.setStyle(strokeWidth: v as double?),
+                ),
+              );
+            }
+            return SizedBox(
+              width: sliderSize,
+              child: SfSlider(
                 max: maximum,
                 min: minimum,
                 value: dc.strokeWidth,
                 onChanged: (dynamic v) => controller.setStyle(strokeWidth: v as double?),
-              );
-            }
-            return SfSlider(
-              max: maximum,
-              min: minimum,
-              value: dc.strokeWidth,
-              onChanged: (dynamic v) => controller.setStyle(strokeWidth: v as double?),
+              ),
             );
           },
         ),
