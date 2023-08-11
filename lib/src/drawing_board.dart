@@ -197,7 +197,8 @@ class DrawingBoard extends StatefulWidget {
     final BoxDecoration? colorPicDecoration,
     final ColorPickerBuilder? colorPickerBuilder,
     final bool closeAfterColorPicked = false,
-    final bool showUndoRedo = true,
+    final bool showUndo = true,
+    final bool showRedo = true,
     final bool showClear = true,
     final bool showStrokeWidth = true,
     final bool showColorPicker = true,
@@ -233,14 +234,14 @@ class DrawingBoard extends StatefulWidget {
           colorPickerBuilder: colorPickerBuilder,
           closeAfterPicked: closeAfterColorPicked,
         ),
-      if (showUndoRedo)
+      if (showUndo)
         IconButton(
           icon: const Icon(
             CupertinoIcons.arrow_turn_up_left,
           ),
           onPressed: () => controller.undo(),
         ),
-      if (showUndoRedo)
+      if (showRedo)
         IconButton(
           icon: const Icon(
             CupertinoIcons.arrow_turn_up_right,
