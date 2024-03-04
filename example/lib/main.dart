@@ -156,6 +156,9 @@ class _MyHomePageState extends State<MyHomePage> {
   /// 绘制控制器
   final DrawingController _drawingController = DrawingController();
 
+  final TransformationController _transformationController =
+      TransformationController();
+
   @override
   void dispose() {
     _drawingController.dispose();
@@ -187,6 +190,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   /// 获取画板内容 Json `getJsonList()`
   Future<void> _getJson() async {
+    jsonEncode(_drawingController.getJsonList());
+
     showDialog<void>(
       context: context,
       builder: (BuildContext c) {
@@ -220,6 +225,10 @@ class _MyHomePageState extends State<MyHomePage> {
     _drawingController.addContent(Eraser.fromJson(tData[1]));
   }
 
+  void _restBoard() {
+    _transformationController.value = Matrix4.identity();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -234,7 +243,9 @@ class _MyHomePageState extends State<MyHomePage> {
           IconButton(
               icon: const Icon(Icons.javascript_outlined), onPressed: _getJson),
           IconButton(icon: const Icon(Icons.check), onPressed: _getImageData),
-          const SizedBox(width: 40),
+          IconButton(
+              icon: const Icon(Icons.restore_page_rounded),
+              onPressed: _restBoard),
         ],
       ),
       body: Column(
@@ -245,6 +256,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 return DrawingBoard(
                   // boardPanEnabled: false,
                   // boardScaleEnabled: false,
+                  transformationController: _transformationController,
                   controller: _drawingController,
                   background: Container(
                     width: constraints.maxWidth,

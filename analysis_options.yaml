@@ -108,7 +108,6 @@ linter:
     - implementation_imports
     - implicit_call_tearoffs
     - invalid_case_patterns
-    - iterable_contains_unrelated_type
     # - join_return_with_assignment # not required by flutter style
     - leading_newlines_in_multiline_strings
     - library_annotations
@@ -116,7 +115,6 @@ linter:
     - library_prefixes
     - library_private_types_in_public_api
     # - lines_longer_than_80_chars # not required by flutter style
-    - list_remove_unrelated_type
     # - literal_only_boolean_expressions # too many false positives: https://github.com/dart-lang/linter/issues/453
     - missing_whitespace_between_adjacent_strings
     - no_adjacent_strings_in_list
