@@ -68,6 +68,14 @@ class Painter extends StatelessWidget {
     onPointerUp?.call(pue);
   }
 
+  void _onPointerCancel(PointerCancelEvent pce) {
+    if (!drawingController.couldDraw) {
+      return;
+    }
+
+    drawingController.endDraw();
+  }
+
   /// GestureDetector 占位
   void _onPanDown(DragDownDetails ddd) {}
 
@@ -81,6 +89,7 @@ class Painter extends StatelessWidget {
       onPointerDown: _onPointerDown,
       onPointerMove: _onPointerMove,
       onPointerUp: _onPointerUp,
+      onPointerCancel: _onPointerCancel,
       behavior: HitTestBehavior.opaque,
       child: ExValueBuilder<DrawConfig>(
         valueListenable: drawingController.drawConfig,

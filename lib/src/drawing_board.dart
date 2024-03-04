@@ -174,6 +174,8 @@ class _DrawingBoardState extends State<DrawingBoard> {
           _controller.addFingerCount(pde.localPosition),
       onPointerUp: (PointerUpEvent pue) =>
           _controller.reduceFingerCount(pue.localPosition),
+      onPointerCancel: (PointerCancelEvent pce) =>
+          _controller.reduceFingerCount(pce.localPosition),
       child: content,
     );
   }
@@ -194,18 +196,11 @@ class _DrawingBoardState extends State<DrawingBoard> {
             final double max = dc.size!.longestSide;
 
             if (!isHorizontal) {
-              c = SizedBox(
-                width: max,
-                height: max,
-                child: c,
-              );
+              c = SizedBox(width: max, height: max, child: c);
             }
           }
 
-          return Transform.rotate(
-            angle: dc.angle * pi / 2,
-            child: c,
-          );
+          return Transform.rotate(angle: dc.angle * pi / 2, child: c);
         },
         child: Center(
           child: Stack(

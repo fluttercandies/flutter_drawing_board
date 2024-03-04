@@ -206,6 +206,10 @@ class DrawingController {
 
   /// 手指抬起
   void reduceFingerCount(Offset offset) {
+    if (drawConfig.value.fingerCount <= 0) {
+      return;
+    }
+
     drawConfig.value = drawConfig.value
         .copyWith(fingerCount: drawConfig.value.fingerCount - 1);
   }
