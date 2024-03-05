@@ -131,7 +131,7 @@ class DrawConfig {
 }
 
 /// 绘制控制器
-class DrawingController {
+class DrawingController extends ChangeNotifier {
   DrawingController({
     DrawConfig? config,
     PaintContent? content,
@@ -314,6 +314,7 @@ class DrawingController {
 
     _refresh();
     _refreshDeep();
+    notifyListeners();
   }
 
   /// 撤销
@@ -324,11 +325,35 @@ class DrawingController {
     }
   }
 
+  /// Check if undo is available.
+  /// Returns true if possible.
+  bool canUndo(){
+    if (_currentIndex > 0)
+      {
+        return true;
+      }
+    else{
+      return false;
+    }
+  }
+
   /// 重做
   void redo() {
     if (_currentIndex < _history.length) {
       _currentIndex = _currentIndex + 1;
       _refreshDeep();
+    }
+  }
+
+  /// Check if redo is available.
+  /// Returns true if possible.
+  bool canRedo(){
+    if (_currentIndex < _history.length)
+    {
+      return true;
+    }
+    else{
+      return false;
     }
   }
 

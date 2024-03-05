@@ -1,7 +1,7 @@
 # Flutter Drawing Board
 
 A Flutter package of drawing board.  
-Flutter artboard
+Flutter 画板
 
 [English](./README.md) | [中文](./README-zh-CN.md)
 
@@ -11,19 +11,19 @@ Flutter artboard
 [![CodeFactor](https://img.shields.io/codefactor/grade/github/fluttercandies/flutter_drawing_board?logo=codefactor&logoColor=%23ffffff&style=flat-square)](https://www.codefactor.io/repository/github/fluttercandies/flutter_drawing_board)
 <a target="_blank" href="https://jq.qq.com/?_wv=1027&k=5bcc0gy"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="FlutterCandies" title="FlutterCandies"></a>
 
-> There are breaking changes after `0.3.0`, text addition has been removed. For text addition and editing, please refer to [![pub package](https://img.shields.io/pub/v/stack_board?logo=dart&label=stack_board&style=flat-square)](https://pub.dev/packages/stack_board)  
+> `0.3.0` 后存在破坏性更新，移除了文本添加，文本的添加与编辑请移步 [![pub package](https://img.shields.io/pub/v/stack_board?logo=dart&label=stack_board&style=flat-square)](https://pub.dev/packages/stack_board)  
 
-### Features
-* Basic drawing
-* Custom drawing
-* Canvas rotation, multi-touch movement, and scaling
-* Undo, redo
+### 特性
+* 基础绘制
+* 自定义绘制
+* 画布旋转、多指移动缩放
+* 撤销、重做
 
-### Preview
+### 预览
 
-* Try it online::[https://painter.liugl.cn](https://painter.liugl.cn)  
+* 在线体验:[https://painter.liugl.cn](https://painter.liugl.cn)  
 
-* Preview of basic functionalities 
+* 基础功能预览  
 
 <img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/master/preview/pre1.gif" height=300>
 <img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/master/preview/pre2.gif" height=300>
@@ -34,10 +34,9 @@ Flutter artboard
 
 &nbsp;
 
-### Usage
+### 使用方法  
 
-
-* Create
+* 创建
 
 ```dart
 //simple example
@@ -46,12 +45,12 @@ import 'package:flutter_drawing_board/flutter_drawing_board.dart';
 
 DrawingBoard(
   background: Container(width: 400, height: 400, color: Colors.white),
-  showDefaultActions: true, /// Enable default action options
-  showDefaultTools: true,   /// Enable default toolbar
+  showDefaultActions: true, /// 开启默认操作选项
+  showDefaultTools: true,   /// 开启默认工具栏
 ),
 ```
 
-* Retrieve drawing board data using DrawingController.getImageData
+* 通过 DrawingController.getImageData 获取画板数据
 
 ```dart
 import 'package:flutter_drawing_board/flutter_drawing_board.dart';
@@ -65,13 +64,13 @@ DrawingBoard(
   showDefaultTools: true,
 ),
 
-/// Get drawing board data
+/// 获取画板数据
 Future<void> _getImageData() async {
   print((await _drawingController.getImageData()).buffer.asInt8List());
 }
 ```
 
-* Retrieve content Json using DrawingController.getJsonList
+* 通过 DrawingController.getJsonList 获取内容 Json
 
 ```dart
 import 'package:flutter_drawing_board/flutter_drawing_board.dart';
@@ -85,7 +84,7 @@ DrawingBoard(
   showDefaultTools: true,
 ),
 
-/// Get Json content
+/// 获取内容 Json
 Future<void> _getJsonList() async {
   print(const JsonEncoder.withIndent('  ').convert(_drawingController.getJsonList()));
 }
@@ -144,7 +143,7 @@ Future<void> _getJsonList() async {
 </details>
 
 
-* Add drawing content using Json
+* 通过 `Json` 添加绘制内容
 
 ```dart
 const Map<String, dynamic> _testLine1 = <String, dynamic>{
@@ -183,35 +182,35 @@ const Map<String, dynamic> _testLine2 = <String, dynamic>{
 
   ...
 
-/// Add Json test content
+/// 添加Json测试内容
 void _addTestLine() {
   _drawingController.addContent(StraightLine.fromJson(_testLine1));
   _drawingController.addContents(<PaintContent>[StraightLine.fromJson(_testLine2)]);
 }
 ```
 
-* Set drawing content
+* 设置绘制内容
 
 ```dart
-/// Set drawing content as a simple line
+/// 将绘制内容设置为普通线条
 _drawingController.setPaintContent = SimpleLine();
 ```
 
-|  Built-in Shape   | Description  | Parameters |
+|  内置图形   | 说明  | 参数 |
 |  ----  | ----  | ---- |
-| SimpleLine  | Simple line | / |
-| SmoothLine  | Stroke line | double brushPrecision = 0.4 |
-| StraightLine  | Straight line | / |
-| Rectangle  | Rectangle | / |
-| Circle  | Ellipse | bool isEllipse = false <br>bool startFromCenter = true |
-| Eraser  | Eraser | / |
+| SimpleLine  | 普通线条 | / |
+| SmoothLine  | 笔触线条 | double brushPrecision = 0.4 |
+| StraightLine  | 直线 | / |
+| Rectangle  | 矩形 | / |
+| Circle  | 椭圆 | bool isEllipse = false <br>bool startFromCenter = true |
+| Eraser  | 橡皮 | / |
 
-* Set Paint
+* 设置Paint
 
 ```dart
 _drawingController.setStyle();
 
-/// Optional parameters
+/// 可选参数
 void setStyle({
   BlendMode? blendMode,
   Color? color,
@@ -230,28 +229,28 @@ void setStyle({
 })
 ```
 
-* Canvas operations
+* 画布操作
 
 ```dart
-/// Undo
+/// 撤销
 _drawingController.undo();
 
-/// Redo
+/// 重做
 _drawingController.redo();
 
-/// Rotate canvas
+/// 旋转画布
 _drawingController.turn();
 
-/// Clear canvas
+///清理画布
 _drawingController.clear();
 ```
 
-### Custom Drawing
+### 自定义绘制
 
-* Create a custom drawing class that inherits from [PaintContent](https://github.com/fluttercandies/flutter_drawing_board/blob/master/lib/src/paint_contents/paint_content.dart) (using a triangle as an example)
+* 创建继承自 [PaintContent](https://github.com/fluttercandies/flutter_drawing_board/blob/master/lib/src/paint_contents/paint_content.dart) 的自定义绘制类 (以三角形为例)
 
 ```dart
-/// Custom drawing of a triangle
+/// 自定义绘制三角形
 class Triangle extends PaintContent {
   Triangle();
 
@@ -316,14 +315,13 @@ class Triangle extends PaintContent {
 }
 ```
 
-* Add a tool to the default toolbar (optional)
+* 在默认工具栏中添加工具(可选)
 
-> `showDefaultTools` must be true otherwise the default toolbar won't display
-> 
-> `List<DefToolItem> DrawingBoard.defaultTools(Type currType, DrawingController controller);`
-is the default toolset
->
-> Use `defaultToolsBuilder` to rewrite the default drawing tools, or insert DefToolItem custom tools directly into defaultTools
+> `showDefaultTools` 必须为 `true` 否则默认工具栏不会显示
+
+> `List<DefToolItem> DrawingBoard.defaultTools(Type currType, DrawingController controller);`  
+> 为默认工具包  
+> 可以使用 `defaultToolsBuilder` 对默认绘制工具进行重写，或者直接在 `defaultTools` 中插入 `DefToolItem` 自定义工具
 
 ```dart
 DrawingBoard(
@@ -331,7 +329,7 @@ DrawingBoard(
   showDefaultTools: true,
   defaultToolsBuilder: (Type t, _) {
     return DrawingBoard.defaultTools(t, _drawingController)
-      ..insert(   /// Insert the triangle tool into the second position of the default toolbar
+      ..insert(   /// 将三角形工具插入默认工具栏的第二位
         1,
         DefToolItem(
           icon: Icons.change_history_rounded,
@@ -343,6 +341,6 @@ DrawingBoard(
 )
 ```
 
-* Preview  
+* 效果预览  
 
 <img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/master/preview/pre7.gif" height=300>
