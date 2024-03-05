@@ -131,7 +131,7 @@ class DrawConfig {
 }
 
 /// 绘制控制器
-class DrawingController {
+class DrawingController extends ChangeNotifier {
   DrawingController({
     DrawConfig? config,
     PaintContent? content,
@@ -310,6 +310,7 @@ class DrawingController {
 
     _refresh();
     _refreshDeep();
+    notifyListeners();
   }
 
   /// 撤销
