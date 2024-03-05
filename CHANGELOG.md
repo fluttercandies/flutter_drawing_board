@@ -1,3 +1,10 @@
+## [0.6.0]
+
+- Fix #32 #38 #39
+- marge #27 #29
+- marge English README
+- Rich example
+
 ## [0.5.0]
 
 - Upgrade to dart 3.0.0
