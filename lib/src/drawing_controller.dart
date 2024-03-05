@@ -132,10 +132,7 @@ class DrawConfig {
 
 /// 绘制控制器
 class DrawingController extends ChangeNotifier {
-  DrawingController({
-    DrawConfig? config,
-    PaintContent? content,
-  }) {
+  DrawingController({DrawConfig? config, PaintContent? content}) {
     _history = <PaintContent>[];
     _currentIndex = 0;
     realPainter = RePaintNotifier();
@@ -327,12 +324,10 @@ class DrawingController extends ChangeNotifier {
 
   /// Check if undo is available.
   /// Returns true if possible.
-  bool canUndo(){
-    if (_currentIndex > 0)
-      {
-        return true;
-      }
-    else{
+  bool canUndo() {
+    if (_currentIndex > 0) {
+      return true;
+    } else {
       return false;
     }
   }
@@ -347,12 +342,10 @@ class DrawingController extends ChangeNotifier {
 
   /// Check if redo is available.
   /// Returns true if possible.
-  bool canRedo(){
-    if (_currentIndex < _history.length)
-    {
+  bool canRedo() {
+    if (_currentIndex < _history.length) {
       return true;
-    }
-    else{
+    } else {
       return false;
     }
   }
@@ -394,6 +387,7 @@ class DrawingController extends ChangeNotifier {
   }
 
   /// 销毁控制器
+  @override
   void dispose() {
     if (!_mounted) {
       return;
@@ -404,6 +398,8 @@ class DrawingController extends ChangeNotifier {
     painter?.dispose();
 
     _mounted = false;
+
+    super.dispose();
   }
 }
 
