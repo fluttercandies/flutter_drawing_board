@@ -21,7 +21,7 @@ Flutter artboard
 
 ### Preview
 
-* Try it online::[https://painter.liugl.cn](https://painter.liugl.cn)  
+* Try it online::[Demo](https://xsilencex.github.io/flutter_drawing_board-demo/)  
 
 * Preview of basic functionalities 
 
