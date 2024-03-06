@@ -21,7 +21,7 @@ Flutter 画板
 
 ### 预览
 
-* 在线体验:[Demo](https://xsilencex.github.io/flutter_drawing_board-demo/)  
+* 在线体验:[Demo](https://xsilencex.github.io/flutter_drawing_board_demo/)  
 
 * 基础功能预览  
 
