@@ -22,8 +22,8 @@ class StraightLine extends PaintContent {
     );
   }
 
-  late Offset startPoint;
-  late Offset endPoint;
+  Offset? startPoint;
+  Offset? endPoint;
 
   @override
   void startDraw(Offset startPoint) => this.startPoint = startPoint;
@@ -32,8 +32,13 @@ class StraightLine extends PaintContent {
   void drawing(Offset nowPoint) => endPoint = nowPoint;
 
   @override
-  void draw(Canvas canvas, Size size, bool deeper) =>
-      canvas.drawLine(startPoint, endPoint, paint);
+  void draw(Canvas canvas, Size size, bool deeper) {
+    if (startPoint == null || endPoint == null) {
+      return;
+    }
+
+    canvas.drawLine(startPoint!, endPoint!, paint);
+  }
 
   @override
   StraightLine copy() => StraightLine();
@@ -41,8 +46,8 @@ class StraightLine extends PaintContent {
   @override
   Map<String, dynamic> toContentJson() {
     return <String, dynamic>{
-      'startPoint': startPoint.toJson(),
-      'endPoint': endPoint.toJson(),
+      'startPoint': startPoint?.toJson(),
+      'endPoint': endPoint?.toJson(),
       'paint': paint.toJson(),
     };
   }

@@ -23,10 +23,10 @@ class Rectangle extends PaintContent {
   }
 
   /// 起始点
-  Offset startPoint = Offset.zero;
+  Offset? startPoint;
 
   /// 结束点
-  Offset endPoint = Offset.zero;
+  Offset? endPoint;
 
   @override
   void startDraw(Offset startPoint) => this.startPoint = startPoint;
@@ -35,8 +35,13 @@ class Rectangle extends PaintContent {
   void drawing(Offset nowPoint) => endPoint = nowPoint;
 
   @override
-  void draw(Canvas canvas, Size size, bool deeper) =>
-      canvas.drawRect(Rect.fromPoints(startPoint, endPoint), paint);
+  void draw(Canvas canvas, Size size, bool deeper) {
+    if (startPoint == null || endPoint == null) {
+      return;
+    }
+
+    canvas.drawRect(Rect.fromPoints(startPoint!, endPoint!), paint);
+  }
 
   @override
   Rectangle copy() => Rectangle();
@@ -44,8 +49,8 @@ class Rectangle extends PaintContent {
   @override
   Map<String, dynamic> toContentJson() {
     return <String, dynamic>{
-      'startPoint': startPoint.toJson(),
-      'endPoint': endPoint.toJson(),
+      'startPoint': startPoint?.toJson(),
+      'endPoint': endPoint?.toJson(),
       'paint': paint.toJson(),
     };
   }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'drawing_controller.dart';
@@ -32,12 +34,20 @@ class Painter extends StatelessWidget {
 
   /// 手指落下
   void _onPointerDown(PointerDownEvent pde) {
-    if (!drawingController.couldStart(1)) {
+    drawingController.addFingerCount(pde.localPosition);
+
+    if (!drawingController.couldDraw) {
       return;
     }
 
-    drawingController.startDraw(pde.localPosition);
-    onPointerDown?.call(pde);
+    Future<void>.delayed(const Duration(milliseconds: 50), () {
+      if (!drawingController.couldDraw) {
+        return;
+      }
+
+      drawingController.startDraw(pde.localPosition);
+      onPointerDown?.call(pde);
+    });
   }
 
   /// 手指移动
@@ -55,6 +65,8 @@ class Painter extends StatelessWidget {
 
   /// 手指抬起
   void _onPointerUp(PointerUpEvent pue) {
+    drawingController.reduceFingerCount(pue.localPosition);
+
     if (!drawingController.couldDraw ||
         drawingController.currentContent == null) {
       return;
@@ -69,6 +81,8 @@ class Painter extends StatelessWidget {
   }
 
   void _onPointerCancel(PointerCancelEvent pce) {
+    drawingController.reduceFingerCount(pce.localPosition);
+
     if (!drawingController.couldDraw) {
       return;
     }

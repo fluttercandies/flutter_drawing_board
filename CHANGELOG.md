@@ -1,3 +1,7 @@
+## [0.7.0]
+
+- Fix abnormal drawing caused by number of fingers
+
 ## [0.6.0+2]
 
 - Update demo site
