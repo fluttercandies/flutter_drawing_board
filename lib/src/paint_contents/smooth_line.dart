@@ -73,6 +73,7 @@ class SmoothLine extends PaintContent {
 
   @override
   void draw(Canvas canvas, Size size, bool deeper) {
+    //缩放和移动画布的时候，手指落下留下一个圆点，这里我没想到好的解决办法
     for (int i = 1; i < points.length; i++) {
       canvas.drawPath(
         Path()

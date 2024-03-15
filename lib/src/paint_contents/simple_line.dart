@@ -31,8 +31,13 @@ class SimpleLine extends PaintContent {
   void drawing(Offset nowPoint) => path.lineTo(nowPoint.dx, nowPoint.dy);
 
   @override
-  void draw(Canvas canvas, Size size, bool deeper) =>
-      canvas.drawPath(path.path, paint);
+  void draw(Canvas canvas, Size size, bool deeper) {
+    //缩放和移动画布的时候，防止手指落下留下一个圆点。
+    if (path.steps.length <= 5) {
+      return;
+    }
+    canvas.drawPath(path.path, paint);
+  }
 
   @override
   SimpleLine copy() => SimpleLine();

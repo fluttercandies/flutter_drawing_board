@@ -35,8 +35,13 @@ class Rectangle extends PaintContent {
   void drawing(Offset nowPoint) => endPoint = nowPoint;
 
   @override
-  void draw(Canvas canvas, Size size, bool deeper) =>
-      canvas.drawRect(Rect.fromPoints(startPoint, endPoint), paint);
+  void draw(Canvas canvas, Size size, bool deeper) {
+    //缩放和移动画布的时候，防止手指落下留下大框。
+    if(startPoint == Offset.zero || endPoint == Offset.zero){
+      return;
+    }
+    canvas.drawRect(Rect.fromPoints(startPoint, endPoint), paint);
+  }
 
   @override
   Rectangle copy() => Rectangle();

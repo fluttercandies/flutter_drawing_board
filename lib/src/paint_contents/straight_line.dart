@@ -32,8 +32,13 @@ class StraightLine extends PaintContent {
   void drawing(Offset nowPoint) => endPoint = nowPoint;
 
   @override
-  void draw(Canvas canvas, Size size, bool deeper) =>
-      canvas.drawLine(startPoint, endPoint, paint);
+  void draw(Canvas canvas, Size size, bool deeper) {
+    //缩放和移动画布的时候，防止手指落下留下一个圆点。
+    if(startPoint == endPoint){
+      return;
+    }
+    canvas.drawLine(startPoint, endPoint, paint);
+  }
 
   @override
   StraightLine copy() => StraightLine();
