@@ -160,11 +160,22 @@ class _DrawingBoardState extends State<DrawingBoard> {
     );
 
     if (widget.showDefaultActions || widget.showDefaultTools) {
-      content = Column(
+      content = Stack(
         children: <Widget>[
-          Expanded(child: content),
-          if (widget.showDefaultActions) _buildDefaultActions,
-          if (widget.showDefaultTools) _buildDefaultTools,
+          Positioned(child: content),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: Column(
+                children: <Widget>[
+                  if (widget.showDefaultTools) _buildDefaultTools,
+                  if (widget.showDefaultActions) _buildDefaultActions,
+                ],
+              ),
+            ),
+          ),
         ],
       );
     }
