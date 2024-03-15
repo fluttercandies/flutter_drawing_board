@@ -34,8 +34,6 @@ class Painter extends StatelessWidget {
 
   /// 手指落下
   void _onPointerDown(PointerDownEvent pde) {
-    drawingController.addFingerCount(pde.localPosition);
-
     if (!drawingController.couldDraw) {
       return;
     }
@@ -65,8 +63,6 @@ class Painter extends StatelessWidget {
 
   /// 手指抬起
   void _onPointerUp(PointerUpEvent pue) {
-    drawingController.reduceFingerCount(pue.localPosition);
-
     if (!drawingController.couldDraw ||
         drawingController.currentContent == null) {
       return;
@@ -81,8 +77,6 @@ class Painter extends StatelessWidget {
   }
 
   void _onPointerCancel(PointerCancelEvent pce) {
-    drawingController.reduceFingerCount(pce.localPosition);
-
     if (!drawingController.couldDraw) {
       return;
     }

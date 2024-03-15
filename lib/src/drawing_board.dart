@@ -169,7 +169,15 @@ class _DrawingBoardState extends State<DrawingBoard> {
       );
     }
 
-    return content;
+    return Listener(
+      onPointerDown: (PointerDownEvent pde) =>
+          _controller.addFingerCount(pde.localPosition),
+      onPointerUp: (PointerUpEvent pue) =>
+          _controller.reduceFingerCount(pue.localPosition),
+      onPointerCancel: (PointerCancelEvent pce) =>
+          _controller.reduceFingerCount(pce.localPosition),
+      child: content,
+    );
   }
 
   /// 构建画板

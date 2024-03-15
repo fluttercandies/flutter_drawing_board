@@ -1,3 +1,4 @@
+## [0.7.0+1]
 ## [0.7.0]
 
 - Fix abnormal drawing caused by number of fingers
