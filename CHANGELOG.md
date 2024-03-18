@@ -1,4 +1,11 @@
+## [0.7.0+2]
+
+- Detach default toolbar
+
 ## [0.7.0+1]
+
+- Fix abnormal drawing caused by number of fingers
+
 ## [0.7.0]
 
 - Fix abnormal drawing caused by number of fingers

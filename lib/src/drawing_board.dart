@@ -98,7 +98,7 @@ class DrawingBoard extends StatefulWidget {
     return <DefToolItem>[
       DefToolItem(
           isActive: currType == SimpleLine,
-          icon: CupertinoIcons.pencil,
+          icon: Icons.edit,
           onTap: () => controller.setPaintContent(SimpleLine())),
       DefToolItem(
           isActive: currType == SmoothLine,
@@ -121,6 +121,16 @@ class DrawingBoard extends StatefulWidget {
           icon: CupertinoIcons.bandage,
           onTap: () => controller.setPaintContent(Eraser(color: Colors.white))),
     ];
+  }
+
+  static Widget buildDefaultActions(DrawingController controller) {
+    return _DrawingBoardState.buildDefaultActions(controller);
+  }
+
+  static Widget buildDefaultTools(DrawingController controller,
+      {DefaultToolsBuilder? defaultToolsBuilder, Axis axis = Axis.horizontal}) {
+    return _DrawingBoardState.buildDefaultTools(controller,
+        defaultToolsBuilder: defaultToolsBuilder, axis: axis);
   }
 
   @override
@@ -163,8 +173,10 @@ class _DrawingBoardState extends State<DrawingBoard> {
       content = Column(
         children: <Widget>[
           Expanded(child: content),
-          if (widget.showDefaultActions) _buildDefaultActions,
-          if (widget.showDefaultTools) _buildDefaultTools,
+          if (widget.showDefaultActions) buildDefaultActions(_controller),
+          if (widget.showDefaultTools)
+            buildDefaultTools(_controller,
+                defaultToolsBuilder: widget.defaultToolsBuilder),
         ],
       );
     }
@@ -240,7 +252,7 @@ class _DrawingBoardState extends State<DrawingBoard> {
   }
 
   /// 构建默认操作栏
-  Widget get _buildDefaultActions {
+  static Widget buildDefaultActions(DrawingController controller) {
     return Material(
       color: Colors.white,
       child: SingleChildScrollView(
@@ -252,7 +264,7 @@ class _DrawingBoardState extends State<DrawingBoard> {
               height: 24,
               width: 160,
               child: ExValueBuilder<DrawConfig>(
-                valueListenable: _controller.drawConfig,
+                valueListenable: controller.drawConfig,
                 shouldRebuild: (DrawConfig p, DrawConfig n) =>
                     p.strokeWidth != n.strokeWidth,
                 builder: (_, DrawConfig dc, ___) {
@@ -261,23 +273,23 @@ class _DrawingBoardState extends State<DrawingBoard> {
                     max: 50,
                     min: 1,
                     onChanged: (double v) =>
-                        _controller.setStyle(strokeWidth: v),
+                        controller.setStyle(strokeWidth: v),
                   );
                 },
               ),
             ),
             IconButton(
                 icon: const Icon(CupertinoIcons.arrow_turn_up_left),
-                onPressed: () => _controller.undo()),
+                onPressed: () => controller.undo()),
             IconButton(
                 icon: const Icon(CupertinoIcons.arrow_turn_up_right),
-                onPressed: () => _controller.redo()),
+                onPressed: () => controller.redo()),
             IconButton(
                 icon: const Icon(CupertinoIcons.rotate_right),
-                onPressed: () => _controller.turn()),
+                onPressed: () => controller.turn()),
             IconButton(
                 icon: const Icon(CupertinoIcons.trash),
-                onPressed: () => _controller.clear()),
+                onPressed: () => controller.clear()),
           ],
         ),
       ),
@@ -285,26 +297,32 @@ class _DrawingBoardState extends State<DrawingBoard> {
   }
 
   /// 构建默认工具栏
-  Widget get _buildDefaultTools {
+  static Widget buildDefaultTools(
+    DrawingController controller, {
+    DefaultToolsBuilder? defaultToolsBuilder,
+    Axis axis = Axis.horizontal,
+  }) {
     return Material(
       color: Colors.white,
       child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
+        scrollDirection: axis,
         padding: EdgeInsets.zero,
         child: ExValueBuilder<DrawConfig>(
-          valueListenable: _controller.drawConfig,
+          valueListenable: controller.drawConfig,
           shouldRebuild: (DrawConfig p, DrawConfig n) =>
               p.contentType != n.contentType,
           builder: (_, DrawConfig dc, ___) {
             final Type currType = dc.contentType;
 
-            return Row(
-              children:
-                  (widget.defaultToolsBuilder?.call(currType, _controller) ??
-                          DrawingBoard.defaultTools(currType, _controller))
-                      .map((DefToolItem item) => _DefToolItemWidget(item: item))
-                      .toList(),
-            );
+            final List<Widget> children =
+                (defaultToolsBuilder?.call(currType, controller) ??
+                        DrawingBoard.defaultTools(currType, controller))
+                    .map((DefToolItem item) => _DefToolItemWidget(item: item))
+                    .toList();
+
+            return axis == Axis.horizontal
+                ? Row(children: children)
+                : Column(children: children);
           },
         ),
       ),
