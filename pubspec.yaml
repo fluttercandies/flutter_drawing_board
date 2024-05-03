@@ -12,7 +12,7 @@ dependencies:
     sdk: flutter
   font_awesome_flutter: # ?
     git:
-        url: git@github.com:Recursyve/font-awesome-flutter.git
+        url: git@github.com:LightX-Innovations/font-awesome-flutter.git
         ref: null-safety
   syncfusion_flutter_sliders: 20.4.53 # unknown
 
