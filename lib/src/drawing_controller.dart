@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+
 import 'helper/safe_value_notifier.dart';
 import 'paint_contents/paint_content.dart';
 import 'paint_contents/simple_line.dart';
@@ -137,8 +138,7 @@ class DrawingController extends ChangeNotifier {
     _currentIndex = 0;
     realPainter = RePaintNotifier();
     painter = RePaintNotifier();
-    drawConfig = SafeValueNotifier<DrawConfig>(
-        config ?? DrawConfig.def(contentType: SimpleLine));
+    drawConfig = SafeValueNotifier<DrawConfig>(config ?? DrawConfig.def(contentType: SimpleLine));
     setPaintContent(content ?? SimpleLine());
   }
 
@@ -187,6 +187,9 @@ class DrawingController extends ChangeNotifier {
   /// 开始绘制点
   Offset? get startPoint => _startPoint;
 
+  /// history 长度
+  int hisLen = 0;
+
   /// 设置画板大小
   void setBoardSize(Size? size) {
     drawConfig.value = drawConfig.value.copyWith(size: size);
@@ -194,8 +197,7 @@ class DrawingController extends ChangeNotifier {
 
   /// 手指落下
   void addFingerCount(Offset offset) {
-    drawConfig.value = drawConfig.value
-        .copyWith(fingerCount: drawConfig.value.fingerCount + 1);
+    drawConfig.value = drawConfig.value.copyWith(fingerCount: drawConfig.value.fingerCount + 1);
   }
 
   /// 手指抬起
@@ -204,8 +206,7 @@ class DrawingController extends ChangeNotifier {
       return;
     }
 
-    drawConfig.value = drawConfig.value
-        .copyWith(fingerCount: drawConfig.value.fingerCount - 1);
+    drawConfig.value = drawConfig.value.copyWith(fingerCount: drawConfig.value.fingerCount - 1);
   }
 
   /// 设置绘制样式
@@ -246,8 +247,7 @@ class DrawingController extends ChangeNotifier {
   void setPaintContent(PaintContent content) {
     content.paint = drawConfig.value.paint;
     _paintContent = content;
-    drawConfig.value =
-        drawConfig.value.copyWith(contentType: content.runtimeType);
+    drawConfig.value = drawConfig.value.copyWith(contentType: content.runtimeType);
   }
 
   /// 添加一条绘制数据
@@ -267,12 +267,12 @@ class DrawingController extends ChangeNotifier {
   /// * 旋转画布
   /// * 设置角度
   void turn() {
-    drawConfig.value =
-        drawConfig.value.copyWith(angle: (drawConfig.value.angle + 1) % 4);
+    drawConfig.value = drawConfig.value.copyWith(angle: (drawConfig.value.angle + 1) % 4);
   }
 
   /// 开始绘制
   void startDraw(Offset startPoint) {
+    hisLen = _history.length;
     _startPoint = startPoint;
     currentContent = _paintContent.copy();
     currentContent?.paint = drawConfig.value.paint;
@@ -288,17 +288,26 @@ class DrawingController extends ChangeNotifier {
   /// 正在绘制
   void drawing(Offset nowPaint) {
     currentContent?.drawing(nowPaint);
+    if (hisLen < _history.length - 1) {
+      _history.removeLast();
+    }
+
+    if (currentContent != null) {
+      _history.add(currentContent!);
+      _currentIndex = _history.length;
+      _refreshDeep();
+      _startPoint = nowPaint;
+      currentContent?.paint = drawConfig.value.paint;
+    }
+
+    print(_history.length);
     _refresh();
   }
 
   /// 结束绘制
   void endDraw() {
+    _history.removeRange(hisLen, _history.length - 1);
     _startPoint = null;
-    final int hisLen = _history.length;
-
-    if (hisLen > _currentIndex) {
-      _history.removeRange(_currentIndex, hisLen);
-    }
 
     if (currentContent != null) {
       _history.add(currentContent!);
@@ -357,10 +366,8 @@ class DrawingController extends ChangeNotifier {
   /// 获取图片数据
   Future<ByteData?> getImageData() async {
     try {
-      final RenderRepaintBoundary boundary = painterKey.currentContext!
-          .findRenderObject()! as RenderRepaintBoundary;
-      final ui.Image image = await boundary.toImage(
-          pixelRatio: View.of(painterKey.currentContext!).devicePixelRatio);
+      final RenderRepaintBoundary boundary = painterKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+      final ui.Image image = await boundary.toImage(pixelRatio: View.of(painterKey.currentContext!).devicePixelRatio);
       return await image.toByteData(format: ui.ImageByteFormat.png);
     } catch (e) {
       debugPrint('获取图片数据出错:$e');
