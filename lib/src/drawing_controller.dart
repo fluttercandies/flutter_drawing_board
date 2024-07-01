@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+
 import 'helper/safe_value_notifier.dart';
 import 'paint_contents/paint_content.dart';
 import 'paint_contents/simple_line.dart';
@@ -187,6 +188,9 @@ class DrawingController extends ChangeNotifier {
   /// 开始绘制点
   Offset? get startPoint => _startPoint;
 
+  /// history 长度
+  int hisLen = 0;
+
   /// 设置画板大小
   void setBoardSize(Size? size) {
     drawConfig.value = drawConfig.value.copyWith(size: size);
@@ -273,6 +277,9 @@ class DrawingController extends ChangeNotifier {
 
   /// 开始绘制
   void startDraw(Offset startPoint) {
+    //set hisLen when user start Drawing( for calculate the history length)
+    hisLen = currentIndex;
+
     _startPoint = startPoint;
     currentContent = _paintContent.copy();
     currentContent?.paint = drawConfig.value.paint;
@@ -288,21 +295,40 @@ class DrawingController extends ChangeNotifier {
   /// 正在绘制
   void drawing(Offset nowPaint) {
     currentContent?.drawing(nowPaint);
-    _refresh();
-  }
 
-  /// 结束绘制
-  void endDraw() {
-    _startPoint = null;
-    final int hisLen = _history.length;
+    // sync with history and currentIndex before drawing (for undo or redo)
+    if (currentIndex < _history.length) {
+      _history.removeRange(_currentIndex, _history.length);
+    }
 
-    if (hisLen > _currentIndex) {
-      _history.removeRange(_currentIndex, hisLen);
+    // remove last item when user drawing
+    if (hisLen < _history.length - 1) {
+      _history.removeLast();
     }
 
     if (currentContent != null) {
       _history.add(currentContent!);
       _currentIndex = _history.length;
+      _refreshDeep();
+      _startPoint = nowPaint;
+      currentContent?.paint = drawConfig.value.paint;
+    }
+
+    print(_history.length);
+    _refresh();
+  }
+
+  /// 结束绘制
+  void endDraw() {
+    // remove all items after hisLen (hisLen setted in startDraw)
+    _history.removeRange(hisLen, _history.length);
+    _startPoint = null;
+
+    if (currentContent != null) {
+      // add currentContent to history
+      _history.add(currentContent!);
+      _currentIndex = _history.length;
+      hisLen = _history.length;
       currentContent = null;
     }
 

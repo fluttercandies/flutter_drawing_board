@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'drawing_controller.dart';
 
+import 'drawing_controller.dart';
 import 'helper/ex_value_builder.dart';
 import 'helper/get_size.dart';
 import 'paint_contents/circle.dart';
@@ -119,7 +119,8 @@ class DrawingBoard extends StatefulWidget {
       DefToolItem(
           isActive: currType == Eraser,
           icon: CupertinoIcons.bandage,
-          onTap: () => controller.setPaintContent(Eraser(color: Colors.white))),
+          onTap: () =>
+              controller.setPaintContent(Eraser(color: Colors.transparent))),
     ];
   }
 
