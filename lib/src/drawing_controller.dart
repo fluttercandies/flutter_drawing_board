@@ -138,8 +138,7 @@ class DrawingController extends ChangeNotifier {
     _currentIndex = 0;
     realPainter = RePaintNotifier();
     painter = RePaintNotifier();
-    drawConfig = SafeValueNotifier<DrawConfig>(
-        config ?? DrawConfig.def(contentType: SimpleLine));
+    drawConfig = SafeValueNotifier<DrawConfig>(config ?? DrawConfig.def(contentType: SimpleLine));
     setPaintContent(content ?? SimpleLine());
   }
 
@@ -198,8 +197,7 @@ class DrawingController extends ChangeNotifier {
 
   /// 手指落下
   void addFingerCount(Offset offset) {
-    drawConfig.value = drawConfig.value
-        .copyWith(fingerCount: drawConfig.value.fingerCount + 1);
+    drawConfig.value = drawConfig.value.copyWith(fingerCount: drawConfig.value.fingerCount + 1);
   }
 
   /// 手指抬起
@@ -208,8 +206,7 @@ class DrawingController extends ChangeNotifier {
       return;
     }
 
-    drawConfig.value = drawConfig.value
-        .copyWith(fingerCount: drawConfig.value.fingerCount - 1);
+    drawConfig.value = drawConfig.value.copyWith(fingerCount: drawConfig.value.fingerCount - 1);
   }
 
   /// 设置绘制样式
@@ -250,8 +247,7 @@ class DrawingController extends ChangeNotifier {
   void setPaintContent(PaintContent content) {
     content.paint = drawConfig.value.paint;
     _paintContent = content;
-    drawConfig.value =
-        drawConfig.value.copyWith(contentType: content.runtimeType);
+    drawConfig.value = drawConfig.value.copyWith(contentType: content.runtimeType);
   }
 
   /// 添加一条绘制数据
@@ -271,13 +267,14 @@ class DrawingController extends ChangeNotifier {
   /// * 旋转画布
   /// * 设置角度
   void turn() {
-    drawConfig.value =
-        drawConfig.value.copyWith(angle: (drawConfig.value.angle + 1) % 4);
+    drawConfig.value = drawConfig.value.copyWith(angle: (drawConfig.value.angle + 1) % 4);
   }
 
   /// 开始绘制
   void startDraw(Offset startPoint) {
-    hisLen = _history.length;
+    //set hisLen when user start Drawing( for calculate the history length)
+    hisLen = currentIndex;
+
     _startPoint = startPoint;
     currentContent = _paintContent.copy();
     currentContent?.paint = drawConfig.value.paint;
@@ -293,6 +290,13 @@ class DrawingController extends ChangeNotifier {
   /// 正在绘制
   void drawing(Offset nowPaint) {
     currentContent?.drawing(nowPaint);
+
+    // sync with history and currentIndex before drawing (for undo or redo)
+    if (currentIndex < _history.length) {
+      _history.removeRange(_currentIndex, _history.length);
+    }
+
+    // remove last item when user drawing
     if (hisLen < _history.length - 1) {
       _history.removeLast();
     }
@@ -311,12 +315,15 @@ class DrawingController extends ChangeNotifier {
 
   /// 结束绘制
   void endDraw() {
-    _history.removeRange(hisLen, _history.length - 1);
+    // remove all items after hisLen (hisLen setted in startDraw)
+    _history.removeRange(hisLen, _history.length);
     _startPoint = null;
 
     if (currentContent != null) {
+      // add currentContent to history
       _history.add(currentContent!);
       _currentIndex = _history.length;
+      hisLen = _history.length;
       currentContent = null;
     }
 
@@ -371,10 +378,8 @@ class DrawingController extends ChangeNotifier {
   /// 获取图片数据
   Future<ByteData?> getImageData() async {
     try {
-      final RenderRepaintBoundary boundary = painterKey.currentContext!
-          .findRenderObject()! as RenderRepaintBoundary;
-      final ui.Image image = await boundary.toImage(
-          pixelRatio: View.of(painterKey.currentContext!).devicePixelRatio);
+      final RenderRepaintBoundary boundary = painterKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+      final ui.Image image = await boundary.toImage(pixelRatio: View.of(painterKey.currentContext!).devicePixelRatio);
       return await image.toByteData(format: ui.ImageByteFormat.png);
     } catch (e) {
       debugPrint('获取图片数据出错:$e');
