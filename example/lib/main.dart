@@ -335,6 +335,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     width: constraints.maxWidth,
                     height: constraints.maxHeight,
                     color: Colors.white,
+                    child: const FlutterLogo(),
                   ),
                   showDefaultActions: true,
                   showDefaultTools: true,

@@ -1,3 +1,7 @@
+## [0.8.0]
+
+- Real-time eraser
+
 ## [0.7.0+2]
 
 - Detach default toolbar

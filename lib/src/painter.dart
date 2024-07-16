@@ -51,7 +51,7 @@ class Painter extends StatelessWidget {
   /// 手指移动
   void _onPointerMove(PointerMoveEvent pme) {
     if (!drawingController.couldDraw) {
-      if (drawingController.currentContent != null) {
+      if (drawingController.hasPaintingContent) {
         drawingController.endDraw();
       }
       return;
@@ -63,8 +63,7 @@ class Painter extends StatelessWidget {
 
   /// 手指抬起
   void _onPointerUp(PointerUpEvent pue) {
-    if (!drawingController.couldDraw ||
-        drawingController.currentContent == null) {
+    if (!drawingController.couldDraw || !drawingController.hasPaintingContent) {
       return;
     }
 
@@ -156,7 +155,10 @@ class _DeepPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final List<PaintContent> contents = controller.getHistory;
+    final List<PaintContent> contents = <PaintContent>[
+      ...controller.getHistory,
+      if (controller.eraserContent != null) controller.eraserContent!,
+    ];
 
     if (contents.isEmpty) {
       return;
@@ -167,6 +169,8 @@ class _DeepPainter extends CustomPainter {
     for (int i = 0; i < controller.currentIndex; i++) {
       contents[i].draw(canvas, size, true);
     }
+
+    controller.eraserContent?.draw(canvas, size, true);
 
     canvas.restore();
   }

@@ -4,8 +4,10 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'helper/safe_value_notifier.dart';
+import 'paint_contents/eraser.dart';
 import 'paint_contents/paint_content.dart';
 import 'paint_contents/simple_line.dart';
+import 'paint_extension/ex_paint.dart';
 
 /// 绘制参数
 class DrawConfig {
@@ -157,6 +159,9 @@ class DrawingController extends ChangeNotifier {
   /// 当前绘制内容
   PaintContent? currentContent;
 
+  /// 橡皮擦内容
+  PaintContent? eraserContent;
+
   /// 底层绘制内容(绘制记录)
   late List<PaintContent> _history;
 
@@ -183,6 +188,9 @@ class DrawingController extends ChangeNotifier {
 
   /// 能否进行绘制
   bool get couldDraw => drawConfig.value.fingerCount <= 1;
+
+  bool get hasPaintingContent =>
+      currentContent != null || eraserContent != null;
 
   /// 开始绘制点
   Offset? get startPoint => _startPoint;
@@ -274,21 +282,36 @@ class DrawingController extends ChangeNotifier {
   /// 开始绘制
   void startDraw(Offset startPoint) {
     _startPoint = startPoint;
-    currentContent = _paintContent.copy();
-    currentContent?.paint = drawConfig.value.paint;
-    currentContent?.startDraw(startPoint);
+    if (_paintContent is Eraser && (_paintContent as Eraser).realTime) {
+      eraserContent = _paintContent.copy();
+      eraserContent?.paint = drawConfig.value.paint.copyWith(
+        color: Colors.transparent,
+        blendMode: BlendMode.clear,
+      );
+      eraserContent?.startDraw(startPoint);
+    } else {
+      currentContent = _paintContent.copy();
+      currentContent?.paint = drawConfig.value.paint;
+      currentContent?.startDraw(startPoint);
+    }
   }
 
   /// 取消绘制
   void cancelDraw() {
     _startPoint = null;
     currentContent = null;
+    eraserContent = null;
   }
 
   /// 正在绘制
   void drawing(Offset nowPaint) {
-    currentContent?.drawing(nowPaint);
-    _refresh();
+    if (_paintContent is Eraser && (_paintContent as Eraser).realTime) {
+      eraserContent?.drawing(nowPaint);
+      _refreshDeep();
+    } else {
+      currentContent?.drawing(nowPaint);
+      _refresh();
+    }
   }
 
   /// 结束绘制
@@ -298,6 +321,12 @@ class DrawingController extends ChangeNotifier {
 
     if (hisLen > _currentIndex) {
       _history.removeRange(_currentIndex, hisLen);
+    }
+
+    if (eraserContent != null) {
+      _history.add(eraserContent!);
+      _currentIndex = _history.length;
+      eraserContent = null;
     }
 
     if (currentContent != null) {
