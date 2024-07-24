@@ -189,6 +189,7 @@ class DrawingController extends ChangeNotifier {
   /// 能否进行绘制
   bool get couldDraw => drawConfig.value.fingerCount <= 1;
 
+  /// 是否有正在绘制的内容
   bool get hasPaintingContent =>
       currentContent != null || eraserContent != null;
 
@@ -281,6 +282,10 @@ class DrawingController extends ChangeNotifier {
 
   /// 开始绘制
   void startDraw(Offset startPoint) {
+    if (_currentIndex == 0 && _paintContent is Eraser) {
+      return;
+    }
+
     _startPoint = startPoint;
     if (_paintContent is Eraser && (_paintContent as Eraser).realTime) {
       eraserContent = _paintContent.copy();
@@ -305,6 +310,10 @@ class DrawingController extends ChangeNotifier {
 
   /// 正在绘制
   void drawing(Offset nowPaint) {
+    if (!hasPaintingContent) {
+      return;
+    }
+
     if (_paintContent is Eraser && (_paintContent as Eraser).realTime) {
       eraserContent?.drawing(nowPaint);
       _refreshDeep();
@@ -316,6 +325,10 @@ class DrawingController extends ChangeNotifier {
 
   /// 结束绘制
   void endDraw() {
+    if (!hasPaintingContent) {
+      return;
+    }
+
     _startPoint = null;
     final int hisLen = _history.length;
 

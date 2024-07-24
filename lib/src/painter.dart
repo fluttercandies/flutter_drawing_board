@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 
 import 'drawing_controller.dart';
@@ -38,14 +36,8 @@ class Painter extends StatelessWidget {
       return;
     }
 
-    Future<void>.delayed(const Duration(milliseconds: 50), () {
-      if (!drawingController.couldDraw) {
-        return;
-      }
-
-      drawingController.startDraw(pde.localPosition);
-      onPointerDown?.call(pde);
-    });
+    drawingController.startDraw(pde.localPosition);
+    onPointerDown?.call(pde);
   }
 
   /// 手指移动

@@ -258,40 +258,46 @@ class _DrawingBoardState extends State<DrawingBoard> {
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         padding: EdgeInsets.zero,
-        child: Row(
-          children: <Widget>[
-            SizedBox(
-              height: 24,
-              width: 160,
-              child: ExValueBuilder<DrawConfig>(
-                valueListenable: controller.drawConfig,
-                shouldRebuild: (DrawConfig p, DrawConfig n) =>
-                    p.strokeWidth != n.strokeWidth,
-                builder: (_, DrawConfig dc, ___) {
-                  return Slider(
-                    value: dc.strokeWidth,
-                    max: 50,
-                    min: 1,
-                    onChanged: (double v) =>
-                        controller.setStyle(strokeWidth: v),
-                  );
-                },
-              ),
-            ),
-            IconButton(
-                icon: const Icon(CupertinoIcons.arrow_turn_up_left),
-                onPressed: () => controller.undo()),
-            IconButton(
-                icon: const Icon(CupertinoIcons.arrow_turn_up_right),
-                onPressed: () => controller.redo()),
-            IconButton(
-                icon: const Icon(CupertinoIcons.rotate_right),
-                onPressed: () => controller.turn()),
-            IconButton(
-                icon: const Icon(CupertinoIcons.trash),
-                onPressed: () => controller.clear()),
-          ],
-        ),
+        child: ExValueBuilder<DrawConfig>(
+            valueListenable: controller.drawConfig,
+            builder: (_, DrawConfig dc, ___) {
+              return Row(
+                children: <Widget>[
+                  SizedBox(
+                    height: 24,
+                    width: 160,
+                    child: Slider(
+                      value: dc.strokeWidth,
+                      max: 50,
+                      min: 1,
+                      onChanged: (double v) =>
+                          controller.setStyle(strokeWidth: v),
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      CupertinoIcons.arrow_turn_up_left,
+                      color: controller.canUndo() ? null : Colors.grey,
+                    ),
+                    onPressed: () => controller.undo(),
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      CupertinoIcons.arrow_turn_up_right,
+                      color: controller.canRedo() ? null : Colors.grey,
+                    ),
+                    onPressed: () => controller.redo(),
+                  ),
+                  IconButton(
+                      icon: const Icon(CupertinoIcons.rotate_right),
+                      onPressed: () => controller.turn()),
+                  IconButton(
+                    icon: const Icon(CupertinoIcons.trash),
+                    onPressed: () => controller.clear(),
+                  ),
+                ],
+              );
+            }),
       ),
     );
   }
