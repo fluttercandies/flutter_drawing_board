@@ -119,7 +119,7 @@ class DrawingBoard extends StatefulWidget {
       DefToolItem(
           isActive: currType == Eraser,
           icon: CupertinoIcons.bandage,
-          onTap: () => controller.setPaintContent(Eraser(color: Colors.white))),
+          onTap: () => controller.setPaintContent(Eraser())),
     ];
   }
 

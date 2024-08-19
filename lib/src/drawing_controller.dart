@@ -162,6 +162,8 @@ class DrawingController extends ChangeNotifier {
   /// 橡皮擦内容
   PaintContent? eraserContent;
 
+  ui.Image? cachedImage;
+
   /// 底层绘制内容(绘制记录)
   late List<PaintContent> _history;
 
@@ -263,6 +265,7 @@ class DrawingController extends ChangeNotifier {
   void addContent(PaintContent content) {
     _history.add(content);
     _currentIndex++;
+    cachedImage = null;
     _refreshDeep();
   }
 
@@ -270,6 +273,7 @@ class DrawingController extends ChangeNotifier {
   void addContents(List<PaintContent> contents) {
     _history.addAll(contents);
     _currentIndex += contents.length;
+    cachedImage = null;
     _refreshDeep();
   }
 
@@ -287,12 +291,9 @@ class DrawingController extends ChangeNotifier {
     }
 
     _startPoint = startPoint;
-    if (_paintContent is Eraser && (_paintContent as Eraser).realTime) {
+    if (_paintContent is Eraser) {
       eraserContent = _paintContent.copy();
-      eraserContent?.paint = drawConfig.value.paint.copyWith(
-        color: Colors.transparent,
-        blendMode: BlendMode.clear,
-      );
+      eraserContent?.paint = drawConfig.value.paint.copyWith();
       eraserContent?.startDraw(startPoint);
     } else {
       currentContent = _paintContent.copy();
@@ -314,8 +315,9 @@ class DrawingController extends ChangeNotifier {
       return;
     }
 
-    if (_paintContent is Eraser && (_paintContent as Eraser).realTime) {
+    if (_paintContent is Eraser) {
       eraserContent?.drawing(nowPaint);
+      _refresh();
       _refreshDeep();
     } else {
       currentContent?.drawing(nowPaint);
@@ -355,6 +357,7 @@ class DrawingController extends ChangeNotifier {
 
   /// 撤销
   void undo() {
+    cachedImage = null;
     if (_currentIndex > 0) {
       _currentIndex = _currentIndex - 1;
       _refreshDeep();
@@ -373,6 +376,7 @@ class DrawingController extends ChangeNotifier {
 
   /// 重做
   void redo() {
+    cachedImage = null;
     if (_currentIndex < _history.length) {
       _currentIndex = _currentIndex + 1;
       _refreshDeep();
@@ -391,6 +395,7 @@ class DrawingController extends ChangeNotifier {
 
   /// 清理画布
   void clear() {
+    cachedImage = null;
     _history.clear();
     _currentIndex = 0;
     _refreshDeep();
@@ -399,6 +404,10 @@ class DrawingController extends ChangeNotifier {
   /// 获取图片数据
   Future<ByteData?> getImageData() async {
     try {
+      if (cachedImage != null) {
+        return await cachedImage!.toByteData(format: ui.ImageByteFormat.png);
+      }
+
       final RenderRepaintBoundary boundary = painterKey.currentContext!
           .findRenderObject()! as RenderRepaintBoundary;
       final ui.Image image = await boundary.toImage(

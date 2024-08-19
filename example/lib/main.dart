@@ -232,6 +232,8 @@ class _MyHomePageState extends State<MyHomePage> {
   final TransformationController _transformationController =
       TransformationController();
 
+  double _colorOpacity = 1;
+
   @override
   void dispose() {
     _drawingController.dispose();
@@ -308,6 +310,37 @@ class _MyHomePageState extends State<MyHomePage> {
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.grey,
       appBar: AppBar(
+        leading: PopupMenuButton<Color>(
+          icon: const Icon(Icons.color_lens),
+          onSelected: (ui.Color value) => _drawingController.setStyle(
+              color: value.withOpacity(_colorOpacity)),
+          itemBuilder: (_) {
+            return <PopupMenuEntry<ui.Color>>[
+              PopupMenuItem<Color>(
+                child: StatefulBuilder(
+                  builder: (BuildContext context,
+                      Function(void Function()) setState) {
+                    return Slider(
+                      value: _colorOpacity,
+                      onChanged: (double v) {
+                        setState(() => _colorOpacity = v);
+                        _drawingController.setStyle(
+                          color: _drawingController.drawConfig.value.color
+                              .withOpacity(_colorOpacity),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+              ...Colors.accents.map((ui.Color color) {
+                return PopupMenuItem<ui.Color>(
+                    value: color,
+                    child: Container(width: 100, height: 50, color: color));
+              }),
+            ];
+          },
+        ),
         title: const Text('Drawing Test'),
         systemOverlayStyle: SystemUiOverlayStyle.light,
         actions: <Widget>[

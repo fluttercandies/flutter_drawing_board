@@ -1,5 +1,8 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 
+import '../paint_contents.dart';
 import 'drawing_controller.dart';
 import 'helper/ex_value_builder.dart';
 import 'paint_contents/paint_content.dart';
@@ -106,9 +109,11 @@ class Painter extends StatelessWidget {
           clipBehavior: clipBehavior,
           child: RepaintBoundary(
             child: CustomPaint(
+              isComplex: true,
               painter: _DeepPainter(controller: drawingController),
               child: RepaintBoundary(
                 child: CustomPaint(
+                  isComplex: true,
                   painter: _UpPainter(controller: drawingController),
                 ),
               ),
@@ -128,11 +133,22 @@ class _UpPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (controller.currentContent == null) {
+    if (!controller.hasPaintingContent) {
       return;
     }
 
-    controller.currentContent?.draw(canvas, size, false);
+    if (controller.eraserContent != null) {
+      canvas.saveLayer(Offset.zero & size, Paint());
+
+      if (controller.cachedImage != null) {
+        canvas.drawImage(controller.cachedImage!, Offset.zero, Paint());
+      }
+      controller.eraserContent?.draw(canvas, size, false);
+
+      canvas.restore();
+    } else {
+      controller.currentContent?.draw(canvas, size, false);
+    }
   }
 
   @override
@@ -147,6 +163,10 @@ class _DeepPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    if (controller.eraserContent != null) {
+      return;
+    }
+
     final List<PaintContent> contents = <PaintContent>[
       ...controller.getHistory,
       if (controller.eraserContent != null) controller.eraserContent!,
@@ -156,15 +176,33 @@ class _DeepPainter extends CustomPainter {
       return;
     }
 
+    final ui.PictureRecorder recorder = ui.PictureRecorder();
+    final Canvas tempCanvas = Canvas(
+        recorder, Rect.fromPoints(Offset.zero, size.bottomRight(Offset.zero)));
+
     canvas.saveLayer(Offset.zero & size, Paint());
 
-    for (int i = 0; i < controller.currentIndex; i++) {
-      contents[i].draw(canvas, size, true);
+    if (controller.cachedImage != null) {
+      canvas.drawImage(controller.cachedImage!, Offset.zero, Paint());
+      contents.last.draw(canvas, size, true);
+
+      tempCanvas.drawImage(controller.cachedImage!, Offset.zero, Paint());
+      contents.last.draw(tempCanvas, size, true);
+    } else {
+      for (int i = 0; i < controller.currentIndex; i++) {
+        contents[i].draw(canvas, size, true);
+        contents[i].draw(tempCanvas, size, true);
+      }
     }
 
-    controller.eraserContent?.draw(canvas, size, true);
-
     canvas.restore();
+
+    final ui.Picture picture = recorder.endRecording();
+    picture
+        .toImage(size.width.toInt(), size.height.toInt())
+        .then((ui.Image value) {
+      controller.cachedImage = value;
+    });
   }
 
   @override

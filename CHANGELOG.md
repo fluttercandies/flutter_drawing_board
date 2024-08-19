@@ -1,5 +1,9 @@
 ## [0.8.1]
 
+- Improve drawing performance
+
+## [0.8.1]
+
 - Fix eraser
 
 ## [0.8.0]
