@@ -404,10 +404,6 @@ class DrawingController extends ChangeNotifier {
   /// 获取图片数据
   Future<ByteData?> getImageData() async {
     try {
-      if (cachedImage != null) {
-        return await cachedImage!.toByteData(format: ui.ImageByteFormat.png);
-      }
-
       final RenderRepaintBoundary boundary = painterKey.currentContext!
           .findRenderObject()! as RenderRepaintBoundary;
       final ui.Image image = await boundary.toImage(
@@ -415,6 +411,19 @@ class DrawingController extends ChangeNotifier {
       return await image.toByteData(format: ui.ImageByteFormat.png);
     } catch (e) {
       debugPrint('获取图片数据出错:$e');
+      return null;
+    }
+  }
+
+  /// 获取表层图片数据
+  Future<ByteData?> getSurfaceImageData() async {
+    try {
+      if (cachedImage != null) {
+        return await cachedImage!.toByteData(format: ui.ImageByteFormat.png);
+      }
+      return null;
+    } catch (e) {
+      debugPrint('获取表层图片数据出错:$e');
       return null;
     }
   }

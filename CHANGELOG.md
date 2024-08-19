@@ -1,3 +1,7 @@
+## [0.9.2]
+
+- Fix image data export exception
+
 ## [0.9.1]
 
 - Improve drawing performance
