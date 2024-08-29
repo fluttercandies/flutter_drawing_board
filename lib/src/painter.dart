@@ -182,17 +182,9 @@ class _DeepPainter extends CustomPainter {
 
     canvas.saveLayer(Offset.zero & size, Paint());
 
-    if (controller.cachedImage != null) {
-      canvas.drawImage(controller.cachedImage!, Offset.zero, Paint());
-      contents.last.draw(canvas, size, true);
-
-      tempCanvas.drawImage(controller.cachedImage!, Offset.zero, Paint());
-      contents.last.draw(tempCanvas, size, true);
-    } else {
-      for (int i = 0; i < controller.currentIndex; i++) {
-        contents[i].draw(canvas, size, true);
-        contents[i].draw(tempCanvas, size, true);
-      }
+    for (int i = 0; i < controller.currentIndex; i++) {
+      contents[i].draw(canvas, size, true);
+      contents[i].draw(tempCanvas, size, true);
     }
 
     canvas.restore();

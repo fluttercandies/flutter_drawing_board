@@ -1,3 +1,7 @@
+## [0.9.3]
+
+- Fix the problem of aliasing
+
 ## [0.9.2]
 
 - Fix image data export exception
