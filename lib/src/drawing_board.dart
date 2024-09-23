@@ -24,7 +24,8 @@ typedef DefaultToolsBuilder = List<DefToolItem> Function(
   DrawingController controller,
 );
 
-typedef DefaultActionsBuilder = List<Widget> Function(DrawingController controller);
+typedef DefaultActionsBuilder = List<Widget> Function(
+    DrawingController controller);
 
 typedef BarBuilder = Widget Function(
   BuildContext context,
@@ -204,6 +205,8 @@ class DrawingBoard extends StatefulWidget {
     final bool showColorPicker = true,
     final double maximum = 20.0,
     final double minimum = 1.0,
+    final Color? activeSliderColor,
+    final Color? inactiveSliderColor,
     final double? initialValue,
     final double? sliderSize,
   }) {
@@ -212,7 +215,8 @@ class DrawingBoard extends StatefulWidget {
       if (showStrokeWidth)
         ExValueBuilder<DrawConfig>(
           valueListenable: controller.drawConfig,
-          shouldRebuild: (DrawConfig p, DrawConfig n) => p.strokeWidth != n.strokeWidth,
+          shouldRebuild: (DrawConfig p, DrawConfig n) =>
+              p.strokeWidth != n.strokeWidth,
           builder: (_, DrawConfig dc, ___) {
             if (verticalSlider) {
               return SizedBox(
@@ -220,18 +224,24 @@ class DrawingBoard extends StatefulWidget {
                 child: SfSlider.vertical(
                   max: maximum,
                   min: minimum,
+                  activeColor: activeSliderColor,
+                  inactiveColor: inactiveSliderColor,
                   value: dc.strokeWidth,
-                  onChanged: (dynamic v) => controller.setStyle(strokeWidth: v as double?),
+                  onChanged: (dynamic v) =>
+                      controller.setStyle(strokeWidth: v as double?),
                 ),
               );
             }
             return SizedBox(
               width: sliderSize,
               child: SfSlider(
+                activeColor: activeSliderColor,
+                inactiveColor: inactiveSliderColor,
                 max: maximum,
                 min: minimum,
                 value: dc.strokeWidth,
-                onChanged: (dynamic v) => controller.setStyle(strokeWidth: v as double?),
+                onChanged: (dynamic v) =>
+                    controller.setStyle(strokeWidth: v as double?),
               ),
             );
           },
@@ -267,7 +277,8 @@ class DrawingBoard extends StatefulWidget {
     ];
   }
 
-  static Widget defaultActionBarBuilder(BuildContext context, List<Widget> children) {
+  static Widget defaultActionBarBuilder(
+      BuildContext context, List<Widget> children) {
     return Material(
       color: Colors.white,
       child: SingleChildScrollView(
@@ -280,7 +291,8 @@ class DrawingBoard extends StatefulWidget {
     );
   }
 
-  static Widget defaultToolsBarBuilder(BuildContext context, List<Widget> children) {
+  static Widget defaultToolsBarBuilder(
+      BuildContext context, List<Widget> children) {
     return Material(
       color: Colors.white,
       child: SingleChildScrollView(
@@ -314,7 +326,8 @@ class DrawingBoard extends StatefulWidget {
 }
 
 class _DrawingBoardState extends State<DrawingBoard> {
-  late final DrawingController _controller = widget.controller ?? DrawingController();
+  late final DrawingController _controller =
+      widget.controller ?? DrawingController();
 
   @override
   void dispose() {
@@ -327,7 +340,8 @@ class _DrawingBoardState extends State<DrawingBoard> {
     Widget content = InteractiveViewer(
       maxScale: widget.maxScale,
       minScale: widget.minScale,
-      boundaryMargin: widget.boardBoundaryMargin ?? EdgeInsets.all(MediaQuery.of(context).size.width),
+      boundaryMargin: widget.boardBoundaryMargin ??
+          EdgeInsets.all(MediaQuery.of(context).size.width),
       clipBehavior: widget.boardClipBehavior,
       panAxis: widget.panAxis,
       constrained: widget.boardConstrained,
@@ -345,8 +359,10 @@ class _DrawingBoardState extends State<DrawingBoard> {
     );
 
     if (widget.showDefaultActions || widget.showDefaultTools) {}
-    final Widget? actionBarWidget = widget.showDefaultActions ? _buildDefaultActions : null;
-    final Widget? toolsBarWidget = widget.showDefaultTools ? _buildDefaultTools : null;
+    final Widget? actionBarWidget =
+        widget.showDefaultActions ? _buildDefaultActions : null;
+    final Widget? toolsBarWidget =
+        widget.showDefaultTools ? _buildDefaultTools : null;
     content = widget.boardLayoutBuilder?.call(
           context,
           content,
@@ -361,8 +377,10 @@ class _DrawingBoardState extends State<DrawingBoard> {
         );
 
     return Listener(
-      onPointerDown: (PointerDownEvent pde) => _controller.addFingerCount(pde.localPosition),
-      onPointerUp: (PointerUpEvent pue) => _controller.reduceFingerCount(pue.localPosition),
+      onPointerDown: (PointerDownEvent pde) =>
+          _controller.addFingerCount(pde.localPosition),
+      onPointerUp: (PointerUpEvent pue) =>
+          _controller.reduceFingerCount(pue.localPosition),
       child: content,
     );
   }
@@ -374,7 +392,8 @@ class _DrawingBoardState extends State<DrawingBoard> {
         key: _controller.painterKey,
         child: ExValueBuilder<DrawConfig>(
           valueListenable: _controller.drawConfig,
-          shouldRebuild: (DrawConfig p, DrawConfig n) => p.angle != n.angle || p.size != n.size,
+          shouldRebuild: (DrawConfig p, DrawConfig n) =>
+              p.angle != n.angle || p.size != n.size,
           builder: (_, DrawConfig dc, Widget? child) {
             Widget c = child!;
 
@@ -434,7 +453,9 @@ class _DrawingBoardState extends State<DrawingBoard> {
 
   /// 构建默认操作栏
   Widget get _buildDefaultActions {
-    final List<Widget> children = (widget.defaultActionsBuilder ?? DrawingBoard.defaultActions).call(_controller);
+    final List<Widget> children =
+        (widget.defaultActionsBuilder ?? DrawingBoard.defaultActions)
+            .call(_controller);
     return widget.actionBarBuilder?.call(
           context,
           children,
@@ -449,13 +470,15 @@ class _DrawingBoardState extends State<DrawingBoard> {
   Widget get _buildDefaultTools {
     return ExValueBuilder<DrawConfig>(
       valueListenable: _controller.drawConfig,
-      shouldRebuild: (DrawConfig p, DrawConfig n) => p.contentType != n.contentType,
+      shouldRebuild: (DrawConfig p, DrawConfig n) =>
+          p.contentType != n.contentType,
       builder: (_, DrawConfig dc, ___) {
         final Type currType = dc.contentType;
-        final List<_DefToolItemWidget> children = (widget.defaultToolsBuilder?.call(currType, _controller) ??
-                DrawingBoard.defaultTools(currType, _controller))
-            .map((DefToolItem item) => _DefToolItemWidget(item: item))
-            .toList();
+        final List<_DefToolItemWidget> children =
+            (widget.defaultToolsBuilder?.call(currType, _controller) ??
+                    DrawingBoard.defaultTools(currType, _controller))
+                .map((DefToolItem item) => _DefToolItemWidget(item: item))
+                .toList();
 
         return widget.toolsBarBuilder?.call(context, children) ??
             DrawingBoard.defaultToolsBarBuilder(context, children);
