@@ -1,3 +1,8 @@
+## [0.9.4]
+
+- fix #58
+- add getter of content type
+
 ## [0.9.3]
 
 - Fix the problem of aliasing

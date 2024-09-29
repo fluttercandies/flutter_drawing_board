@@ -24,6 +24,9 @@ class SimpleLine extends PaintContent {
   DrawPath path = DrawPath();
 
   @override
+  String get contentType => 'SimpleLine';
+
+  @override
   void startDraw(Offset startPoint) =>
       path.moveTo(startPoint.dx, startPoint.dy);
 

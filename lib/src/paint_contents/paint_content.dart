@@ -28,10 +28,13 @@ abstract class PaintContent {
   /// toJson
   Map<String, dynamic> toContentJson();
 
+  /// contentType for web
+  String get contentType => runtimeType.toString();
+
   /// toJson
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
-      'type': runtimeType.toString(),
+      'type': contentType,
       ...toContentJson(),
     };
   }

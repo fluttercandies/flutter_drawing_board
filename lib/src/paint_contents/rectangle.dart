@@ -29,6 +29,9 @@ class Rectangle extends PaintContent {
   Offset? endPoint;
 
   @override
+  String get contentType => 'Rectangle';
+
+  @override
   void startDraw(Offset startPoint) => this.startPoint = startPoint;
 
   @override

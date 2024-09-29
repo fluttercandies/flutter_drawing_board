@@ -39,6 +39,9 @@ class SmoothLine extends PaintContent {
   late List<double> strokeWidthList;
 
   @override
+  String get contentType => 'SmoothLine';
+
+  @override
   void startDraw(Offset startPoint) {
     points = <Offset>[startPoint];
     strokeWidthList = <double>[paint.strokeWidth];

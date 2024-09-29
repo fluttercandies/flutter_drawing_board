@@ -52,6 +52,9 @@ class Circle extends PaintContent {
   Offset endPoint = Offset.zero;
 
   @override
+  String get contentType => 'Circle';
+
+  @override
   void startDraw(Offset startPoint) {
     this.startPoint = startPoint;
     center = startPoint;

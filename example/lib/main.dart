@@ -101,6 +101,9 @@ class Triangle extends PaintContent {
   Offset C = Offset.zero;
 
   @override
+  String get contentType => 'Triangle';
+
+  @override
   void startDraw(Offset startPoint) => this.startPoint = startPoint;
 
   @override
@@ -167,6 +170,9 @@ class ImageContent extends PaintContent {
   Offset size = Offset.zero;
   final String imageUrl;
   final ui.Image image;
+
+  @override
+  String get contentType => 'ImageContent';
 
   @override
   void startDraw(Offset startPoint) => this.startPoint = startPoint;

@@ -8,6 +8,9 @@ class EmptyContent extends PaintContent {
   factory EmptyContent.fromJson(Map<String, dynamic> _) => EmptyContent();
 
   @override
+  String get contentType => 'EmptyContent';
+
+  @override
   PaintContent copy() => EmptyContent();
 
   @override

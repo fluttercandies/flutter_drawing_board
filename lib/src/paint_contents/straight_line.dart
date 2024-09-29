@@ -26,6 +26,9 @@ class StraightLine extends PaintContent {
   Offset? endPoint;
 
   @override
+  String get contentType => 'StraightLine';
+
+  @override
   void startDraw(Offset startPoint) => this.startPoint = startPoint;
 
   @override

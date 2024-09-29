@@ -24,6 +24,9 @@ class Eraser extends PaintContent {
   DrawPath drawPath = DrawPath();
 
   @override
+  String get contentType => 'Eraser';
+
+  @override
   void startDraw(Offset startPoint) {
     drawPath.moveTo(startPoint.dx, startPoint.dy);
   }
