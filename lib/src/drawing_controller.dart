@@ -361,6 +361,7 @@ class DrawingController extends ChangeNotifier {
     if (_currentIndex > 0) {
       _currentIndex = _currentIndex - 1;
       _refreshDeep();
+      notifyListeners();
     }
   }
 
@@ -380,6 +381,7 @@ class DrawingController extends ChangeNotifier {
     if (_currentIndex < _history.length) {
       _currentIndex = _currentIndex + 1;
       _refreshDeep();
+      notifyListeners();
     }
   }
 
