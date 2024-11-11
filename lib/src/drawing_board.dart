@@ -173,10 +173,15 @@ class _DrawingBoardState extends State<DrawingBoard> {
       content = Column(
         children: <Widget>[
           Expanded(child: content),
-          if (widget.showDefaultActions) buildDefaultActions(_controller),
-          if (widget.showDefaultTools)
-            buildDefaultTools(_controller,
-                defaultToolsBuilder: widget.defaultToolsBuilder),
+          Container(
+            color: Colors.white,
+              child:
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            if (widget.showDefaultActions) buildDefaultActions(_controller),
+            if (widget.showDefaultTools)
+              buildDefaultTools(_controller,
+                  defaultToolsBuilder: widget.defaultToolsBuilder),
+          ]))
         ],
       );
     }
@@ -267,6 +272,7 @@ class _DrawingBoardState extends State<DrawingBoard> {
                     height: 24,
                     width: 160,
                     child: Slider(
+                      inactiveColor: Colors.grey,
                       value: dc.strokeWidth,
                       max: 50,
                       min: 1,
@@ -288,9 +294,6 @@ class _DrawingBoardState extends State<DrawingBoard> {
                     ),
                     onPressed: () => controller.redo(),
                   ),
-                  IconButton(
-                      icon: const Icon(CupertinoIcons.rotate_right),
-                      onPressed: () => controller.turn()),
                   IconButton(
                     icon: const Icon(CupertinoIcons.trash),
                     onPressed: () => controller.clear(),
