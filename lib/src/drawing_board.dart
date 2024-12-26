@@ -187,7 +187,7 @@ class _DrawingBoardState extends State<DrawingBoard> {
       onPointerDown: (PointerDownEvent pde) => _controller.addFingerCount(pde.localPosition),
       onPointerUp: (PointerUpEvent pue) => _controller.reduceFingerCount(pue.localPosition),
       onPointerCancel: (PointerCancelEvent pce) => _controller.reduceFingerCount(pce.localPosition),
-      child: content,
+      child: widget.cancelInteractiveViewer ? _buildBoard : content,
     );
   }
 
