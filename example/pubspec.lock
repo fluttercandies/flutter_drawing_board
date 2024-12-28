@@ -79,7 +79,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: f58954c997194adcba7c0d5a5429b99c1a399896
+      resolved-ref: "80ee2c6cd568425238c5a0b7b6db6b7d03f06050"
       url: "https://github.com/OmarYehiaDev/interactive_viewer_2.git"
     source: git
     version: "0.0.10"

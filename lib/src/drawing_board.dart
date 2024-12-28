@@ -167,6 +167,8 @@ class _DrawingBoardState extends State<DrawingBoard> {
       // onInteractionStart: widget.onInteractionStart,
       // onInteractionUpdate: widget.onInteractionUpdate,
       // onInteractionEnd: widget.onInteractionEnd,
+      alignment: Alignment.center,
+      origin: Offset.zero,
       scaleFactor: widget.boardScaleFactor,
       panEnabled: widget.boardPanEnabled,
       scaleEnabled: widget.boardScaleEnabled,
