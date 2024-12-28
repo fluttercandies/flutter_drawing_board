@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:interactive_viewer_2/interactive_viewer_2.dart';
 import 'drawing_controller.dart';
 
 import 'helper/ex_value_builder.dart';
@@ -154,17 +155,18 @@ class _DrawingBoardState extends State<DrawingBoard> {
 
   @override
   Widget build(BuildContext context) {
-    Widget content = InteractiveViewer(
+    Widget content = InteractiveViewer2(
       maxScale: widget.maxScale,
       minScale: widget.minScale,
-      boundaryMargin:
-          widget.boardBoundaryMargin ?? EdgeInsets.all(MediaQuery.of(context).size.width),
+      // boundaryMargin:
+      //     widget.boardBoundaryMargin ?? EdgeInsets.all(MediaQuery.of(context).size.width),
       clipBehavior: widget.boardClipBehavior,
       panAxis: widget.panAxis,
-      constrained: widget.boardConstrained,
-      onInteractionStart: widget.onInteractionStart,
-      onInteractionUpdate: widget.onInteractionUpdate,
-      onInteractionEnd: widget.onInteractionEnd,
+      doubleTapToZoom: false,
+      // constrained: widget.boardConstrained,
+      // onInteractionStart: widget.onInteractionStart,
+      // onInteractionUpdate: widget.onInteractionUpdate,
+      // onInteractionEnd: widget.onInteractionEnd,
       scaleFactor: widget.boardScaleFactor,
       panEnabled: widget.boardPanEnabled,
       scaleEnabled: widget.boardScaleEnabled,

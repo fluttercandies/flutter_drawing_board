@@ -10,6 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  interactive_viewer_2: ^0.0.10
 
 dev_dependencies:
   flutter_test:
