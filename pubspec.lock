@@ -62,10 +62,11 @@ packages:
   interactive_viewer_2:
     dependency: "direct main"
     description:
-      name: interactive_viewer_2
-      sha256: aa1fa1d154bf784e2b597442e1a62b73dec57271d46154426f790af8dfa6a16a
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: f58954c997194adcba7c0d5a5429b99c1a399896
+      url: "https://github.com/OmarYehiaDev/interactive_viewer_2.git"
+    source: git
     version: "0.0.10"
   leak_tracker:
     dependency: transitive

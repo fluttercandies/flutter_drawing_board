@@ -10,7 +10,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  interactive_viewer_2: ^0.0.10
+  interactive_viewer_2:
+    git:
+      url: https://github.com/OmarYehiaDev/interactive_viewer_2.git
 
 dev_dependencies:
   flutter_test:
@@ -22,7 +24,7 @@ dev_dependencies:
 
 
 # The following section is specific to Flutter.
-flutter:
+# flutter:
 
   # To add assets to your package, add an assets section, like this:
   # assets:
