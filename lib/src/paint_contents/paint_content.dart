@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
@@ -37,5 +39,10 @@ abstract class PaintContent {
       'type': contentType,
       ...toContentJson(),
     };
+  }
+
+  @override
+  String toString() {
+    return jsonEncode(toJson());
   }
 }

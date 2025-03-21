@@ -182,14 +182,20 @@ class DrawingController extends ChangeNotifier {
   /// 底层画布刷新控制
   RePaintNotifier? realPainter;
 
+  /// 是否绘制了有效内容
+  bool _isDrawingValidContent = false;
+
   /// 获取当前步骤索引
   int get currentIndex => _currentIndex;
 
   /// 获取当前颜色
   Color get getColor => drawConfig.value.color;
 
+  /// 能否开始绘制
+  bool get couldStartDraw => drawConfig.value.fingerCount == 0;
+
   /// 能否进行绘制
-  bool get couldDraw => drawConfig.value.fingerCount <= 1;
+  bool get couldDrawing => drawConfig.value.fingerCount == 1;
 
   /// 是否有正在绘制的内容
   bool get hasPaintingContent =>
@@ -315,6 +321,8 @@ class DrawingController extends ChangeNotifier {
       return;
     }
 
+    _isDrawingValidContent = true;
+
     if (_paintContent is Eraser) {
       eraserContent?.drawing(nowPaint);
       _refresh();
@@ -330,6 +338,16 @@ class DrawingController extends ChangeNotifier {
     if (!hasPaintingContent) {
       return;
     }
+
+    if (!_isDrawingValidContent) {
+      // 清理绘制内容
+      _startPoint = null;
+      currentContent = null;
+      eraserContent = null;
+      return;
+    }
+
+    _isDrawingValidContent = false;
 
     _startPoint = null;
     final int hisLen = _history.length;

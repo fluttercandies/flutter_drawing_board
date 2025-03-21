@@ -1,8 +1,6 @@
 import 'dart:ui';
 
-import 'ex_color_filter.dart';
-import 'ex_image_filter.dart';
-import 'ex_mask_filter.dart';
+import '../../paint_extension.dart';
 
 /// 为`Paint`扩展`copyWith`
 extension ExPaint on Paint {
@@ -40,7 +38,7 @@ extension ExPaint on Paint {
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'blendMode': blendMode.index,
-      'color': color.value,
+      'color': colorToInt(color),
       if (colorFilter != null) 'colorFilter': colorFilter?.toString(),
       'filterQuality': filterQuality.index,
       if (imageFilter != null) 'imageFilter': imageFilter?.toString(),

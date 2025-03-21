@@ -17,3 +17,10 @@ Color? stringToColor(String data) {
 
   return null;
 }
+
+int colorToInt(Color color) {
+  return (color.a * 255).toInt() << 24 |
+      (color.r * 255).toInt() << 16 |
+      (color.g * 255).toInt() << 8 |
+      (color.b * 255).toInt();
+}

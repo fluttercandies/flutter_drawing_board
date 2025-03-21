@@ -35,7 +35,7 @@ class Painter extends StatelessWidget {
 
   /// 手指落下
   void _onPointerDown(PointerDownEvent pde) {
-    if (!drawingController.couldDraw) {
+    if (!drawingController.couldStartDraw) {
       return;
     }
 
@@ -45,10 +45,15 @@ class Painter extends StatelessWidget {
 
   /// 手指移动
   void _onPointerMove(PointerMoveEvent pme) {
-    if (!drawingController.couldDraw) {
+    if (!drawingController.couldDrawing) {
       if (drawingController.hasPaintingContent) {
         drawingController.endDraw();
       }
+
+      return;
+    }
+
+    if (!drawingController.hasPaintingContent) {
       return;
     }
 
@@ -58,7 +63,8 @@ class Painter extends StatelessWidget {
 
   /// 手指抬起
   void _onPointerUp(PointerUpEvent pue) {
-    if (!drawingController.couldDraw || !drawingController.hasPaintingContent) {
+    if (!drawingController.couldDrawing ||
+        !drawingController.hasPaintingContent) {
       return;
     }
 
@@ -71,7 +77,7 @@ class Painter extends StatelessWidget {
   }
 
   void _onPointerCancel(PointerCancelEvent pce) {
-    if (!drawingController.couldDraw) {
+    if (!drawingController.couldDrawing) {
       return;
     }
 
@@ -98,10 +104,13 @@ class Painter extends StatelessWidget {
         shouldRebuild: (DrawConfig p, DrawConfig n) =>
             p.fingerCount != n.fingerCount,
         builder: (_, DrawConfig config, Widget? child) {
+          // 是否能拖动画布
+          final bool isPanEnabled = config.fingerCount > 1;
+
           return GestureDetector(
-            onPanDown: config.fingerCount <= 1 ? _onPanDown : null,
-            onPanUpdate: config.fingerCount <= 1 ? _onPanUpdate : null,
-            onPanEnd: config.fingerCount <= 1 ? _onPanEnd : null,
+            onPanDown: !isPanEnabled ? _onPanDown : null,
+            onPanUpdate: !isPanEnabled ? _onPanUpdate : null,
+            onPanEnd: !isPanEnabled ? _onPanEnd : null,
             child: child,
           );
         },

@@ -212,7 +212,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -225,7 +225,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -271,8 +271,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   /// 获取画板内容 Json `getJsonList()`
   Future<void> _getJson() async {
-    jsonEncode(_drawingController.getJsonList());
-
     showDialog<void>(
       context: context,
       builder: (BuildContext c) {
@@ -319,7 +317,7 @@ class _MyHomePageState extends State<MyHomePage> {
         leading: PopupMenuButton<Color>(
           icon: const Icon(Icons.color_lens),
           onSelected: (ui.Color value) => _drawingController.setStyle(
-              color: value.withOpacity(_colorOpacity)),
+              color: value.withValues(alpha: _colorOpacity)),
           itemBuilder: (_) {
             return <PopupMenuEntry<ui.Color>>[
               PopupMenuItem<Color>(
@@ -332,7 +330,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         setState(() => _colorOpacity = v);
                         _drawingController.setStyle(
                           color: _drawingController.drawConfig.value.color
-                              .withOpacity(_colorOpacity),
+                              .withValues(alpha: _colorOpacity),
                         );
                       },
                     );
@@ -348,7 +346,7 @@ class _MyHomePageState extends State<MyHomePage> {
           },
         ),
         title: const Text('Drawing Test'),
-        systemOverlayStyle: SystemUiOverlayStyle.light,
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
         actions: <Widget>[
           IconButton(
               icon: const Icon(Icons.line_axis), onPressed: _addTestLine),
@@ -360,78 +358,86 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: _restBoard),
         ],
       ),
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            child: LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints constraints) {
-                return DrawingBoard(
-                  // boardPanEnabled: false,
-                  // boardScaleEnabled: false,
-                  transformationController: _transformationController,
-                  controller: _drawingController,
-                  background: Container(
-                    width: constraints.maxWidth,
-                    height: constraints.maxHeight,
-                    color: Colors.white,
-                  ),
-                  showDefaultActions: true,
-                  showDefaultTools: true,
-                  defaultToolsBuilder: (Type t, _) {
-                    return DrawingBoard.defaultTools(t, _drawingController)
-                      ..insert(
-                        1,
-                        DefToolItem(
-                          icon: Icons.change_history_rounded,
-                          isActive: t == Triangle,
-                          onTap: () =>
-                              _drawingController.setPaintContent(Triangle()),
-                        ),
-                      )
-                      ..insert(
-                        2,
-                        DefToolItem(
-                          icon: Icons.image_rounded,
-                          isActive: t == ImageContent,
-                          onTap: () async {
-                            showDialog(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (BuildContext c) {
-                                return const Center(
-                                  child: CircularProgressIndicator(),
+      body: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle(
+          systemNavigationBarColor: Colors.grey,
+        ),
+        child: SafeArea(
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                child: LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                    return DrawingBoard(
+                      // boardPanEnabled: false,
+                      // boardScaleEnabled: false,
+                      transformationController: _transformationController,
+                      controller: _drawingController,
+                      background: Container(
+                        width: constraints.maxWidth,
+                        height: constraints.maxHeight,
+                        color: Colors.white,
+                      ),
+                      showDefaultActions: true,
+                      showDefaultTools: true,
+                      defaultToolsBuilder: (Type t, _) {
+                        return DrawingBoard.defaultTools(t, _drawingController)
+                          ..insert(
+                            1,
+                            DefToolItem(
+                              icon: Icons.change_history_rounded,
+                              isActive: t == Triangle,
+                              onTap: () => _drawingController
+                                  .setPaintContent(Triangle()),
+                            ),
+                          )
+                          ..insert(
+                            2,
+                            DefToolItem(
+                              icon: Icons.image_rounded,
+                              isActive: t == ImageContent,
+                              onTap: () async {
+                                showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (BuildContext c) {
+                                    return const Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  },
                                 );
-                              },
-                            );
 
-                            try {
-                              _drawingController.setPaintContent(ImageContent(
-                                await _getImage(_imageUrl),
-                                imageUrl: _imageUrl,
-                              ));
-                            } catch (e) {
-                              //
-                            } finally {
-                              if (context.mounted) {
-                                Navigator.pop(context);
-                              }
-                            }
-                          },
-                        ),
-                      );
+                                try {
+                                  _drawingController
+                                      .setPaintContent(ImageContent(
+                                    await _getImage(_imageUrl),
+                                    imageUrl: _imageUrl,
+                                  ));
+                                } catch (e) {
+                                  //
+                                } finally {
+                                  if (context.mounted) {
+                                    Navigator.pop(context);
+                                  }
+                                }
+                              },
+                            ),
+                          );
+                      },
+                    );
                   },
-                );
-              },
-            ),
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: SelectableText(
+                  'https://github.com/fluttercandies/flutter_drawing_board',
+                  style: TextStyle(fontSize: 10, color: Colors.white),
+                ),
+              ),
+            ],
           ),
-          const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: SelectableText(
-              'https://github.com/fluttercandies/flutter_drawing_board',
-              style: TextStyle(fontSize: 10, color: Colors.white),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
