@@ -422,12 +422,13 @@ class DrawingController extends ChangeNotifier {
   }
 
   /// 获取图片数据
-  Future<ByteData?> getImageData() async {
+  Future<ByteData?> getImageData({double? devicePixelRatio}) async {
     try {
       final RenderRepaintBoundary boundary = painterKey.currentContext!
           .findRenderObject()! as RenderRepaintBoundary;
       final ui.Image image = await boundary.toImage(
-          pixelRatio: View.of(painterKey.currentContext!).devicePixelRatio);
+          pixelRatio: devicePixelRatio ??
+              View.of(painterKey.currentContext!).devicePixelRatio);
       return await image.toByteData(format: ui.ImageByteFormat.png);
     } catch (e) {
       debugPrint('获取图片数据出错:$e');
