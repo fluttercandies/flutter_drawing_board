@@ -151,6 +151,9 @@ class _DrawingBoardState extends State<DrawingBoard> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isPortrait =
+        MediaQuery.of(context).orientation == Orientation.portrait;
+    
     Widget content = InteractiveViewer(
       maxScale: widget.maxScale,
       minScale: widget.minScale,
@@ -173,15 +176,28 @@ class _DrawingBoardState extends State<DrawingBoard> {
       content = Column(
         children: <Widget>[
           Expanded(child: content),
-          Container(
-            color: Colors.white,
-              child:
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            if (widget.showDefaultActions) buildDefaultActions(_controller),
-            if (widget.showDefaultTools)
-              buildDefaultTools(_controller,
-                  defaultToolsBuilder: widget.defaultToolsBuilder),
-          ]))
+          ColoredBox(
+              color: Colors.white,
+              child: isPortrait
+                  ? Column(
+                      children: <Widget>[
+                        if (widget.showDefaultActions)
+                          buildDefaultActions(_controller),
+                        if (widget.showDefaultTools)
+                          buildDefaultTools(_controller,
+                              defaultToolsBuilder: widget.defaultToolsBuilder),
+                      ],
+                    )
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        if (widget.showDefaultActions)
+                          buildDefaultActions(_controller),
+                        if (widget.showDefaultTools)
+                          buildDefaultTools(_controller,
+                              defaultToolsBuilder: widget.defaultToolsBuilder),
+                      ],
+                    ))
         ],
       );
     }
