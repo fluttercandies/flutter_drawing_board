@@ -33,6 +33,7 @@ class DrawingBoard extends StatefulWidget {
     this.onPointerUp,
     this.clipBehavior = Clip.antiAlias,
     this.defaultToolsBuilder,
+    this.toolsBackgroundColor = Colors.white,
     this.boardClipBehavior = Clip.hardEdge,
     this.panAxis = PanAxis.free,
     this.boardBoundaryMargin,
@@ -75,6 +76,9 @@ class DrawingBoard extends StatefulWidget {
 
   /// 默认工具栏构建器
   final DefaultToolsBuilder? defaultToolsBuilder;
+
+  /// 工具栏背景色
+  final Color toolsBackgroundColor;
 
   /// 缩放板属性
   final Clip boardClipBehavior;
@@ -123,14 +127,20 @@ class DrawingBoard extends StatefulWidget {
     ];
   }
 
-  static Widget buildDefaultActions(DrawingController controller) {
-    return _DrawingBoardState.buildDefaultActions(controller);
+  static Widget buildDefaultActions(DrawingController controller,
+      {Color? toolsBackgroundColor}) {
+    return _DrawingBoardState.buildDefaultActions(controller,
+        backgroundColor: toolsBackgroundColor);
   }
 
   static Widget buildDefaultTools(DrawingController controller,
-      {DefaultToolsBuilder? defaultToolsBuilder, Axis axis = Axis.horizontal}) {
+      {DefaultToolsBuilder? defaultToolsBuilder,
+      Axis axis = Axis.horizontal,
+      Color? toolsBackgroundColor}) {
     return _DrawingBoardState.buildDefaultTools(controller,
-        defaultToolsBuilder: defaultToolsBuilder, axis: axis);
+        defaultToolsBuilder: defaultToolsBuilder,
+        axis: axis,
+        backgroundColor: toolsBackgroundColor);
   }
 
   @override
@@ -173,10 +183,13 @@ class _DrawingBoardState extends State<DrawingBoard> {
       content = Column(
         children: <Widget>[
           Expanded(child: content),
-          if (widget.showDefaultActions) buildDefaultActions(_controller),
+          if (widget.showDefaultActions)
+            buildDefaultActions(_controller,
+                backgroundColor: widget.toolsBackgroundColor),
           if (widget.showDefaultTools)
             buildDefaultTools(_controller,
-                defaultToolsBuilder: widget.defaultToolsBuilder),
+                defaultToolsBuilder: widget.defaultToolsBuilder,
+                backgroundColor: widget.toolsBackgroundColor),
         ],
       );
     }
@@ -252,9 +265,10 @@ class _DrawingBoardState extends State<DrawingBoard> {
   }
 
   /// 构建默认操作栏
-  static Widget buildDefaultActions(DrawingController controller) {
+  static Widget buildDefaultActions(DrawingController controller,
+      {Color? backgroundColor}) {
     return Material(
-      color: Colors.white,
+      color: backgroundColor ?? Colors.transparent,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         padding: EdgeInsets.zero,
@@ -307,9 +321,10 @@ class _DrawingBoardState extends State<DrawingBoard> {
     DrawingController controller, {
     DefaultToolsBuilder? defaultToolsBuilder,
     Axis axis = Axis.horizontal,
+    Color? backgroundColor,
   }) {
     return Material(
-      color: Colors.white,
+      color: backgroundColor ?? Colors.transparent,
       child: SingleChildScrollView(
         scrollDirection: axis,
         padding: EdgeInsets.zero,
