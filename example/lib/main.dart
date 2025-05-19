@@ -380,6 +380,13 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       showDefaultActions: true,
                       showDefaultTools: true,
+                      defaultActionItems: [
+                        DefActionItem.Stroke,
+                        DefActionItem.Undo,
+                        DefActionItem.Redo,
+                        DefActionItem.Rotate,
+                        DefActionItem.Clear,
+                      ],
                       defaultToolsBuilder: (Type t, _) {
                         return DrawingBoard.defaultTools(t, _drawingController)
                           ..insert(

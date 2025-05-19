@@ -33,6 +33,13 @@ class DrawingBoard extends StatefulWidget {
     this.onPointerUp,
     this.clipBehavior = Clip.antiAlias,
     this.defaultToolsBuilder,
+    this.defaultActionItems = const <DefActionItem>[
+      DefActionItem.Stroke,
+      DefActionItem.Undo,
+      DefActionItem.Redo,
+      DefActionItem.Rotate,
+      DefActionItem.Clear,
+    ],
     this.boardClipBehavior = Clip.hardEdge,
     this.panAxis = PanAxis.free,
     this.boardBoundaryMargin,
@@ -75,6 +82,8 @@ class DrawingBoard extends StatefulWidget {
 
   /// 默认工具栏构建器
   final DefaultToolsBuilder? defaultToolsBuilder;
+
+  final List<DefActionItem> defaultActionItems;
 
   /// 缩放板属性
   final Clip boardClipBehavior;
@@ -173,7 +182,11 @@ class _DrawingBoardState extends State<DrawingBoard> {
       content = Column(
         children: <Widget>[
           Expanded(child: content),
-          if (widget.showDefaultActions) buildDefaultActions(_controller),
+          if (widget.showDefaultActions)
+            buildDefaultActions(
+              _controller,
+              defaultActionItems: widget.defaultActionItems,
+            ),
           if (widget.showDefaultTools)
             buildDefaultTools(_controller,
                 defaultToolsBuilder: widget.defaultToolsBuilder),
@@ -252,7 +265,10 @@ class _DrawingBoardState extends State<DrawingBoard> {
   }
 
   /// 构建默认操作栏
-  static Widget buildDefaultActions(DrawingController controller) {
+  static Widget buildDefaultActions(
+    DrawingController controller, {
+    List<DefActionItem> defaultActionItems = const <DefActionItem>[],
+  }) {
     return Material(
       color: Colors.white,
       child: SingleChildScrollView(
@@ -262,40 +278,48 @@ class _DrawingBoardState extends State<DrawingBoard> {
             valueListenable: controller.drawConfig,
             builder: (_, DrawConfig dc, ___) {
               return Row(
-                children: <Widget>[
-                  SizedBox(
-                    height: 24,
-                    width: 160,
-                    child: Slider(
-                      value: dc.strokeWidth,
-                      max: 50,
-                      min: 1,
-                      onChanged: (double v) =>
-                          controller.setStyle(strokeWidth: v),
-                    ),
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      CupertinoIcons.arrow_turn_up_left,
-                      color: controller.canUndo() ? null : Colors.grey,
-                    ),
-                    onPressed: () => controller.undo(),
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      CupertinoIcons.arrow_turn_up_right,
-                      color: controller.canRedo() ? null : Colors.grey,
-                    ),
-                    onPressed: () => controller.redo(),
-                  ),
-                  IconButton(
-                      icon: const Icon(CupertinoIcons.rotate_right),
-                      onPressed: () => controller.turn()),
-                  IconButton(
-                    icon: const Icon(CupertinoIcons.trash),
-                    onPressed: () => controller.clear(),
-                  ),
-                ],
+                children: defaultActionItems.map((DefActionItem item) {
+                  switch (item) {
+                    case DefActionItem.Stroke:
+                      return SizedBox(
+                        height: 24,
+                        width: 160,
+                        child: Slider(
+                          value: dc.strokeWidth,
+                          max: 50,
+                          min: 1,
+                          onChanged: (double v) =>
+                              controller.setStyle(strokeWidth: v),
+                        ),
+                      );
+                    case DefActionItem.Undo:
+                      return IconButton(
+                        icon: Icon(
+                          CupertinoIcons.arrow_turn_up_left,
+                          color: controller.canUndo() ? null : Colors.grey,
+                        ),
+                        onPressed: () => controller.undo(),
+                      );
+                    case DefActionItem.Redo:
+                      return IconButton(
+                        icon: Icon(
+                          CupertinoIcons.arrow_turn_up_right,
+                          color: controller.canRedo() ? null : Colors.grey,
+                        ),
+                        onPressed: () => controller.redo(),
+                      );
+                    case DefActionItem.Rotate:
+                      return IconButton(
+                        icon: const Icon(CupertinoIcons.rotate_right),
+                        onPressed: () => controller.turn(),
+                      );
+                    case DefActionItem.Clear:
+                      return IconButton(
+                        icon: const Icon(CupertinoIcons.trash),
+                        onPressed: () => controller.clear(),
+                      );
+                  }
+                }).toList(),
               );
             }),
       ),
@@ -376,3 +400,5 @@ class _DefToolItemWidget extends StatelessWidget {
     );
   }
 }
+
+enum DefActionItem { Stroke, Undo, Redo, Rotate, Clear }
