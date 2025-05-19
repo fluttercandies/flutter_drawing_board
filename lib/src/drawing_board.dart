@@ -22,6 +22,7 @@ typedef DefaultToolsBuilder = List<DefToolItem> Function(
 
 /// 默认操作栏构建器
 typedef DefaultActionsBuilder = List<DefActionItem> Function(
+  Type currType,
   DrawingController controller,
 );
 
@@ -137,7 +138,10 @@ class DrawingBoard extends StatefulWidget {
   }
 
   /// 默认操作项列表
-  static List<DefActionItem> defaultActions(DrawingController controller) {
+  static List<DefActionItem> defaultActions(
+    Type currType,
+    DrawingController controller,
+  ) {
     return <DefActionItem>[
       DefActionItem(
         icon: CupertinoIcons.arrow_turn_up_left,
@@ -324,8 +328,9 @@ class _DrawingBoardState extends State<DrawingBoard> {
                           controller.setStyle(strokeWidth: v),
                     ),
                   ),
-                  ...(defaultActionsBuilder?.call(controller) ??
-                          DrawingBoard.defaultActions(controller))
+                  ...(defaultActionsBuilder?.call(dc.contentType, controller) ??
+                          DrawingBoard.defaultActions(
+                              dc.contentType, controller))
                       .map((DefActionItem item) =>
                           _DefActionItemWidget(item: item)),
                 ],
