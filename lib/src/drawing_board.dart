@@ -20,6 +20,12 @@ typedef DefaultToolsBuilder = List<DefToolItem> Function(
   DrawingController controller,
 );
 
+/// 默认操作栏构建器
+typedef DefaultActionsBuilder = List<DefActionItem> Function(
+  Type currType,
+  DrawingController controller,
+);
+
 /// 画板
 class DrawingBoard extends StatefulWidget {
   const DrawingBoard({
@@ -33,6 +39,8 @@ class DrawingBoard extends StatefulWidget {
     this.onPointerUp,
     this.clipBehavior = Clip.antiAlias,
     this.defaultToolsBuilder,
+    this.defaultActionsBuilder,
+    this.toolsBackgroundColor = Colors.white,
     this.boardClipBehavior = Clip.hardEdge,
     this.panAxis = PanAxis.free,
     this.boardBoundaryMargin,
@@ -75,6 +83,12 @@ class DrawingBoard extends StatefulWidget {
 
   /// 默认工具栏构建器
   final DefaultToolsBuilder? defaultToolsBuilder;
+
+  /// 默认操作栏构建器
+  final DefaultActionsBuilder? defaultActionsBuilder;
+
+  /// 工具栏背景色
+  final Color toolsBackgroundColor;
 
   /// 缩放板属性
   final Clip boardClipBehavior;
@@ -123,14 +137,49 @@ class DrawingBoard extends StatefulWidget {
     ];
   }
 
-  static Widget buildDefaultActions(DrawingController controller) {
-    return _DrawingBoardState.buildDefaultActions(controller);
+  /// 默认操作项列表
+  static List<DefActionItem> defaultActions(
+    Type currType,
+    DrawingController controller,
+  ) {
+    return <DefActionItem>[
+      DefActionItem(
+        icon: CupertinoIcons.arrow_turn_up_left,
+        isEnabled: controller.canUndo(),
+        onTap: () => controller.undo(),
+      ),
+      DefActionItem(
+        icon: CupertinoIcons.arrow_turn_up_right,
+        isEnabled: controller.canRedo(),
+        onTap: () => controller.redo(),
+      ),
+      DefActionItem(
+        icon: CupertinoIcons.rotate_right,
+        onTap: () => controller.turn(),
+      ),
+      DefActionItem(
+        icon: CupertinoIcons.trash,
+        onTap: () => controller.clear(),
+      ),
+    ];
+  }
+
+  static Widget buildDefaultActions(DrawingController controller,
+      {Color? toolsBackgroundColor,
+      DefaultActionsBuilder? defaultActionsBuilder}) {
+    return _DrawingBoardState.buildDefaultActions(controller,
+        backgroundColor: toolsBackgroundColor,
+        defaultActionsBuilder: defaultActionsBuilder);
   }
 
   static Widget buildDefaultTools(DrawingController controller,
-      {DefaultToolsBuilder? defaultToolsBuilder, Axis axis = Axis.horizontal}) {
+      {DefaultToolsBuilder? defaultToolsBuilder,
+      Axis axis = Axis.horizontal,
+      Color? toolsBackgroundColor}) {
     return _DrawingBoardState.buildDefaultTools(controller,
-        defaultToolsBuilder: defaultToolsBuilder, axis: axis);
+        defaultToolsBuilder: defaultToolsBuilder,
+        axis: axis,
+        backgroundColor: toolsBackgroundColor);
   }
 
   @override
@@ -173,10 +222,14 @@ class _DrawingBoardState extends State<DrawingBoard> {
       content = Column(
         children: <Widget>[
           Expanded(child: content),
-          if (widget.showDefaultActions) buildDefaultActions(_controller),
+          if (widget.showDefaultActions)
+            buildDefaultActions(_controller,
+                backgroundColor: widget.toolsBackgroundColor,
+                defaultActionsBuilder: widget.defaultActionsBuilder),
           if (widget.showDefaultTools)
             buildDefaultTools(_controller,
-                defaultToolsBuilder: widget.defaultToolsBuilder),
+                defaultToolsBuilder: widget.defaultToolsBuilder,
+                backgroundColor: widget.toolsBackgroundColor),
         ],
       );
     }
@@ -252,9 +305,10 @@ class _DrawingBoardState extends State<DrawingBoard> {
   }
 
   /// 构建默认操作栏
-  static Widget buildDefaultActions(DrawingController controller) {
+  static Widget buildDefaultActions(DrawingController controller,
+      {Color? backgroundColor, DefaultActionsBuilder? defaultActionsBuilder}) {
     return Material(
-      color: Colors.white,
+      color: backgroundColor ?? Colors.transparent,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         padding: EdgeInsets.zero,
@@ -274,27 +328,11 @@ class _DrawingBoardState extends State<DrawingBoard> {
                           controller.setStyle(strokeWidth: v),
                     ),
                   ),
-                  IconButton(
-                    icon: Icon(
-                      CupertinoIcons.arrow_turn_up_left,
-                      color: controller.canUndo() ? null : Colors.grey,
-                    ),
-                    onPressed: () => controller.undo(),
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      CupertinoIcons.arrow_turn_up_right,
-                      color: controller.canRedo() ? null : Colors.grey,
-                    ),
-                    onPressed: () => controller.redo(),
-                  ),
-                  IconButton(
-                      icon: const Icon(CupertinoIcons.rotate_right),
-                      onPressed: () => controller.turn()),
-                  IconButton(
-                    icon: const Icon(CupertinoIcons.trash),
-                    onPressed: () => controller.clear(),
-                  ),
+                  ...(defaultActionsBuilder?.call(dc.contentType, controller) ??
+                          DrawingBoard.defaultActions(
+                              dc.contentType, controller))
+                      .map((DefActionItem item) =>
+                          _DefActionItemWidget(item: item)),
                 ],
               );
             }),
@@ -307,9 +345,10 @@ class _DrawingBoardState extends State<DrawingBoard> {
     DrawingController controller, {
     DefaultToolsBuilder? defaultToolsBuilder,
     Axis axis = Axis.horizontal,
+    Color? backgroundColor,
   }) {
     return Material(
-      color: Colors.white,
+      color: backgroundColor ?? Colors.transparent,
       child: SingleChildScrollView(
         scrollDirection: axis,
         padding: EdgeInsets.zero,
@@ -371,6 +410,46 @@ class _DefToolItemWidget extends StatelessWidget {
       icon: Icon(
         item.icon,
         color: item.isActive ? item.activeColor : item.color,
+        size: item.iconSize,
+      ),
+    );
+  }
+}
+
+/// 默认操作项配置文件
+class DefActionItem {
+  DefActionItem({
+    required this.icon,
+    required this.onTap,
+    this.isEnabled = true,
+    this.color,
+    this.disabledColor = Colors.grey,
+    this.iconSize,
+  });
+
+  final Function() onTap;
+  final bool isEnabled;
+  final IconData icon;
+  final double? iconSize;
+  final Color? color;
+  final Color disabledColor;
+}
+
+/// 默认操作项 Widget
+class _DefActionItemWidget extends StatelessWidget {
+  const _DefActionItemWidget({
+    required this.item,
+  });
+
+  final DefActionItem item;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: item.isEnabled ? item.onTap : null,
+      icon: Icon(
+        item.icon,
+        color: item.isEnabled ? item.color : item.disabledColor,
         size: item.iconSize,
       ),
     );
