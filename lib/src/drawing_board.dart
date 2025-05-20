@@ -384,8 +384,6 @@ class DefToolItem {
     this.color,
     this.activeColor = Colors.blue,
     this.iconSize,
-    this.badgeColor,
-    this.badgeSize = 8.0,
   });
 
   final Function()? onTap;
@@ -395,12 +393,6 @@ class DefToolItem {
   final double? iconSize;
   final Color? color;
   final Color activeColor;
-
-  /// Optional badge color to show in top right corner
-  final Color? badgeColor;
-
-  /// Size of the badge circle
-  final double badgeSize;
 }
 
 /// 默认工具项 Widget
@@ -413,38 +405,13 @@ class _DefToolItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: <Widget>[
-        IconButton(
-          onPressed: item.onTap,
-          icon: Icon(
-            item.icon,
-            color: item.isActive ? item.activeColor : item.color,
-            size: item.iconSize,
-          ),
-        ),
-        if (item.badgeColor != null)
-          Positioned(
-            right: 8,
-            top: 8,
-            child: Container(
-              width: item.badgeSize,
-              height: item.badgeSize,
-              decoration: BoxDecoration(
-                color: item.badgeColor,
-                shape: BoxShape.circle,
-                boxShadow: <BoxShadow>[
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.2),
-                    blurRadius: 2,
-                    offset: const Offset(0, 1),
-                  ),
-                ],
-              ),
-            ),
-          ),
-      ],
+    return IconButton(
+      onPressed: item.onTap,
+      icon: Icon(
+        item.icon,
+        color: item.isActive ? item.activeColor : item.color,
+        size: item.iconSize,
+      ),
     );
   }
 }
