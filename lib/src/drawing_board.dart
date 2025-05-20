@@ -47,7 +47,6 @@ class DrawingBoard extends StatefulWidget {
     this.boardConstrained = false,
     this.maxScale = 20,
     this.minScale = 0.2,
-    this.sliderActiveColor = Colors.blue,
     this.boardPanEnabled = true,
     this.boardScaleEnabled = true,
     this.boardScaleFactor = 200.0,
@@ -90,9 +89,6 @@ class DrawingBoard extends StatefulWidget {
 
   /// 工具栏背景色
   final Color toolsBackgroundColor;
-
-  /// 滑块激活色
-  final Color sliderActiveColor;
 
   /// 缩放板属性
   final Clip boardClipBehavior;
@@ -170,11 +166,9 @@ class DrawingBoard extends StatefulWidget {
 
   static Widget buildDefaultActions(DrawingController controller,
       {Color? toolsBackgroundColor,
-      Color? sliderActiveColor,
       DefaultActionsBuilder? defaultActionsBuilder}) {
     return _DrawingBoardState.buildDefaultActions(controller,
         backgroundColor: toolsBackgroundColor,
-        sliderActiveColor: sliderActiveColor,
         defaultActionsBuilder: defaultActionsBuilder);
   }
 
@@ -231,7 +225,6 @@ class _DrawingBoardState extends State<DrawingBoard> {
           if (widget.showDefaultActions)
             buildDefaultActions(_controller,
                 backgroundColor: widget.toolsBackgroundColor,
-                sliderActiveColor: widget.sliderActiveColor,
                 defaultActionsBuilder: widget.defaultActionsBuilder),
           if (widget.showDefaultTools)
             buildDefaultTools(_controller,
@@ -313,9 +306,7 @@ class _DrawingBoardState extends State<DrawingBoard> {
 
   /// 构建默认操作栏
   static Widget buildDefaultActions(DrawingController controller,
-      {Color? backgroundColor,
-      Color? sliderActiveColor,
-      DefaultActionsBuilder? defaultActionsBuilder}) {
+      {Color? backgroundColor, DefaultActionsBuilder? defaultActionsBuilder}) {
     return Material(
       color: backgroundColor ?? Colors.transparent,
       child: SingleChildScrollView(
@@ -331,7 +322,6 @@ class _DrawingBoardState extends State<DrawingBoard> {
                     width: 160,
                     child: Slider(
                       value: dc.strokeWidth,
-                      activeColor: sliderActiveColor,
                       max: 50,
                       min: 1,
                       onChanged: (double v) =>
