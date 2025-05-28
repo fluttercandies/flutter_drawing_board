@@ -26,7 +26,7 @@ class Circle extends PaintContent {
       isEllipse: data['isEllipse'] as bool,
       startFromCenter: data['startFromCenter'] as bool,
       center: jsonToOffset(data['center'] as Map<String, dynamic>),
-      radius: data['radius'] as double,
+      radius: (data['radius'] as num).toDouble(),
       startPoint: jsonToOffset(data['startPoint'] as Map<String, dynamic>),
       endPoint: jsonToOffset(data['endPoint'] as Map<String, dynamic>),
       paint: jsonToPaint(data['paint'] as Map<String, dynamic>),

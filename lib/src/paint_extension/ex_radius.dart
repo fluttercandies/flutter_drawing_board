@@ -11,7 +11,7 @@ extension ExRadius on Radius {
 
 Radius jsonToRadius(Map<String, dynamic> data) {
   return Radius.elliptical(
-    data['x'] as double,
-    data['y'] as double,
+    (data['x'] as num).toDouble(),
+    (data['y'] as num).toDouble(),
   );
 }

@@ -73,6 +73,6 @@ Paint jsonToPaint(Map<String, dynamic> data) {
     // ..shader = data['shader'] as Shader? // 无法解析
     ..strokeCap = StrokeCap.values[data['strokeCap'] as int]
     ..strokeJoin = StrokeJoin.values[data['strokeJoin'] as int]
-    ..strokeWidth = data['strokeWidth'] as double
+    ..strokeWidth = (data['strokeWidth'] as num).toDouble()
     ..style = PaintingStyle.values[data['style'] as int];
 }

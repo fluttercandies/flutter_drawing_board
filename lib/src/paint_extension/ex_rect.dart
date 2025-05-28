@@ -13,9 +13,9 @@ extension ExRect on Rect {
 
 Rect jsonToRect(Map<String, dynamic> data) {
   return Rect.fromLTRB(
-    data['left'] as double,
-    data['top'] as double,
-    data['right'] as double,
-    data['bottom'] as double,
+    (data['left'] as num).toDouble(),
+    (data['top'] as num).toDouble(),
+    (data['right'] as num).toDouble(),
+    (data['bottom'] as num).toDouble(),
   );
 }

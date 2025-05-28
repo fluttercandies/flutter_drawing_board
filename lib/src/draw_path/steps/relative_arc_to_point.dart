@@ -18,7 +18,7 @@ class RelativeArcToPoint extends OperationStep {
     return RelativeArcToPoint(
       jsonToOffset(data['arcEndDelta'] as Map<String, dynamic>),
       jsonToRadius(data['radius'] as Map<String, dynamic>),
-      data['rotation'] as double,
+      (data['rotation'] as num).toDouble(),
       data['largeArc'] as bool,
       data['clockwise'] as bool,
     );

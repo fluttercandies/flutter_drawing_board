@@ -15,8 +15,8 @@ class ArcTo extends OperationStep {
   factory ArcTo.fromJson(Map<String, dynamic> data) {
     return ArcTo(
       rect: jsonToRect(data['rect'] as Map<String, dynamic>),
-      startAngle: data['startAngle'] as double,
-      sweepAngle: data['sweepAngle'] as double,
+      startAngle: (data['startAngle'] as num).toDouble(),
+      sweepAngle: (data['sweepAngle'] as num).toDouble(),
       forceMoveTo: data['forceMoveTo'] as bool,
     );
   }

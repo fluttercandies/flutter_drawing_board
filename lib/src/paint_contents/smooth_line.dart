@@ -19,12 +19,12 @@ class SmoothLine extends PaintContent {
 
   factory SmoothLine.fromJson(Map<String, dynamic> data) {
     return SmoothLine.data(
-      brushPrecision: data['brushPrecision'] as double,
+      brushPrecision: (data['brushPrecision'] as num).toDouble(),
       points: (data['points'] as List<dynamic>)
           .map((dynamic e) => jsonToOffset(e as Map<String, dynamic>))
           .toList(),
       strokeWidthList: (data['strokeWidthList'] as List<dynamic>)
-          .map((dynamic e) => e as double)
+          .map((dynamic e) => (e as num).toDouble())
           .toList(),
       paint: jsonToPaint(data['paint'] as Map<String, dynamic>),
     );
