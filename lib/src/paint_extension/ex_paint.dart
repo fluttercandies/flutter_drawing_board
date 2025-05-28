@@ -56,12 +56,13 @@ extension ExPaint on Paint {
 
 Paint jsonToPaint(Map<String, dynamic> data) {
   return Paint()
-    ..blendMode = BlendMode.values[data['blendMode'] as int]
-    ..color = Color(data['color'] as int)
+    ..blendMode = BlendMode.values[(data['blendMode'] as num).toInt()]
+    ..color = Color((data['color'] as num).toInt())
     ..colorFilter = data['colorFilter'] == null
         ? null
         : stringToColorFilter(data['colorFilter'] as String)
-    ..filterQuality = FilterQuality.values[data['filterQuality'] as int]
+    ..filterQuality =
+        FilterQuality.values[(data['filterQuality'] as num).toInt()]
     ..imageFilter = data['imageFilter'] == null
         ? null
         : stringToImageFilter(data['imageFilter'] as String)
@@ -71,8 +72,8 @@ Paint jsonToPaint(Map<String, dynamic> data) {
         ? null
         : stringToMaskFilter(data['maskFilter'] as String)
     // ..shader = data['shader'] as Shader? // 无法解析
-    ..strokeCap = StrokeCap.values[data['strokeCap'] as int]
-    ..strokeJoin = StrokeJoin.values[data['strokeJoin'] as int]
+    ..strokeCap = StrokeCap.values[(data['strokeCap'] as num).toInt()]
+    ..strokeJoin = StrokeJoin.values[(data['strokeJoin'] as num).toInt()]
     ..strokeWidth = (data['strokeWidth'] as num).toDouble()
-    ..style = PaintingStyle.values[data['style'] as int];
+    ..style = PaintingStyle.values[(data['style'] as num).toInt()];
 }

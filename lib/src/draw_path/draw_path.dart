@@ -181,7 +181,7 @@ class DrawPath {
       steps: steps,
       type: data['fillType'] == null
           ? null
-          : PathFillType.values[data['fillType'] as int],
+          : PathFillType.values[(data['fillType'] as num).toInt()],
       path: genPath,
     );
   }
