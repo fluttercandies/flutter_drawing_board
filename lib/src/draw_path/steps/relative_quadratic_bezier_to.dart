@@ -5,10 +5,10 @@ class RelativeQuadraticBezierTo extends OperationStep {
 
   factory RelativeQuadraticBezierTo.fromJson(Map<String, dynamic> data) {
     return RelativeQuadraticBezierTo(
-      data['x1'] as double,
-      data['y1'] as double,
-      data['x2'] as double,
-      data['y2'] as double,
+      (data['x1'] as num).toDouble(),
+      (data['y1'] as num).toDouble(),
+      (data['x2'] as num).toDouble(),
+      (data['y2'] as num).toDouble(),
     );
   }
 

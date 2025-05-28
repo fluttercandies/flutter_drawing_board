@@ -5,8 +5,8 @@ class RelativeLineTo extends OperationStep {
 
   factory RelativeLineTo.fromJson(Map<String, dynamic> data) {
     return RelativeLineTo(
-      data['dx'] as double,
-      data['dy'] as double,
+      (data['dx'] as num).toDouble(),
+      (data['dy'] as num).toDouble(),
     );
   }
 

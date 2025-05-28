@@ -4,7 +4,10 @@ class MoveTo extends OperationStep {
   const MoveTo(this.x, this.y);
 
   factory MoveTo.fromJson(Map<String, dynamic> data) {
-    return MoveTo(data['x'] as double, data['y'] as double);
+    return MoveTo(
+      (data['x'] as num).toDouble(),
+      (data['y'] as num).toDouble(),
+    );
   }
 
   final double x;

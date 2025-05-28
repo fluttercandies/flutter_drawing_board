@@ -5,8 +5,8 @@ class RelativeMoveTo extends OperationStep {
 
   factory RelativeMoveTo.fromJson(Map<String, dynamic> data) {
     return RelativeMoveTo(
-      data['dx'] as double,
-      data['dy'] as double,
+      (data['dx'] as num).toDouble(),
+      (data['dy'] as num).toDouble(),
     );
   }
 

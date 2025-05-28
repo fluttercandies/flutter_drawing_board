@@ -5,11 +5,11 @@ class RelativeConicTo extends OperationStep {
 
   factory RelativeConicTo.fromJson(Map<String, dynamic> data) {
     return RelativeConicTo(
-      data['x1'] as double,
-      data['y1'] as double,
-      data['x2'] as double,
-      data['y2'] as double,
-      data['w'] as double,
+      (data['x1'] as num).toDouble(),
+      (data['y1'] as num).toDouble(),
+      (data['x2'] as num).toDouble(),
+      (data['y2'] as num).toDouble(),
+      (data['w'] as num).toDouble(),
     );
   }
 
