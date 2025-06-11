@@ -31,8 +31,7 @@ class DrawPath {
 
   factory DrawPath.fromJson(
     Map<String, dynamic> data, {
-    OperationStep Function(
-            String type, Map<String, dynamic> jsonStepMap, Path genPath)?
+    OperationStep Function(String type, Map<String, dynamic> jsonStepMap, Path genPath)?
         stepFactory,
   }) {
     final List<OperationStep> steps = <OperationStep>[];
@@ -50,8 +49,7 @@ class DrawPath {
         case 'arcTo':
           final ArcTo arcTo = ArcTo.fromJson(jsonStepMap);
           steps.add(arcTo);
-          genPath.arcTo(arcTo.rect, arcTo.startAngle, arcTo.sweepAngle,
-              arcTo.forceMoveTo);
+          genPath.arcTo(arcTo.rect, arcTo.startAngle, arcTo.sweepAngle, arcTo.forceMoveTo);
         case 'arcToPoint':
           // steps.add(ArcToPoint.fromJson(jsonStepMap));
           final ArcToPoint arcToPoint = ArcToPoint.fromJson(jsonStepMap);
@@ -67,14 +65,12 @@ class DrawPath {
           // steps.add(ConicTo.fromJson(jsonStepMap));
           final ConicTo conicTo = ConicTo.fromJson(jsonStepMap);
           steps.add(conicTo);
-          genPath.conicTo(
-              conicTo.x1, conicTo.y1, conicTo.x2, conicTo.y2, conicTo.w);
+          genPath.conicTo(conicTo.x1, conicTo.y1, conicTo.x2, conicTo.y2, conicTo.w);
         case 'cubicTo':
           // steps.add(CubicTo.fromJson(jsonStepMap));
           final CubicTo cubicTo = CubicTo.fromJson(jsonStepMap);
           steps.add(cubicTo);
-          genPath.cubicTo(cubicTo.x1, cubicTo.y1, cubicTo.x2, cubicTo.y2,
-              cubicTo.x3, cubicTo.y3);
+          genPath.cubicTo(cubicTo.x1, cubicTo.y1, cubicTo.x2, cubicTo.y2, cubicTo.x3, cubicTo.y3);
         case 'lineTo':
           // steps.add(LineTo.fromJson(jsonStepMap));
           final LineTo lineTo = LineTo.fromJson(jsonStepMap);
@@ -97,8 +93,7 @@ class DrawPath {
           genPath.shift(pathShift.offset);
         case 'quadraticBezierTo':
           // steps.add(QuadraticBezierTo.fromJson(jsonStepMap));
-          final QuadraticBezierTo quadraticBezierTo =
-              QuadraticBezierTo.fromJson(jsonStepMap);
+          final QuadraticBezierTo quadraticBezierTo = QuadraticBezierTo.fromJson(jsonStepMap);
           steps.add(quadraticBezierTo);
           genPath.quadraticBezierTo(
             quadraticBezierTo.x1,
@@ -108,8 +103,7 @@ class DrawPath {
           );
         case 'relativeArcToPoint':
           // steps.add(RelativeArcToPoint.fromJson(jsonStepMap));
-          final RelativeArcToPoint relativeArcToPoint =
-              RelativeArcToPoint.fromJson(jsonStepMap);
+          final RelativeArcToPoint relativeArcToPoint = RelativeArcToPoint.fromJson(jsonStepMap);
           steps.add(relativeArcToPoint);
           genPath.relativeArcToPoint(
             relativeArcToPoint.arcEndDelta,
@@ -120,8 +114,7 @@ class DrawPath {
           );
         case 'relativeConicTo':
           // steps.add(RelativeConicTo.fromJson(jsonStepMap));
-          final RelativeConicTo relativeConicTo =
-              RelativeConicTo.fromJson(jsonStepMap);
+          final RelativeConicTo relativeConicTo = RelativeConicTo.fromJson(jsonStepMap);
           steps.add(relativeConicTo);
           genPath.relativeConicTo(
             relativeConicTo.x1,
@@ -132,8 +125,7 @@ class DrawPath {
           );
         case 'relativeCubicTo':
           // steps.add(RelativeCubicTo.fromJson(jsonStepMap));
-          final RelativeCubicTo relativeCubicTo =
-              RelativeCubicTo.fromJson(jsonStepMap);
+          final RelativeCubicTo relativeCubicTo = RelativeCubicTo.fromJson(jsonStepMap);
           steps.add(relativeCubicTo);
           genPath.relativeCubicTo(
             relativeCubicTo.x1,
@@ -145,14 +137,12 @@ class DrawPath {
           );
         case 'relativeLineTo':
           // steps.add(RelativeLineTo.fromJson(jsonStepMap));
-          final RelativeLineTo relativeLineTo =
-              RelativeLineTo.fromJson(jsonStepMap);
+          final RelativeLineTo relativeLineTo = RelativeLineTo.fromJson(jsonStepMap);
           steps.add(relativeLineTo);
           genPath.relativeLineTo(relativeLineTo.dx, relativeLineTo.dy);
         case 'relativeMoveTo':
           // steps.add(RelativeMoveTo.fromJson(jsonStepMap));
-          final RelativeMoveTo relativeMoveTo =
-              RelativeMoveTo.fromJson(jsonStepMap);
+          final RelativeMoveTo relativeMoveTo = RelativeMoveTo.fromJson(jsonStepMap);
           steps.add(relativeMoveTo);
           genPath.relativeMoveTo(relativeMoveTo.dx, relativeMoveTo.dy);
         case 'relativeQuadraticBezierTo':
@@ -167,8 +157,7 @@ class DrawPath {
             relativeQuadraticBezierTo.y2,
           );
         default:
-          final OperationStep? step =
-              stepFactory?.call(type, jsonStepMap, genPath);
+          final OperationStep? step = stepFactory?.call(type, jsonStepMap, genPath);
           if (step != null) {
             steps.add(step);
           } else {
@@ -179,9 +168,7 @@ class DrawPath {
 
     return DrawPath(
       steps: steps,
-      type: data['fillType'] == null
-          ? null
-          : PathFillType.values[data['fillType'] as int],
+      type: data['fillType'] == null ? null : PathFillType.values[data['fillType'] as int],
       path: genPath,
     );
   }
@@ -194,8 +181,7 @@ class DrawPath {
     path.moveTo(x, y);
   }
 
-  void arcTo(
-      Rect rect, double startAngle, double sweepAngle, bool forceMoveTo) {
+  void arcTo(Rect rect, double startAngle, double sweepAngle, bool forceMoveTo) {
     steps.add(ArcTo(
       rect: rect,
       startAngle: startAngle,
@@ -228,8 +214,7 @@ class DrawPath {
     path.conicTo(x1, y1, x2, y2, w);
   }
 
-  void cubicTo(
-      double x1, double y1, double x2, double y2, double x3, double y3) {
+  void cubicTo(double x1, double y1, double x2, double y2, double x3, double y3) {
     steps.add(CubicTo(x1, y1, x2, y2, x3, y3));
     path.cubicTo(x1, y1, x2, y2, x3, y3);
   }
@@ -251,8 +236,7 @@ class DrawPath {
     bool largeArc = false,
     bool clockwise = true,
   }) {
-    steps.add(
-        RelativeArcToPoint(arcEndDelta, radius, rotation, largeArc, clockwise));
+    steps.add(RelativeArcToPoint(arcEndDelta, radius, rotation, largeArc, clockwise));
     path.relativeArcToPoint(
       arcEndDelta,
       radius: radius,
@@ -267,8 +251,7 @@ class DrawPath {
     path.relativeConicTo(x1, y1, x2, y2, w);
   }
 
-  void relativeCubicTo(
-      double x1, double y1, double x2, double y2, double x3, double y3) {
+  void relativeCubicTo(double x1, double y1, double x2, double y2, double x3, double y3) {
     steps.add(RelativeCubicTo(x1, y1, x2, y2, x3, y3));
     path.relativeCubicTo(x1, y1, x2, y2, x3, y3);
   }

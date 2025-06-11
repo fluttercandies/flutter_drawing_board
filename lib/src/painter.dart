@@ -22,13 +22,13 @@ class Painter extends StatelessWidget {
   final DrawingController drawingController;
 
   /// 开始拖动
-  final Function(PointerDownEvent pde)? onPointerDown;
+  final void Function(PointerDownEvent pde)? onPointerDown;
 
   /// 正在拖动
-  final Function(PointerMoveEvent pme)? onPointerMove;
+  final void Function(PointerMoveEvent pme)? onPointerMove;
 
   /// 结束拖动
-  final Function(PointerUpEvent pue)? onPointerUp;
+  final void Function(PointerUpEvent pue)? onPointerUp;
 
   /// 边缘裁剪方式
   final Clip clipBehavior;
@@ -63,8 +63,7 @@ class Painter extends StatelessWidget {
 
   /// 手指抬起
   void _onPointerUp(PointerUpEvent pue) {
-    if (!drawingController.couldDrawing ||
-        !drawingController.hasPaintingContent) {
+    if (!drawingController.couldDrawing || !drawingController.hasPaintingContent) {
       return;
     }
 
@@ -101,8 +100,7 @@ class Painter extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       child: ExValueBuilder<DrawConfig>(
         valueListenable: drawingController.drawConfig,
-        shouldRebuild: (DrawConfig p, DrawConfig n) =>
-            p.fingerCount != n.fingerCount,
+        shouldRebuild: (DrawConfig p, DrawConfig n) => p.fingerCount != n.fingerCount,
         builder: (_, DrawConfig config, Widget? child) {
           // 是否能拖动画布
           final bool isPanEnabled = config.fingerCount > 1;
@@ -166,8 +164,7 @@ class _UpPainter extends CustomPainter {
 
 /// 底层画板
 class _DeepPainter extends CustomPainter {
-  _DeepPainter({required this.controller})
-      : super(repaint: controller.realPainter);
+  _DeepPainter({required this.controller}) : super(repaint: controller.realPainter);
   final DrawingController controller;
 
   @override
@@ -186,8 +183,8 @@ class _DeepPainter extends CustomPainter {
     }
 
     final ui.PictureRecorder recorder = ui.PictureRecorder();
-    final Canvas tempCanvas = Canvas(
-        recorder, Rect.fromPoints(Offset.zero, size.bottomRight(Offset.zero)));
+    final Canvas tempCanvas =
+        Canvas(recorder, Rect.fromPoints(Offset.zero, size.bottomRight(Offset.zero)));
 
     canvas.saveLayer(Offset.zero & size, Paint());
 
@@ -199,9 +196,7 @@ class _DeepPainter extends CustomPainter {
     canvas.restore();
 
     final ui.Picture picture = recorder.endRecording();
-    picture
-        .toImage(size.width.toInt(), size.height.toInt())
-        .then((ui.Image value) {
+    picture.toImage(size.width.toInt(), size.height.toInt()).then((ui.Image value) {
       controller.cachedImage = value;
     });
   }

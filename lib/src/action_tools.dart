@@ -30,8 +30,7 @@ class ActionBar extends StatelessWidget {
 }
 
 /// 工具栏构建器
-typedef ToolsBuilder = Widget Function(
-    Type currType, DrawingController controller);
+typedef ToolsBuilder = Widget Function(Type currType, DrawingController controller);
 
 /// 工具栏
 class ToolsBar extends StatelessWidget {
@@ -56,8 +55,7 @@ class ToolsBar extends StatelessWidget {
     return ExValueBuilder<DrawConfig>(
       valueListenable: controller.drawConfig,
       shouldRebuild: shouldRebuild,
-      builder: (BuildContext context, DrawConfig dc, _) =>
-          builder(dc.contentType, controller),
+      builder: (BuildContext context, DrawConfig dc, _) => builder(dc.contentType, controller),
     );
   }
 }

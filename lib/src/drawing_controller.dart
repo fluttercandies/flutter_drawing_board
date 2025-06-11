@@ -139,8 +139,7 @@ class DrawingController extends ChangeNotifier {
     _currentIndex = 0;
     realPainter = RePaintNotifier();
     painter = RePaintNotifier();
-    drawConfig = SafeValueNotifier<DrawConfig>(
-        config ?? DrawConfig.def(contentType: SimpleLine));
+    drawConfig = SafeValueNotifier<DrawConfig>(config ?? DrawConfig.def(contentType: SimpleLine));
     setPaintContent(content ?? SimpleLine());
   }
 
@@ -198,8 +197,7 @@ class DrawingController extends ChangeNotifier {
   bool get couldDrawing => drawConfig.value.fingerCount == 1;
 
   /// 是否有正在绘制的内容
-  bool get hasPaintingContent =>
-      currentContent != null || eraserContent != null;
+  bool get hasPaintingContent => currentContent != null || eraserContent != null;
 
   /// 开始绘制点
   Offset? get startPoint => _startPoint;
@@ -211,8 +209,7 @@ class DrawingController extends ChangeNotifier {
 
   /// 手指落下
   void addFingerCount(Offset offset) {
-    drawConfig.value = drawConfig.value
-        .copyWith(fingerCount: drawConfig.value.fingerCount + 1);
+    drawConfig.value = drawConfig.value.copyWith(fingerCount: drawConfig.value.fingerCount + 1);
   }
 
   /// 手指抬起
@@ -221,8 +218,7 @@ class DrawingController extends ChangeNotifier {
       return;
     }
 
-    drawConfig.value = drawConfig.value
-        .copyWith(fingerCount: drawConfig.value.fingerCount - 1);
+    drawConfig.value = drawConfig.value.copyWith(fingerCount: drawConfig.value.fingerCount - 1);
   }
 
   /// 设置绘制样式
@@ -263,8 +259,7 @@ class DrawingController extends ChangeNotifier {
   void setPaintContent(PaintContent content) {
     content.paint = drawConfig.value.paint;
     _paintContent = content;
-    drawConfig.value =
-        drawConfig.value.copyWith(contentType: content.runtimeType);
+    drawConfig.value = drawConfig.value.copyWith(contentType: content.runtimeType);
   }
 
   /// 添加一条绘制数据
@@ -286,8 +281,7 @@ class DrawingController extends ChangeNotifier {
   /// * 旋转画布
   /// * 设置角度
   void turn() {
-    drawConfig.value =
-        drawConfig.value.copyWith(angle: (drawConfig.value.angle + 1) % 4);
+    drawConfig.value = drawConfig.value.copyWith(angle: (drawConfig.value.angle + 1) % 4);
   }
 
   /// 开始绘制
@@ -424,10 +418,10 @@ class DrawingController extends ChangeNotifier {
   /// 获取图片数据
   Future<ByteData?> getImageData() async {
     try {
-      final RenderRepaintBoundary boundary = painterKey.currentContext!
-          .findRenderObject()! as RenderRepaintBoundary;
-      final ui.Image image = await boundary.toImage(
-          pixelRatio: View.of(painterKey.currentContext!).devicePixelRatio);
+      final RenderRepaintBoundary boundary =
+          painterKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+      final ui.Image image =
+          await boundary.toImage(pixelRatio: View.of(painterKey.currentContext!).devicePixelRatio);
       return await image.toByteData(format: ui.ImageByteFormat.png);
     } catch (e) {
       debugPrint('获取图片数据出错:$e');

@@ -63,8 +63,7 @@ class Circle extends PaintContent {
   @override
   void drawing(Offset nowPoint) {
     endPoint = nowPoint;
-    center = Offset(
-        (startPoint.dx + endPoint.dx) / 2, (startPoint.dy + endPoint.dy) / 2);
+    center = Offset((startPoint.dx + endPoint.dx) / 2, (startPoint.dy + endPoint.dy) / 2);
     radius = (endPoint - (startFromCenter ? startPoint : center)).distance;
   }
 
