@@ -118,7 +118,7 @@ class SimpleLine extends PaintContent {
 
     if (points!.length == 1) {
       // 单点绘制为小圆点
-      canvas.drawCircle(points![0], paint.strokeWidth / 2, paint);
+      canvas.drawCircle(points![0], paint.strokeWidth / 8, paint);
       return;
     }
 

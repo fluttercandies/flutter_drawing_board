@@ -113,7 +113,7 @@ class SmoothLine extends PaintContent {
 
     if (points.length == 1) {
       // 单点绘制
-      canvas.drawCircle(points[0], strokeWidthList[0] / 2, paint);
+      canvas.drawCircle(points[0], strokeWidthList[0] / 8, paint);
       return;
     }
 
