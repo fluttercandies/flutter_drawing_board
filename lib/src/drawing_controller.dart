@@ -330,8 +330,7 @@ class DrawingController extends ChangeNotifier {
     if (_paintContent is Eraser) {
       eraserContent?.drawing(nowPaint);
       _refresh();
-      // 橡皮擦绘制过程中只刷新表层，提升性能
-      // 底层刷新会在 endDraw() 时执行
+      _refreshDeep();
     } else {
       currentContent?.drawing(nowPaint);
       _refresh();

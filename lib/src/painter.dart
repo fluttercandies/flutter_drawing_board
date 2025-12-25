@@ -177,12 +177,23 @@ class _UpPainter extends CustomPainter {
     }
 
     if (controller.eraserContent != null) {
+      // 橡皮擦模式：先绘制底层内容，再应用橡皮擦效果
       canvas.saveLayer(Offset.zero & size, Paint());
 
+      // 优先使用缓存图像，如果缓存不可用则实时绘制历史内容
       if (controller.cachedImage != null) {
         canvas.drawImage(controller.cachedImage!, Offset.zero, Paint());
+      } else {
+        // 缓存图像还未生成，实时绘制历史内容
+        final List<PaintContent> history = controller.getHistory;
+        for (int i = 0; i < controller.currentIndex; i++) {
+          if (i < history.length) {
+            history[i].draw(canvas, size, false);
+          }
+        }
       }
 
+      // 应用橡皮擦效果
       controller.eraserContent?.draw(canvas, size, false);
 
       canvas.restore();
@@ -206,13 +217,13 @@ class _DeepPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    // 橡皮擦绘制时，屏蔽底层画板的绘制，由顶层画板负责显示
     if (controller.eraserContent != null) {
       return;
     }
 
     final List<PaintContent> contents = <PaintContent>[
       ...controller.getHistory,
-      if (controller.eraserContent != null) controller.eraserContent!,
     ];
 
     if (contents.isEmpty) {
