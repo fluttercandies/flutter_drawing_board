@@ -134,7 +134,11 @@ class DrawConfig {
 
 /// 绘制控制器
 class DrawingController extends ChangeNotifier {
-  DrawingController({DrawConfig? config, PaintContent? content}) {
+  DrawingController({
+    DrawConfig? config,
+    PaintContent? content,
+    this.maxHistorySteps = 100,
+  }) {
     _history = <PaintContent>[];
     _currentIndex = 0;
     realPainter = RePaintNotifier();
@@ -142,6 +146,10 @@ class DrawingController extends ChangeNotifier {
     drawConfig = SafeValueNotifier<DrawConfig>(config ?? DrawConfig.def(contentType: SimpleLine));
     setPaintContent(content ?? SimpleLine());
   }
+
+  /// 历史记录最大步数，防止内存无限增长
+  /// 默认 100 步，可根据需求调整
+  final int maxHistorySteps;
 
   /// 绘制开始点
   Offset? _startPoint;
@@ -161,6 +169,7 @@ class DrawingController extends ChangeNotifier {
   /// 橡皮擦内容
   PaintContent? eraserContent;
 
+  /// 缓存的图片数据
   ui.Image? cachedImage;
 
   /// 底层绘制内容(绘制记录)
@@ -291,6 +300,7 @@ class DrawingController extends ChangeNotifier {
     }
 
     _startPoint = startPoint;
+
     if (_paintContent is Eraser) {
       eraserContent = _paintContent.copy();
       eraserContent?.paint = drawConfig.value.paint.copyWith();
@@ -320,7 +330,8 @@ class DrawingController extends ChangeNotifier {
     if (_paintContent is Eraser) {
       eraserContent?.drawing(nowPaint);
       _refresh();
-      _refreshDeep();
+      // 橡皮擦绘制过程中只刷新表层，提升性能
+      // 底层刷新会在 endDraw() 时执行
     } else {
       currentContent?.drawing(nowPaint);
       _refresh();
@@ -362,9 +373,22 @@ class DrawingController extends ChangeNotifier {
       currentContent = null;
     }
 
+    // 修剪历史记录，防止内存无限增长
+    _trimHistoryIfNeeded();
+
     _refresh();
     _refreshDeep();
     notifyListeners();
+  }
+
+  /// 修剪历史记录，保持在最大步数限制内
+  void _trimHistoryIfNeeded() {
+    if (_history.length > maxHistorySteps) {
+      final int removeCount = _history.length - maxHistorySteps;
+      _history.removeRange(0, removeCount);
+      _currentIndex = _history.length;
+      cachedImage = null; // 清除缓存，因为历史已改变
+    }
   }
 
   /// 撤销
@@ -416,28 +440,47 @@ class DrawingController extends ChangeNotifier {
   }
 
   /// 获取图片数据
-  Future<ByteData?> getImageData() async {
+  Future<ByteData?> getImageData({
+    ui.ImageByteFormat format = ui.ImageByteFormat.png,
+    double? pixelRatio,
+  }) async {
     try {
-      final RenderRepaintBoundary boundary =
-          painterKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
-      final ui.Image image =
-          await boundary.toImage(pixelRatio: View.of(painterKey.currentContext!).devicePixelRatio);
-      return await image.toByteData(format: ui.ImageByteFormat.png);
-    } catch (e) {
-      debugPrint('获取图片数据出错:$e');
+      final BuildContext? context = painterKey.currentContext;
+      if (context == null) {
+        debugPrint('画板未挂载，无法获取图片数据');
+        return null;
+      }
+
+      final RenderObject? renderObject = context.findRenderObject();
+      if (renderObject is! RenderRepaintBoundary) {
+        debugPrint('渲染对象类型错误，期望 RenderRepaintBoundary');
+        return null;
+      }
+
+      final double ratio = pixelRatio ?? View.of(context).devicePixelRatio;
+      final ui.Image image = await renderObject.toImage(pixelRatio: ratio);
+
+      return await image.toByteData(format: format);
+    } catch (e, stack) {
+      debugPrint('获取图片数据失败: $e\n$stack');
       return null;
     }
   }
 
   /// 获取表层图片数据
-  Future<ByteData?> getSurfaceImageData() async {
+  /// 更快速，使用缓存的图片数据
+  Future<ByteData?> getSurfaceImageData({
+    ui.ImageByteFormat format = ui.ImageByteFormat.png,
+  }) async {
     try {
-      if (cachedImage != null) {
-        return await cachedImage!.toByteData(format: ui.ImageByteFormat.png);
+      final ui.Image? image = cachedImage;
+      if (image == null) {
+        debugPrint('缓存图片不存在，请先进行绘制或使用 getImageData()');
+        return null;
       }
-      return null;
-    } catch (e) {
-      debugPrint('获取表层图片数据出错:$e');
+      return await image.toByteData(format: format);
+    } catch (e, stack) {
+      debugPrint('获取表层图片数据失败: $e\n$stack');
       return null;
     }
   }

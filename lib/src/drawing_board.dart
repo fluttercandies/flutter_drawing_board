@@ -47,6 +47,7 @@ class DrawingBoard extends StatefulWidget {
     this.onInteractionUpdate,
     this.transformationController,
     this.alignment = Alignment.topCenter,
+    this.enablePalmRejection = false,
   });
 
   /// 画板背景控件
@@ -91,6 +92,10 @@ class DrawingBoard extends StatefulWidget {
   final double boardScaleFactor;
   final TransformationController? transformationController;
   final AlignmentGeometry alignment;
+
+  /// 启用手掌拒绝功能，防止手掌误触
+  /// 当设置为 true 时，会检测触摸面积和触摸时间间隔，拒绝可能的手掌触摸
+  final bool enablePalmRejection;
 
   /// 默认工具项列表
   static List<DefToolItem> defaultTools(Type currType, DrawingController controller) {
@@ -240,6 +245,7 @@ class _DrawingBoardState extends State<DrawingBoard> {
         onPointerDown: widget.onPointerDown,
         onPointerMove: widget.onPointerMove,
         onPointerUp: widget.onPointerUp,
+        enablePalmRejection: widget.enablePalmRejection,
       ),
     );
   }
