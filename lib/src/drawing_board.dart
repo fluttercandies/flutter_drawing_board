@@ -8,7 +8,16 @@ import 'helper/ex_value_builder.dart';
 import 'helper/get_size.dart';
 import 'painter.dart';
 
-/// 画板
+/// 画板组件
+///
+/// 提供交互式绘图功能的核心Widget，支持多种绘制内容（线条、形状等）
+/// 内置缩放、旋转、平移等交互功能，并可配置手掌拒绝等高级特性
+///
+/// Drawing Board Widget
+///
+/// A core widget that provides interactive drawing functionality, supporting various
+/// drawing content (lines, shapes, etc.). Built-in zoom, rotation, pan interactions,
+/// and configurable advanced features like palm rejection.
 class DrawingBoard extends StatelessWidget {
   const DrawingBoard({
     super.key,
@@ -36,41 +45,110 @@ class DrawingBoard extends StatelessWidget {
   });
 
   /// 画板背景控件
+  ///
+  /// Background widget of the drawing board
   final Widget background;
 
   /// 画板控制器
+  ///
+  /// Drawing board controller
   final DrawingController controller;
 
-  /// 开始拖动
+  /// 手指按下回调
+  ///
+  /// Callback when pointer is pressed down
   final void Function(PointerDownEvent pde)? onPointerDown;
 
-  /// 正在拖动
+  /// 手指移动回调
+  ///
+  /// Callback when pointer is moving
   final void Function(PointerMoveEvent pme)? onPointerMove;
 
-  /// 结束拖动
+  /// 手指抬起回调
+  ///
+  /// Callback when pointer is released
   final void Function(PointerUpEvent pue)? onPointerUp;
 
   /// 边缘裁剪方式
+  ///
+  /// Clip behavior for the drawing board
   final Clip clipBehavior;
 
-  /// 缩放板属性
+  /// 画板容器的裁剪方式
+  ///
+  /// Clip behavior for the board container
   final Clip boardClipBehavior;
+
+  /// 画板平移轴向限制
+  ///
+  /// Pan axis constraint for the board
   final PanAxis panAxis;
+
+  /// 画板边界边距
+  ///
+  /// Boundary margin for the board
   final EdgeInsets? boardBoundaryMargin;
+
+  /// 是否限制画板尺寸
+  ///
+  /// Whether to constrain the board size
   final bool boardConstrained;
+
+  /// 最大缩放比例
+  ///
+  /// Maximum scale ratio
   final double maxScale;
+
+  /// 最小缩放比例
+  ///
+  /// Minimum scale ratio
   final double minScale;
+
+  /// 缩放交互结束回调
+  ///
+  /// Callback when scale interaction ends
   final void Function(ScaleEndDetails)? onInteractionEnd;
+
+  /// 缩放交互开始回调
+  ///
+  /// Callback when scale interaction starts
   final void Function(ScaleStartDetails)? onInteractionStart;
+
+  /// 缩放交互更新回调
+  ///
+  /// Callback when scale interaction updates
   final void Function(ScaleUpdateDetails)? onInteractionUpdate;
+
+  /// 是否启用画板平移
+  ///
+  /// Whether board panning is enabled
   final bool boardPanEnabled;
+
+  /// 是否启用画板缩放
+  ///
+  /// Whether board scaling is enabled
   final bool boardScaleEnabled;
+
+  /// 画板缩放因子
+  ///
+  /// Scale factor for the board
   final double boardScaleFactor;
+
+  /// 变换控制器
+  ///
+  /// Transformation controller
   final TransformationController? transformationController;
+
+  /// 画板对齐方式
+  ///
+  /// Alignment of the drawing board
   final AlignmentGeometry alignment;
 
   /// 启用手掌拒绝功能，防止手掌误触
   /// 当设置为 true 时，会检测触摸面积和触摸时间间隔，拒绝可能的手掌触摸
+  ///
+  /// Enable palm rejection to prevent accidental palm touches
+  /// When set to true, detects touch area and time intervals to reject potential palm touches
   final bool enablePalmRejection;
 
   DrawingController get _controller => controller;
@@ -100,7 +178,9 @@ class DrawingBoard extends StatelessWidget {
     );
   }
 
-  /// 构建画板
+  /// 构建画板主体，包含旋转和尺寸处理
+  ///
+  /// Build the main board with rotation and size handling
   Widget get _buildBoard {
     return ExValueBuilder<DrawConfig>(
       valueListenable: _controller.drawConfig,
@@ -131,13 +211,17 @@ class DrawingBoard extends StatelessWidget {
     );
   }
 
-  /// 构建背景
+  /// 构建背景层，并监听尺寸变化
+  ///
+  /// Build the background layer and listen for size changes
   Widget get _buildImage => GetSize(
         onChange: (Size? size) => _controller.setBoardSize(size),
         child: background,
       );
 
-  /// 构建绘制层
+  /// 构建绘制层，包含实际的绘图canvas
+  ///
+  /// Build the painting layer with the actual drawing canvas
   Widget get _buildPainter {
     return ExValueBuilder<DrawConfig>(
       valueListenable: _controller.drawConfig,
@@ -159,7 +243,9 @@ class DrawingBoard extends StatelessWidget {
     );
   }
 
-  /// 构建默认操作栏
+  /// 构建默认操作栏，包含笔刷粗细调节、撤销、重做、旋转、清空等功能
+  ///
+  /// Build default action bar with brush width adjustment, undo, redo, rotate, and clear functions
   static Widget buildDefaultActions(DrawingController controller) {
     return Material(
       color: Colors.white,

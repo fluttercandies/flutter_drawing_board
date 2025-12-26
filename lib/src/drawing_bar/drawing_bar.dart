@@ -2,10 +2,16 @@ import 'package:flutter/material.dart';
 
 import '../drawing_controller.dart';
 
+/// 绘图工具栏样式基类
+///
+/// Drawing toolbar style base class
 sealed class DrawingBarStyle {
   const DrawingBarStyle();
 }
 
+/// 水平工具栏样式
+///
+/// Horizontal toolbar style
 class HorizontalToolsBarStyle extends DrawingBarStyle {
   const HorizontalToolsBarStyle({
     this.mainAxisAlignment = MainAxisAlignment.center,
@@ -26,6 +32,9 @@ class HorizontalToolsBarStyle extends DrawingBarStyle {
   final double spacing;
 }
 
+/// 垂直工具栏样式
+///
+/// Vertical toolbar style
 class VerticalToolsBarStyle extends DrawingBarStyle {
   const VerticalToolsBarStyle({
     this.mainAxisAlignment = MainAxisAlignment.start,
@@ -46,6 +55,9 @@ class VerticalToolsBarStyle extends DrawingBarStyle {
   final double spacing;
 }
 
+/// 自动换行工具栏样式
+///
+/// Wrap toolbar style (auto-wrapping)
 class WrapToolsBarStyle extends DrawingBarStyle {
   const WrapToolsBarStyle({
     this.direction = Axis.horizontal,
@@ -70,6 +82,15 @@ class WrapToolsBarStyle extends DrawingBarStyle {
   final Clip clipBehavior;
 }
 
+/// 绘图工具栏组件
+///
+/// 提供灵活的工具栏布局，支持水平、垂直和自动换行三种样式
+/// 自动将DrawingController通过Provider传递给子工具组件
+///
+/// Drawing Toolbar Widget
+///
+/// Provides flexible toolbar layout, supports horizontal, vertical and auto-wrap styles
+/// Automatically passes DrawingController to child tool widgets via Provider
 class DrawingBar extends StatelessWidget {
   const DrawingBar({
     super.key,
@@ -78,8 +99,19 @@ class DrawingBar extends StatelessWidget {
     required this.tools,
   });
 
+  /// 绘图控制器
+  ///
+  /// Drawing controller
   final DrawingController controller;
+
+  /// 工具栏样式
+  ///
+  /// Toolbar style
   final DrawingBarStyle style;
+
+  /// 工具列表
+  ///
+  /// List of tools
   final List<Widget> tools;
 
   @override

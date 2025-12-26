@@ -5,14 +5,29 @@ import '../paint_extension/ex_offset.dart';
 import '../paint_extension/ex_paint.dart';
 import 'paint_content.dart';
 
-/// 普通自由线条
+/// 自由线条绘制内容
+///
+/// 支持两种绘制模式：
+/// 1. 传统路径模式：直接连接绘制点
+/// 2. 贝塞尔曲线模式：使用二次贝塞尔曲线平滑连接，提供更流畅的线条效果
+///
+/// Simple Line Drawing Content
+///
+/// Supports two drawing modes:
+/// 1. Traditional path mode: directly connects drawing points
+/// 2. Bezier curve mode: uses quadratic bezier curves for smooth connection, providing smoother line effects
 class SimpleLine extends PaintContent {
   SimpleLine({
     /// 最小点距离，用于过滤过近的点，减少数据量
+    ///
+    /// Minimum point distance for filtering points that are too close, reducing data volume
     this.minPointDistance = 2.0,
 
-    /// 是否使用贝塞尔曲线平滑，默认 false（保持原有行为）
+    /// 是否使用贝塞尔曲线平滑，默认 true
     /// 设置为 true 可以解决快速绘制时的折线感问题
+    ///
+    /// Whether to use bezier curve smoothing, default true
+    /// Setting to true resolves the jagged line issue when drawing quickly
     this.useBezierCurve = true,
   });
 
@@ -48,16 +63,29 @@ class SimpleLine extends PaintContent {
     }
   }
 
+  /// 最小点距离
+  ///
+  /// Minimum point distance
   final double minPointDistance;
+
+  /// 是否使用贝塞尔曲线
+  ///
+  /// Whether to use bezier curve
   final bool useBezierCurve;
 
-  /// 绘制路径（为了向后兼容保留）
+  /// 绘制路径（为了向后兼容保留，用于传统路径模式）
+  ///
+  /// Drawing path (retained for backward compatibility, used in traditional path mode)
   DrawPath path = DrawPath();
 
-  /// 绘制点列表（新增，用于贝塞尔曲线）
+  /// 绘制点列表（用于贝塞尔曲线模式）
+  ///
+  /// Drawing points list (used in bezier curve mode)
   List<Offset>? points;
 
-  /// 上一个点的位置，用于点过滤
+  /// 上一个点的位置，用于点过滤优化
+  ///
+  /// Last point position for point filtering optimization
   Offset? _lastPoint;
 
   @override
@@ -111,6 +139,8 @@ class SimpleLine extends PaintContent {
   }
 
   /// 使用贝塞尔曲线绘制平滑线条
+  ///
+  /// Draw smooth lines using bezier curves
   void _drawWithBezierCurve(Canvas canvas) {
     if (points == null || points!.isEmpty) {
       return;

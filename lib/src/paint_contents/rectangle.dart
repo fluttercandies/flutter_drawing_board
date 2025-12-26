@@ -4,7 +4,13 @@ import '../paint_extension/ex_paint.dart';
 
 import 'paint_content.dart';
 
-/// 矩形
+/// 矩形绘制内容
+///
+/// 通过起点和终点定义对角线来绘制矩形
+///
+/// Rectangle Drawing Content
+///
+/// Draws a rectangle by defining diagonal through start and end points
 class Rectangle extends PaintContent {
   Rectangle();
 
@@ -22,10 +28,14 @@ class Rectangle extends PaintContent {
     );
   }
 
-  /// 起始点
+  /// 起始点坐标（矩形对角线的一个端点）
+  ///
+  /// Start point coordinates (one endpoint of the rectangle diagonal)
   Offset? startPoint;
 
-  /// 结束点
+  /// 结束点坐标（矩形对角线的另一个端点）
+  ///
+  /// End point coordinates (the other endpoint of the rectangle diagonal)
   Offset? endPoint;
 
   @override

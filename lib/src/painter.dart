@@ -7,7 +7,15 @@ import 'drawing_controller.dart';
 import 'helper/ex_value_builder.dart';
 import 'paint_contents/paint_content.dart';
 
-/// 绘图板
+/// 绘图板组件
+///
+/// 负责处理用户触摸交互并将绘制请求传递给DrawingController
+/// 内置手掌拒绝功能，支持实时绘制和历史记录分层渲染
+///
+/// Painter Widget
+///
+/// Handles user touch interactions and passes drawing requests to DrawingController
+/// Built-in palm rejection, supports real-time drawing and layered rendering of history
 class Painter extends StatefulWidget {
   const Painter({
     super.key,
@@ -20,21 +28,33 @@ class Painter extends StatefulWidget {
   });
 
   /// 绘制控制器
+  ///
+  /// Drawing controller
   final DrawingController drawingController;
 
-  /// 开始拖动
+  /// 手指按下回调
+  ///
+  /// Callback when pointer is pressed down
   final void Function(PointerDownEvent pde)? onPointerDown;
 
-  /// 正在拖动
+  /// 手指移动回调
+  ///
+  /// Callback when pointer is moving
   final void Function(PointerMoveEvent pme)? onPointerMove;
 
-  /// 结束拖动
+  /// 手指抬起回调
+  ///
+  /// Callback when pointer is released
   final void Function(PointerUpEvent pue)? onPointerUp;
 
   /// 边缘裁剪方式
+  ///
+  /// Clip behavior
   final Clip clipBehavior;
 
   /// 启用手掌拒绝功能，防止手掌误触
+  ///
+  /// Enable palm rejection to prevent accidental palm touches
   final bool enablePalmRejection;
 
   @override
@@ -43,9 +63,13 @@ class Painter extends StatefulWidget {
 
 class _PainterState extends State<Painter> {
   /// 最近一次触摸的时间戳，用于手掌拒绝检测
+  ///
+  /// Timestamp of the last touch, used for palm rejection detection
   DateTime? _lastTouchTime;
 
-  /// 手指落下
+  /// 处理手指按下事件
+  ///
+  /// Handle pointer down event
   void _onPointerDown(PointerDownEvent pde) {
     if (!widget.drawingController.couldStartDraw) {
       return;
@@ -75,7 +99,9 @@ class _PainterState extends State<Painter> {
     widget.onPointerDown?.call(pde);
   }
 
-  /// 手指移动
+  /// 处理手指移动事件
+  ///
+  /// Handle pointer move event
   void _onPointerMove(PointerMoveEvent pme) {
     if (!widget.drawingController.couldDrawing) {
       if (widget.drawingController.hasPaintingContent) {
@@ -93,7 +119,9 @@ class _PainterState extends State<Painter> {
     widget.onPointerMove?.call(pme);
   }
 
-  /// 手指抬起
+  /// 处理手指抬起事件
+  ///
+  /// Handle pointer up event
   void _onPointerUp(PointerUpEvent pue) {
     if (!widget.drawingController.couldDrawing || !widget.drawingController.hasPaintingContent) {
       return;
@@ -107,6 +135,9 @@ class _PainterState extends State<Painter> {
     widget.onPointerUp?.call(pue);
   }
 
+  /// 处理手指取消事件
+  ///
+  /// Handle pointer cancel event
   void _onPointerCancel(PointerCancelEvent pce) {
     if (!widget.drawingController.couldDrawing) {
       return;
@@ -115,7 +146,9 @@ class _PainterState extends State<Painter> {
     widget.drawingController.endDraw();
   }
 
-  /// GestureDetector 占位
+  /// GestureDetector 占位方法（防止单指绘制时触发画布平移）
+  ///
+  /// GestureDetector placeholder methods (prevent canvas panning during single-finger drawing)
   void _onPanDown(DragDownDetails ddd) {}
 
   void _onPanUpdate(DragUpdateDetails dud) {}
@@ -164,7 +197,15 @@ class _PainterState extends State<Painter> {
   }
 }
 
-/// 表层画板
+/// 表层画板绘制器
+///
+/// 负责绘制当前正在进行的实时绘制内容
+/// 对于橡皮擦模式，还会显示底层内容叠加橡皮擦效果
+///
+/// Surface Layer Painter
+///
+/// Responsible for drawing the current real-time drawing content
+/// For eraser mode, also displays the base content with eraser effect applied
 class _UpPainter extends CustomPainter {
   _UpPainter({required this.controller}) : super(repaint: controller.painter);
 
@@ -206,13 +247,27 @@ class _UpPainter extends CustomPainter {
   bool shouldRepaint(covariant _UpPainter oldDelegate) => false;
 }
 
-/// 底层画板
+/// 底层画板绘制器
+///
+/// 负责绘制所有历史记录内容，并生成缓存图片
+/// 使用缓存机制优化性能，避免重复绘制
+///
+/// Deep Layer Painter
+///
+/// Responsible for drawing all historical content and generating cached images
+/// Uses caching mechanism to optimize performance and avoid redundant drawing
 class _DeepPainter extends CustomPainter {
   _DeepPainter({required this.controller}) : super(repaint: controller.realPainter);
   final DrawingController controller;
 
   /// 上次渲染的索引，用于缓存版本控制
+  ///
+  /// Last rendered index for cache version control
   static int _lastRenderedIndex = -1;
+
+  /// 上次渲染的尺寸，用于缓存版本控制
+  ///
+  /// Last rendered size for cache version control
   static Size? _lastRenderedSize;
 
   @override

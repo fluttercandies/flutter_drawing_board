@@ -4,7 +4,13 @@ import '../paint_extension/ex_paint.dart';
 
 import 'paint_content.dart';
 
-/// 直线
+/// 直线绘制内容
+///
+/// 连接起点和终点的直线
+///
+/// Straight Line Drawing Content
+///
+/// A straight line connecting start and end points
 class StraightLine extends PaintContent {
   StraightLine();
 
@@ -22,7 +28,14 @@ class StraightLine extends PaintContent {
     );
   }
 
+  /// 起始点坐标
+  ///
+  /// Start point coordinates
   Offset? startPoint;
+
+  /// 结束点坐标
+  ///
+  /// End point coordinates
   Offset? endPoint;
 
   @override

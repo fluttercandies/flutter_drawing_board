@@ -4,10 +4,27 @@ import '../paint_extension/ex_paint.dart';
 
 import 'paint_content.dart';
 
-/// 圆
+/// 圆形/椭圆绘制内容
+///
+/// 支持两种绘制模式：
+/// 1. 从圆心开始绘制：起点为圆心，终点决定半径
+/// 2. 从对角开始绘制：起点和终点为对角，自动计算圆心和半径
+///
+/// Circle/Ellipse Drawing Content
+///
+/// Supports two drawing modes:
+/// 1. Draw from center: start point is center, end point determines radius
+/// 2. Draw from diagonal: start and end points are diagonal, automatically calculates center and radius
 class Circle extends PaintContent {
   Circle({
+    /// 是否绘制椭圆（false为圆形）
+    ///
+    /// Whether to draw ellipse (false for circle)
     this.isEllipse = false,
+
+    /// 是否从圆心开始绘制
+    ///
+    /// Whether to start drawing from center
     this.startFromCenter = true,
   });
 
@@ -34,21 +51,33 @@ class Circle extends PaintContent {
   }
 
   /// 是否为椭圆
+  ///
+  /// Whether it's an ellipse
   final bool isEllipse;
 
-  /// 从圆心开始绘制
+  /// 是否从圆心开始绘制
+  ///
+  /// Whether to start drawing from center
   final bool startFromCenter;
 
-  /// 圆心
+  /// 圆心坐标
+  ///
+  /// Center point coordinates
   Offset center = Offset.zero;
 
   /// 半径
+  ///
+  /// Radius
   double radius = 0;
 
-  /// 起始点
+  /// 起始点坐标
+  ///
+  /// Start point coordinates
   Offset startPoint = Offset.zero;
 
-  /// 结束点
+  /// 结束点坐标
+  ///
+  /// End point coordinates
   Offset endPoint = Offset.zero;
 
   @override
