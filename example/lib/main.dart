@@ -369,8 +369,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
                     return DrawingBoard(
-                      // boardPanEnabled: false,
-                      // boardScaleEnabled: false,
                       transformationController: _transformationController,
                       controller: _drawingController,
                       background: Container(
@@ -378,55 +376,63 @@ class _MyHomePageState extends State<MyHomePage> {
                         height: constraints.maxHeight,
                         color: Colors.white,
                       ),
-                      showDefaultActions: true,
-                      showDefaultTools: true,
-                      defaultToolsBuilder: (Type t, _) {
-                        return DrawingBoard.defaultTools(t, _drawingController)
-                          ..insert(
-                            1,
-                            DefToolItem(
-                              icon: Icons.change_history_rounded,
-                              isActive: t == Triangle,
-                              onTap: () => _drawingController
-                                  .setPaintContent(Triangle()),
-                            ),
-                          )
-                          ..insert(
-                            2,
-                            DefToolItem(
-                              icon: Icons.image_rounded,
-                              isActive: t == ImageContent,
-                              onTap: () async {
-                                showDialog(
-                                  context: context,
-                                  barrierDismissible: false,
-                                  builder: (BuildContext c) {
-                                    return const Center(
-                                      child: CircularProgressIndicator(),
-                                    );
-                                  },
-                                );
-
-                                try {
-                                  _drawingController
-                                      .setPaintContent(ImageContent(
-                                    await _getImage(_imageUrl),
-                                    imageUrl: _imageUrl,
-                                  ));
-                                } catch (e) {
-                                  //
-                                } finally {
-                                  if (context.mounted) {
-                                    Navigator.pop(context);
-                                  }
-                                }
-                              },
-                            ),
-                          );
-                      },
                     );
                   },
                 ),
+              ),
+              DrawingBar(
+                controller: _drawingController,
+                tools: [
+                  DefaultActionItem.slider(),
+                  DefaultActionItem.undo(),
+                  DefaultActionItem.redo(),
+                  DefaultActionItem.turn(),
+                  DefaultActionItem.clear(),
+                ],
+              ),
+              DrawingBar(
+                controller: _drawingController,
+                tools: [
+                  DefaultToolItem.pen(),
+                  DefaultToolItem.brush(),
+                  DefaultToolItem.rectangle(),
+                  DefaultToolItem.circle(),
+                  DefaultToolItem.straightLine(),
+                  DefaultToolItem(
+                    onTap: (c) async {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext c) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        },
+                      );
+
+                      try {
+                        c.setPaintContent(ImageContent(
+                          await _getImage(_imageUrl),
+                          imageUrl: _imageUrl,
+                        ));
+                      } catch (e) {
+                        //
+                      } finally {
+                        if (context.mounted) {
+                          Navigator.pop(context);
+                        }
+                      }
+                    },
+                    icon: Icons.image,
+                    content: ImageContent,
+                  ),
+                  DefaultToolItem(
+                    onTap: (c) => c.setPaintContent(Triangle()),
+                    icon: Icons.change_history_rounded,
+                    content: Triangle,
+                  ),
+                  DefaultToolItem.eraser(),
+                ],
               ),
               const Padding(
                 padding: EdgeInsets.all(8.0),

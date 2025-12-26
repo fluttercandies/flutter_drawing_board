@@ -198,7 +198,7 @@ class _UpPainter extends CustomPainter {
 
       canvas.restore();
     } else {
-      controller.currentContent?.draw(canvas, size, false);
+      controller.drawingContent?.draw(canvas, size, false);
     }
   }
 

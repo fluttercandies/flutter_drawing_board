@@ -7,7 +7,7 @@ import 'paint_content.dart';
 class SmoothLine extends PaintContent {
   SmoothLine({
     /// 绘制影响因子，值越小线条越平滑，粗细变化越慢
-    this.brushPrecision = 0.4,
+    this.brushPrecision = 0.8,
 
     /// 最小点距离，用于过滤过近的点，减少数据量
     /// 值越大，点越少，性能越好，但可能丢失细节

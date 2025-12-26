@@ -163,8 +163,11 @@ class DrawingController extends ChangeNotifier {
   /// 最后一次绘制的内容
   late PaintContent _paintContent;
 
-  /// 当前绘制内容
-  PaintContent? currentContent;
+  /// 最后一次绘制的内容
+  PaintContent get currentContent => _paintContent;
+
+  /// 当前实时绘制内容
+  PaintContent? drawingContent;
 
   /// 橡皮擦内容
   PaintContent? eraserContent;
@@ -206,7 +209,7 @@ class DrawingController extends ChangeNotifier {
   bool get couldDrawing => drawConfig.value.fingerCount == 1;
 
   /// 是否有正在绘制的内容
-  bool get hasPaintingContent => currentContent != null || eraserContent != null;
+  bool get hasPaintingContent => drawingContent != null || eraserContent != null;
 
   /// 开始绘制点
   Offset? get startPoint => _startPoint;
@@ -306,16 +309,16 @@ class DrawingController extends ChangeNotifier {
       eraserContent?.paint = drawConfig.value.paint.copyWith();
       eraserContent?.startDraw(startPoint);
     } else {
-      currentContent = _paintContent.copy();
-      currentContent?.paint = drawConfig.value.paint;
-      currentContent?.startDraw(startPoint);
+      drawingContent = _paintContent.copy();
+      drawingContent?.paint = drawConfig.value.paint;
+      drawingContent?.startDraw(startPoint);
     }
   }
 
   /// 取消绘制
   void cancelDraw() {
     _startPoint = null;
-    currentContent = null;
+    drawingContent = null;
     eraserContent = null;
   }
 
@@ -332,7 +335,7 @@ class DrawingController extends ChangeNotifier {
       _refresh();
       _refreshDeep();
     } else {
-      currentContent?.drawing(nowPaint);
+      drawingContent?.drawing(nowPaint);
       _refresh();
     }
   }
@@ -346,7 +349,7 @@ class DrawingController extends ChangeNotifier {
     if (!_isDrawingValidContent) {
       // 清理绘制内容
       _startPoint = null;
-      currentContent = null;
+      drawingContent = null;
       eraserContent = null;
       return;
     }
@@ -366,10 +369,10 @@ class DrawingController extends ChangeNotifier {
       eraserContent = null;
     }
 
-    if (currentContent != null) {
-      _history.add(currentContent!);
+    if (drawingContent != null) {
+      _history.add(drawingContent!);
       _currentIndex = _history.length;
-      currentContent = null;
+      drawingContent = null;
     }
 
     // 修剪历史记录，防止内存无限增长
@@ -403,11 +406,7 @@ class DrawingController extends ChangeNotifier {
   /// Check if undo is available.
   /// Returns true if possible.
   bool canUndo() {
-    if (_currentIndex > 0) {
-      return true;
-    } else {
-      return false;
-    }
+    return _currentIndex > 0;
   }
 
   /// 重做
@@ -423,11 +422,7 @@ class DrawingController extends ChangeNotifier {
   /// Check if redo is available.
   /// Returns true if possible.
   bool canRedo() {
-    if (_currentIndex < _history.length) {
-      return true;
-    } else {
-      return false;
-    }
+    return _currentIndex < _history.length;
   }
 
   /// 清理画布
@@ -436,6 +431,13 @@ class DrawingController extends ChangeNotifier {
     _history.clear();
     _currentIndex = 0;
     _refreshDeep();
+    notifyListeners();
+  }
+
+  /// Check if clear is available.
+  /// Returns true if possible.
+  bool canClear() {
+    return _history.isNotEmpty;
   }
 
   /// 获取图片数据
@@ -521,4 +523,22 @@ class RePaintNotifier extends ChangeNotifier {
   void _refresh() {
     notifyListeners();
   }
+}
+
+/// 共享绘制控制器提供者
+class DrawingControllerProvider extends InheritedWidget {
+  const DrawingControllerProvider({
+    super.key,
+    required this.controller,
+    required super.child,
+  });
+
+  final DrawingController controller;
+
+  static DrawingController? maybeOf(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<DrawingControllerProvider>()?.controller;
+  }
+
+  @override
+  bool updateShouldNotify(DrawingControllerProvider oldWidget) => false;
 }
