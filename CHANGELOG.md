@@ -1,3 +1,22 @@
+## [1.0.0] - 2025-12-26
+
+### 🎉 First Stable Release
+This marks the first production-ready release with stable API and comprehensive documentation.
+
+### Documentation
+- Complete rewrite of README.md and README-zh-CN.md with professional structure
+- Added detailed usage guide, API reference, and code examples
+- Standardized LICENSE format to MIT License
+
+### Behavior Changes
+- `SimpleLine()` now defaults to `useBezierCurve: true` (since v0.9.9), providing smoother lines
+- JSON import maintains backward compatibility with `useBezierCurve: false`
+
+### Breaking Changes
+None - Full backward compatibility maintained for existing JSON data and API usage
+
+---
+
 ## [0.9.10+1]
 
 - fix Eraser
@@ -8,7 +27,7 @@
 - **Palm Rejection**: Added `enablePalmRejection` parameter to `DrawingBoard` to prevent accidental palm touches on tablets
 - **History Limit**: Added `maxHistorySteps` parameter to `DrawingController` to prevent unlimited memory growth (default: 100 steps)
 - **Point Filtering**: Added `minPointDistance` parameter to `SmoothLine` and `SimpleLine` to filter redundant points (default: 2.0)
-- **Bezier Curve Smoothing**: Added `useBezierCurve` parameter to `SmoothLine` for smoother line rendering (default: true) and `SimpleLine` (default: false)
+- **Bezier Curve Smoothing**: Added `useBezierCurve` parameter to `SmoothLine` (default: true) and `SimpleLine` (default: true for new instances, false for JSON import)
 - **Advanced Smoothing**: Added `smoothLevel` parameter to `SmoothLine` with Catmull-Rom spline interpolation to eliminate jagged lines during fast drawing (0: fast, 1: balanced, 2: ultra-smooth)
 - **SimpleLine Smoothing**: SimpleLine now supports Bezier curve rendering when `useBezierCurve=true` to eliminate jagged lines
 

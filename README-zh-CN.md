@@ -1,7 +1,6 @@
 # Flutter Drawing Board
 
-A Flutter package of drawing board.  
-Flutter 画板
+功能强大且高度可定制的 Flutter 绘图板插件，提供丰富的绘图功能和高级特性。
 
 [English](./README.md) | [中文](./README-zh-CN.md)
 
@@ -11,246 +10,455 @@ Flutter 画板
 [![CodeFactor](https://img.shields.io/codefactor/grade/github/fluttercandies/flutter_drawing_board?logo=codefactor&logoColor=%23ffffff&style=flat-square)](https://www.codefactor.io/repository/github/fluttercandies/flutter_drawing_board)
 <a target="_blank" href="https://jq.qq.com/?_wv=1027&k=5bcc0gy"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="FlutterCandies" title="FlutterCandies"></a>
 
-> `0.3.0` 后存在破坏性更新，移除了文本添加，文本的添加与编辑请移步 [![pub package](https://img.shields.io/pub/v/stack_board?logo=dart&label=stack_board&style=flat-square)](https://pub.dev/packages/stack_board)  
+> **破坏性更新**: `0.3.0` 版本之后移除了文本功能。如需文本功能，请使用 [![pub package](https://img.shields.io/pub/v/stack_board?logo=dart&label=stack_board&style=flat-square)](https://pub.dev/packages/stack_board)
 
-### 特性
-* 基础绘制
-* 自定义绘制
-* 画布旋转、多指移动缩放
-* 撤销、重做
+> **0.9.9+ 版本行为变更**:
+> - `SimpleLine()` 现在默认使用贝塞尔曲线平滑（`useBezierCurve: true`），提供更平滑的线条。如需使用旧行为，请设置 `useBezierCurve: false`。
+> - JSON 导入保持向后兼容，默认 `useBezierCurve: false`。
 
-### 预览
+## 特性
 
-* 在线体验:[Demo](https://xsilencex.github.io/flutter_drawing_board_demo/)  
+- **丰富的绘图工具** - 自由线条、笔触、直线、矩形、圆形和橡皮擦
+- **高级平滑算法** - 贝塞尔曲线和 Catmull-Rom 样条插值，实现超平滑线条
+- **手掌拒绝** - 防止平板设备上的意外手掌触摸
+- **画布操作** - 平移、缩放、旋转（90° 增量）、撤销、重做、清空
+- **性能优化** - 点过滤、画布缓存（~70% 提升）、橡皮擦优化（~50% 提升）
+- **JSON 序列化** - 完整的绘图保存/加载支持
+- **图像导出** - 支持导出为 PNG 等多种格式
+- **灵活的工具栏系统** - 内置工具栏，易于自定义
+- **高度可扩展** - 轻松创建自定义绘制内容类型
+- **可配置历史记录** - 限制撤销/重做步数，防止内存增长（默认：100）
 
-* 基础功能预览  
+## 预览
+
+**在线体验**: [Demo](https://xsilencex.github.io/flutter_drawing_board_demo/)
 
 <img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/master/preview/pre1.gif" height=300>
 <img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/master/preview/pre2.gif" height=300>
 <img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/master/preview/pre3.gif" height=300>
 <img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/master/preview/pre4.gif" height=300>
 <img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/master/preview/pre5.gif" height=300>
-<img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/master/preview/pre6.gif" height=300>  
+<img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/master/preview/pre6.gif" height=300>
 
-&nbsp;
+## 安装
 
-### 使用方法  
+在项目的 `pubspec.yaml` 文件中添加：
 
-* 创建
-
-```dart
-//simple example
-
-import 'package:flutter_drawing_board/flutter_drawing_board.dart';
-
-DrawingBoard(
-  background: Container(width: 400, height: 400, color: Colors.white),
-  showDefaultActions: true, /// 开启默认操作选项
-  showDefaultTools: true,   /// 开启默认工具栏
-),
+```yaml
+dependencies:
+  flutter_drawing_board: ^0.9.10+1
 ```
 
-* 通过 DrawingController.getImageData 获取画板数据
+然后运行：
+
+```bash
+flutter pub get
+```
+
+## 快速开始
 
 ```dart
 import 'package:flutter_drawing_board/flutter_drawing_board.dart';
 
-final DrawingController _drawingController = DrawingController();
+class MyDrawingPage extends StatefulWidget {
+  @override
+  State<MyDrawingPage> createState() => _MyDrawingPageState();
+}
 
-DrawingBoard(
-  controller: _drawingController,
-  background: Container(width: 400, height: 400, color: Colors.white),
-  showDefaultActions: true,
-  showDefaultTools: true,
-),
+class _MyDrawingPageState extends State<MyDrawingPage> {
+  final DrawingController _drawingController = DrawingController();
 
-/// 获取画板数据
-Future<void> _getImageData() async {
-  print((await _drawingController.getImageData()).buffer.asInt8List());
+  @override
+  void dispose() {
+    _drawingController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        children: [
+          // 绘图板
+          Expanded(
+            child: DrawingBoard(
+              controller: _drawingController,
+              background: Container(color: Colors.white),
+            ),
+          ),
+
+          // 操作栏（滑块、撤销、重做、旋转、清空）
+          DrawingBar(
+            controller: _drawingController,
+            tools: [
+              DefaultActionItem.slider(),
+              DefaultActionItem.undo(),
+              DefaultActionItem.redo(),
+              DefaultActionItem.turn(),
+              DefaultActionItem.clear(),
+            ],
+          ),
+
+          // 工具栏（画笔、笔触、形状、橡皮擦）
+          DrawingBar(
+            controller: _drawingController,
+            tools: [
+              DefaultToolItem.pen(),
+              DefaultToolItem.brush(),
+              DefaultToolItem.rectangle(),
+              DefaultToolItem.circle(),
+              DefaultToolItem.straightLine(),
+              DefaultToolItem.eraser(),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }
 ```
 
-* 通过 DrawingController.getJsonList 获取内容 Json
+## 使用指南
+
+### 1. 绘制内容类型
+
+本插件提供了多种内置绘制内容类型：
+
+#### SimpleLine - 自由线条
+绘制平滑的自由线条，支持贝塞尔曲线平滑。
 
 ```dart
-import 'package:flutter_drawing_board/flutter_drawing_board.dart';
-
-final DrawingController _drawingController = DrawingController();
-
-DrawingBoard(
-  controller: _drawingController,
-  background: Container(width: 400, height: 400, color: Colors.white),
-  showDefaultActions: true,
-  showDefaultTools: true,
-),
-
-/// 获取内容 Json
-Future<void> _getJsonList() async {
-  print(const JsonEncoder.withIndent('  ').convert(_drawingController.getJsonList()));
-}
+_drawingController.setPaintContent = SimpleLine(
+  useBezierCurve: true,  // 启用贝塞尔平滑（默认：true，v0.9.9起）
+  minPointDistance: 2.0, // 过滤距离小于此值的点（默认：2.0）
+);
 ```
-<details>
-  <summary>View Json</summary>
 
-```json
-[
-  {
-    "type": "StraightLine",
-    "startPoint": {
-      "dx": 114.5670061088183,
-      "dy": 117.50547159585983
-    },
-    "endPoint": {
-      "dx": 252.9362813512929,
-      "dy": 254.91849554320638
-    },
-    "paint": {
-      "blendMode": 3,
-      "color": 4294198070,
-      "filterQuality": 3,
-      "invertColors": false,
-      "isAntiAlias": false,
-      "strokeCap": 1,
-      "strokeJoin": 1,
-      "strokeWidth": 4.0,
-      "style": 1
-    }
-  },
-  {
-    "type": "StraightLine",
-    "startPoint": {
-      "dx": 226.6379349225167,
-      "dy": 152.11430225316613
-    },
-    "endPoint": {
-      "dx": 135.67632523940733,
-      "dy": 210.35948249064901
-    },
-    "paint": {
-      "blendMode": 3,
-      "color": 4294198070,
-      "filterQuality": 3,
-      "invertColors": false,
-      "isAntiAlias": false,
-      "strokeCap": 1,
-      "strokeJoin": 1,
-      "strokeWidth": 4.0,
-      "style": 1
-    }
-  }
-]
-```
-</details>
+> **注意**: 从 v0.9.9 开始，`useBezierCurve` 默认为 `true`，提供更平滑的线条。设置为 `false` 可恢复旧的直线行为。
 
-
-* 通过 `Json` 添加绘制内容
+#### SmoothLine - 可变粗细的笔触线条
+绘制具有类似压感粗细变化的笔触线条，支持高级平滑。
 
 ```dart
-const Map<String, dynamic> _testLine1 = <String, dynamic>{
-  'type': 'StraightLine',
-  'startPoint': <String, dynamic>{'dx': 68.94337550070736, 'dy': 62.05980083656557},
-  'endPoint': <String, dynamic>{'dx': 277.1373386828114, 'dy': 277.32029957032194},
-  'paint': <String, dynamic>{
-    'blendMode': 3,
-    'color': 4294198070,
-    'filterQuality': 3,
-    'invertColors': false,
-    'isAntiAlias': false,
-    'strokeCap': 1,
-    'strokeJoin': 1,
-    'strokeWidth': 4.0,
-    'style': 1
-  }
-};
-
-const Map<String, dynamic> _testLine2 = <String, dynamic>{
-  'type': 'StraightLine',
-  'startPoint': <String, dynamic>{'dx': 106.35164817830423, 'dy': 255.9575653134524},
-  'endPoint': <String, dynamic>{'dx': 292.76034659254094, 'dy': 92.125586665872},
-  'paint': <String, dynamic>{
-    'blendMode': 3,
-    'color': 4294198070,
-    'filterQuality': 3,
-    'invertColors': false,
-    'isAntiAlias': false,
-    'strokeCap': 1,
-    'strokeJoin': 1,
-    'strokeWidth': 4.0,
-    'style': 1
-  }
-};
-
-  ...
-
-/// 添加Json测试内容
-void _addTestLine() {
-  _drawingController.addContent(StraightLine.fromJson(_testLine1));
-  _drawingController.addContents(<PaintContent>[StraightLine.fromJson(_testLine2)]);
-}
+_drawingController.setPaintContent = SmoothLine(
+  brushPrecision: 0.8,   // 线条平滑因子（值越小越平滑，默认：0.8）
+  useBezierCurve: true,  // 启用贝塞尔曲线（默认：true）
+  minPointDistance: 2.0, // 过滤冗余点（默认：2.0）
+  smoothLevel: 1,        // 0: 快速, 1: 平衡, 2: 超平滑（默认：1）
+);
 ```
 
-* 设置绘制内容
+**平滑级别:**
+- `0`: 快速 - 无额外平滑
+- `1`: 平衡 - 基础平滑（推荐）
+- `2`: 超平滑 - Catmull-Rom 样条插值，实现丝滑曲线
 
+#### StraightLine - 直线
 ```dart
-/// 将绘制内容设置为普通线条
-_drawingController.setPaintContent = SimpleLine();
+_drawingController.setPaintContent = StraightLine();
 ```
 
-|  内置图形   | 说明  | 参数 |
-|  ----  | ----  | ---- |
-| SimpleLine  | 普通线条 | / |
-| SmoothLine  | 笔触线条 | double brushPrecision = 0.4 |
-| StraightLine  | 直线 | / |
-| Rectangle  | 矩形 | / |
-| Circle  | 椭圆 | bool isEllipse = false <br>bool startFromCenter = true |
-| Eraser  | 橡皮 | / |
-
-* 设置Paint
-
+#### Rectangle - 矩形
 ```dart
-_drawingController.setStyle();
-
-/// 可选参数
-void setStyle({
-  BlendMode? blendMode,
-  Color? color,
-  ColorFilter? colorFilter,
-  FilterQuality? filterQuality,
-  ui.ImageFilter? imageFilter,
-  bool? invertColors,
-  bool? isAntiAlias,
-  MaskFilter? maskFilter,
-  Shader? shader,
-  StrokeCap? strokeCap,
-  StrokeJoin? strokeJoin,
-  double? strokeMiterLimit,
-  double? strokeWidth,
-  PaintingStyle? style,
-})
+_drawingController.setPaintContent = Rectangle();
 ```
 
-* 画布操作
+#### Circle - 圆形或椭圆
+```dart
+_drawingController.setPaintContent = Circle(
+  isEllipse: false,       // false: 圆形, true: 椭圆（默认：false）
+  startFromCenter: true,  // true: 从圆心开始, false: 对角线（默认：true）
+);
+```
+
+#### Eraser - 橡皮擦
+```dart
+_drawingController.setPaintContent = Eraser();
+```
+
+### 2. DrawingController API
+
+#### 创建控制器
 
 ```dart
-/// 撤销
+final DrawingController _drawingController = DrawingController(
+  config: DrawConfig(
+    contentType: SimpleLine,
+    strokeWidth: 4.0,
+    color: Colors.black,
+  ),
+  maxHistorySteps: 100, // 限制撤销/重做历史记录（默认：100）
+);
+```
+
+#### 设置画笔样式
+
+```dart
+_drawingController.setStyle(
+  color: Colors.blue,
+  strokeWidth: 6.0,
+  strokeCap: StrokeCap.round,
+  strokeJoin: StrokeJoin.round,
+  blendMode: BlendMode.srcOver,
+  isAntiAlias: true,
+);
+```
+
+#### 画布操作
+
+```dart
+// 撤销上一步操作
 _drawingController.undo();
 
-/// 重做
+// 重做上一步撤销的操作
 _drawingController.redo();
 
-/// 旋转画布
+// 顺时针旋转画布 90°
 _drawingController.turn();
 
-///清理画布
+// 清空整个画布
 _drawingController.clear();
+
+// 检查操作是否可用
+bool canUndo = _drawingController.canUndo();
+bool canRedo = _drawingController.canRedo();
+bool canClear = _drawingController.canClear();
 ```
 
-### 自定义绘制
-
-* 创建继承自 [PaintContent](https://github.com/fluttercandies/flutter_drawing_board/blob/master/lib/src/paint_contents/paint_content.dart) 的自定义绘制类 (以三角形为例)
+#### 以编程方式添加内容
 
 ```dart
-/// 自定义绘制三角形
+// 添加单个内容
+_drawingController.addContent(StraightLine.fromJson(jsonData));
+
+// 添加多个内容
+_drawingController.addContents([
+  SimpleLine.fromJson(line1Json),
+  Rectangle.fromJson(rect1Json),
+]);
+```
+
+#### 导出数据
+
+**导出为图像**:
+```dart
+// 获取完整图像（包含背景）
+Future<void> _exportImage() async {
+  final ByteData? data = await _drawingController.getImageData(
+    format: ui.ImageByteFormat.png,
+  );
+
+  if (data != null) {
+    final Uint8List bytes = data.buffer.asUint8List();
+    // 保存或显示图像
+  }
+}
+
+// 获取表面图像（仅绘制内容，更快）
+Future<void> _exportSurface() async {
+  final ByteData? data = await _drawingController.getSurfaceImageData();
+  // 使用图像数据
+}
+```
+
+**导出为 JSON**:
+```dart
+void _exportJson() {
+  final List<Map<String, dynamic>> jsonList = _drawingController.getJsonList();
+  final String jsonString = const JsonEncoder.withIndent('  ').convert(jsonList);
+  // 保存或分享 JSON
+}
+```
+
+**从 JSON 导入**:
+```dart
+void _importJson(List<Map<String, dynamic>> jsonData) {
+  final contents = jsonData.map((json) {
+    final type = json['type'] as String;
+    switch (type) {
+      case 'SimpleLine':
+        return SimpleLine.fromJson(json);
+      case 'StraightLine':
+        return StraightLine.fromJson(json);
+      case 'Rectangle':
+        return Rectangle.fromJson(json);
+      case 'Circle':
+        return Circle.fromJson(json);
+      case 'Eraser':
+        return Eraser.fromJson(json);
+      default:
+        return null;
+    }
+  }).whereType<PaintContent>().toList();
+
+  _drawingController.addContents(contents);
+}
+```
+
+### 3. DrawingBoard 配置
+
+```dart
+DrawingBoard(
+  controller: _drawingController,
+  background: Container(color: Colors.white),
+
+  // 交互回调
+  onPointerDown: (PointerDownEvent event) { /* ... */ },
+  onPointerMove: (PointerMoveEvent event) { /* ... */ },
+  onPointerUp: (PointerUpEvent event) { /* ... */ },
+
+  // 画布交互
+  boardPanEnabled: true,        // 启用平移（默认：true）
+  boardScaleEnabled: true,      // 启用缩放（默认：true）
+  minScale: 0.2,                // 最小缩放比例（默认：0.2）
+  maxScale: 20,                 // 最大缩放比例（默认：20）
+  panAxis: PanAxis.free,        // 平移方向限制（默认：自由）
+
+  // 高级功能
+  enablePalmRejection: false,   // 启用手掌拒绝（默认：false）
+
+  // 布局
+  alignment: Alignment.topCenter,
+  clipBehavior: Clip.antiAlias,
+  boardClipBehavior: Clip.hardEdge,
+
+  // 用于外部操作的变换控制器
+  transformationController: _transformationController,
+)
+```
+
+### 4. 工具栏系统
+
+#### DrawingBar
+
+`DrawingBar` 组件提供灵活的工具栏布局，自动传递控制器。
+
+```dart
+// 水平工具栏（默认）
+DrawingBar(
+  controller: _drawingController,
+  style: HorizontalToolsBarStyle(
+    mainAxisAlignment: MainAxisAlignment.center,
+    spacing: 8.0,
+  ),
+  tools: [ /* 工具组件 */ ],
+)
+
+// 垂直工具栏
+DrawingBar(
+  controller: _drawingController,
+  style: VerticalToolsBarStyle(
+    mainAxisAlignment: MainAxisAlignment.start,
+    spacing: 8.0,
+  ),
+  tools: [ /* 工具组件 */ ],
+)
+
+// 自动换行工具栏
+DrawingBar(
+  controller: _drawingController,
+  style: WrapToolsBarStyle(
+    spacing: 8.0,
+    runSpacing: 8.0,
+  ),
+  tools: [ /* 工具组件 */ ],
+)
+```
+
+#### 默认工具项
+
+用于切换绘制内容的预制工具按钮：
+
+```dart
+DefaultToolItem.pen()          // SimpleLine 工具
+DefaultToolItem.brush()        // SmoothLine 工具
+DefaultToolItem.straightLine() // StraightLine 工具
+DefaultToolItem.rectangle()    // Rectangle 工具
+DefaultToolItem.circle()       // Circle 工具
+DefaultToolItem.eraser()       // Eraser 工具
+```
+
+自定义工具项：
+```dart
+DefaultToolItem(
+  icon: Icons.star,
+  content: MyCustomContent,
+  onTap: (controller) {
+    // 自定义操作
+  },
+  color: Colors.grey,
+  activeColor: Colors.blue,
+  iconSize: 24,
+)
+```
+
+#### 默认操作项
+
+预制操作按钮：
+
+```dart
+DefaultActionItem.slider()     // 笔触粗细滑块
+DefaultActionItem.undo()       // 撤销按钮
+DefaultActionItem.redo()       // 重做按钮
+DefaultActionItem.turn()       // 旋转 90° 按钮
+DefaultActionItem.clear()      // 清空画布按钮
+```
+
+自定义操作项：
+```dart
+DefaultActionItem(
+  childBuilder: (context, controller) {
+    return Icon(Icons.save);
+  },
+  onTap: (controller) async {
+    // 保存绘图
+    await _saveDrawing(controller);
+  },
+)
+```
+
+### 5. 高级功能
+
+#### 手掌拒绝
+
+通过检测大触摸面积和快速连续触摸，防止平板设备上的意外手掌触摸。
+
+```dart
+DrawingBoard(
+  controller: _drawingController,
+  background: Container(color: Colors.white),
+  enablePalmRejection: true, // 启用手掌拒绝
+)
+```
+
+**工作原理:**
+- 拒绝大小 > 15.0 的触摸（可能是手掌）
+- 拒绝 100ms 内的快速连续触摸（手掌 + 手指）
+
+#### 历史记录管理
+
+通过限制撤销/重做历史记录来控制内存使用：
+
+```dart
+final DrawingController _drawingController = DrawingController(
+  maxHistorySteps: 50, // 限制为 50 步（默认：100）
+);
+```
+
+#### 自定义颜色与透明度
+
+```dart
+// 设置带自定义透明度的颜色
+_drawingController.setStyle(
+  color: Colors.red.withValues(alpha: 0.5),
+);
+```
+
+### 6. 创建自定义绘制内容
+
+扩展 `PaintContent` 来创建自己的绘图工具：
+
+```dart
 class Triangle extends PaintContent {
   Triangle();
 
@@ -273,7 +481,6 @@ class Triangle extends PaintContent {
   }
 
   Offset startPoint = Offset.zero;
-
   Offset A = Offset.zero;
   Offset B = Offset.zero;
   Offset C = Offset.zero;
@@ -283,7 +490,10 @@ class Triangle extends PaintContent {
 
   @override
   void drawing(Offset nowPoint) {
-    A = Offset(startPoint.dx + (nowPoint.dx - startPoint.dx) / 2, startPoint.dy);
+    A = Offset(
+      startPoint.dx + (nowPoint.dx - startPoint.dx) / 2,
+      startPoint.dy,
+    );
     B = Offset(startPoint.dx, nowPoint.dy);
     C = nowPoint;
   }
@@ -303,7 +513,7 @@ class Triangle extends PaintContent {
   Triangle copy() => Triangle();
 
   @override
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toContentJson() {
     return <String, dynamic>{
       'startPoint': startPoint.toJson(),
       'A': A.toJson(),
@@ -315,32 +525,126 @@ class Triangle extends PaintContent {
 }
 ```
 
-* 在默认工具栏中添加工具(可选)
-
-> `showDefaultTools` 必须为 `true` 否则默认工具栏不会显示
-
-> `List<DefToolItem> DrawingBoard.defaultTools(Type currType, DrawingController controller);`  
-> 为默认工具包  
-> 可以使用 `defaultToolsBuilder` 对默认绘制工具进行重写，或者直接在 `defaultTools` 中插入 `DefToolItem` 自定义工具
+**添加到工具栏:**
 
 ```dart
-DrawingBoard(
-  ...
-  showDefaultTools: true,
-  defaultToolsBuilder: (Type t, _) {
-    return DrawingBoard.defaultTools(t, _drawingController)
-      ..insert(   /// 将三角形工具插入默认工具栏的第二位
-        1,
-        DefToolItem(
-          icon: Icons.change_history_rounded,
-          isActive: t == Triangle,
-          onTap: () => _drawingController.setPaintContent = Triangle(),
-      ),
-    );
-  },
+DrawingBar(
+  controller: _drawingController,
+  tools: [
+    ...DefaultToolItem.values, // 所有默认工具
+    DefaultToolItem(
+      icon: Icons.change_history,
+      content: Triangle,
+      activeColor: Colors.purple,
+    ),
+  ],
 )
 ```
 
-* 效果预览  
+**效果预览:**
 
 <img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/master/preview/pre7.gif" height=300>
+
+## 性能优化
+
+本插件包含多项性能优化（v0.9.9+ 引入）：
+
+- **画布缓存**（~70% 提升）- 通过缓存版本控制避免冗余图像生成
+- **橡皮擦优化**（~50% 提升）- 减少橡皮擦操作期间的双重刷新
+- **点过滤**（30-50% 减少）- 通过 `minPointDistance` 过滤冗余点，减少 30-50% 的数据量
+- **贝塞尔平滑** - 在不牺牲性能的情况下消除折线感
+- **整体**（30-50% 提升）- 渲染和内存使用提升 30-50%
+
+## JSON 格式示例
+
+```json
+[
+  {
+    "type": "StraightLine",
+    "startPoint": {"dx": 114.56, "dy": 117.50},
+    "endPoint": {"dx": 252.93, "dy": 254.91},
+    "paint": {
+      "blendMode": 3,
+      "color": 4294198070,
+      "filterQuality": 3,
+      "invertColors": false,
+      "isAntiAlias": false,
+      "strokeCap": 1,
+      "strokeJoin": 1,
+      "strokeWidth": 4.0,
+      "style": 1
+    }
+  },
+  {
+    "type": "SimpleLine",
+    "points": [
+      {"dx": 100.0, "dy": 100.0},
+      {"dx": 150.0, "dy": 120.0},
+      {"dx": 200.0, "dy": 110.0}
+    ],
+    "useBezierCurve": true,
+    "minPointDistance": 2.0,
+    "paint": { /* ... */ }
+  }
+]
+```
+
+## API 参考
+
+### DrawingController
+
+| 方法 | 说明 |
+|------|------|
+| `setStyle({...})` | 更新画笔样式（颜色、粗细等） |
+| `setPaintContent(PaintContent)` | 切换绘图工具 |
+| `undo()` | 撤销上一步操作 |
+| `redo()` | 重做上一步撤销的操作 |
+| `turn()` | 旋转画布 90° |
+| `clear()` | 清空画布 |
+| `addContent(PaintContent)` | 添加单个内容 |
+| `addContents(List<PaintContent>)` | 添加多个内容 |
+| `getImageData()` | 导出为图像（包含背景） |
+| `getSurfaceImageData()` | 导出表面图像（更快） |
+| `getJsonList()` | 导出为 JSON |
+
+### 内置内容类型
+
+| 类型 | 说明 | 参数 |
+|------|------|------|
+| `SimpleLine` | 自由线条 | `useBezierCurve`, `minPointDistance` |
+| `SmoothLine` | 笔触线条 | `brushPrecision`, `smoothLevel`, `useBezierCurve`, `minPointDistance` |
+| `StraightLine` | 直线 | - |
+| `Rectangle` | 矩形 | - |
+| `Circle` | 圆形/椭圆 | `isEllipse`, `startFromCenter` |
+| `Eraser` | 橡皮擦 | - |
+
+## 示例
+
+查看 [example](./example) 文件夹获取完整示例，包括：
+- 基础绘图板
+- 自定义绘制内容（三角形、图像）
+- 颜色选择器集成
+- JSON 导入/导出
+- 图像导出
+
+## 贡献
+
+欢迎贡献！以下是你可以帮助的方式：
+
+1. **报告错误** - 提交 issue 描述错误及其重现方法
+2. **建议功能** - 提交 issue 描述你的功能请求
+3. **提交 PR** - Fork 仓库，进行修改，然后提交 pull request
+
+请确保你的代码遵循现有风格，并在适当的地方包含测试。
+
+## 许可证
+
+本项目采用 MIT 许可证 - 详见 [LICENSE](./LICENSE) 文件。
+
+## 社区
+
+加入我们的 QQ 群: <a target="_blank" href="https://jq.qq.com/?_wv=1027&k=5bcc0gy"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="FlutterCandies" title="FlutterCandies"></a>
+
+## 更新日志
+
+查看 [CHANGELOG.md](./CHANGELOG.md) 了解版本历史。
