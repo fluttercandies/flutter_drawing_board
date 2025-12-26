@@ -314,9 +314,14 @@ class _DeepPainter extends CustomPainter {
     _lastRenderedSize = size;
 
     final ui.Picture picture = recorder.endRecording();
-    picture.toImage(size.width.toInt(), size.height.toInt()).then((ui.Image value) {
-      controller.cachedImage = value;
-    });
+
+    // 只在尺寸有效时生成缓存图片，避免 Invalid image dimensions 异常
+    // Only generate cached image when size is valid to avoid Invalid image dimensions exception
+    if (size.width > 0 && size.height > 0) {
+      picture.toImage(size.width.toInt(), size.height.toInt()).then((ui.Image value) {
+        controller.cachedImage = value;
+      });
+    }
   }
 
   @override
