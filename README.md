@@ -40,21 +40,6 @@ A powerful and highly customizable Flutter package for creating interactive draw
 <img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/master/preview/pre5.gif" height=300>
 <img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/master/preview/pre6.gif" height=300>
 
-## Installation
-
-Add this to your package's `pubspec.yaml` file:
-
-```yaml
-dependencies:
-  flutter_drawing_board: ^0.9.10+1
-```
-
-Then run:
-
-```bash
-flutter pub get
-```
-
 ## Quick Start
 
 ```dart
