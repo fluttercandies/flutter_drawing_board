@@ -40,21 +40,6 @@
 <img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/master/preview/pre5.gif" height=300>
 <img src="https://raw.githubusercontent.com/xSILENCEx/flutter_drawing_board/master/preview/pre6.gif" height=300>
 
-## 安装
-
-在项目的 `pubspec.yaml` 文件中添加：
-
-```yaml
-dependencies:
-  flutter_drawing_board: ^0.9.10+1
-```
-
-然后运行：
-
-```bash
-flutter pub get
-```
-
 ## 快速开始
 
 ```dart

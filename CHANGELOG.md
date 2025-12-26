@@ -1,8 +1,12 @@
-## [1.0.1] - 2025-12-26
+## [1.0.1+1] - 2025-12-26
 
 ### Bug Fixes
 - Fixed "Invalid image dimensions" exception when canvas size is zero or invalid
 - Added size validation before generating cached images in `_DeepPainter`
+
+### Documentation
+- Removed hardcoded installation instructions from README files (now handled automatically by pub.dev)
+- Version badge at top of README dynamically displays latest version
 
 ---
 
