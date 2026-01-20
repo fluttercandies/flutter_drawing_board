@@ -1,3 +1,10 @@
+## [1.0.1+2] - 2025-12-26
+
+### Bug Fixes
+- Fixed `addContent` `addContents`
+
+---
+
 ## [1.0.1+1] - 2025-12-26
 
 ### Bug Fixes
