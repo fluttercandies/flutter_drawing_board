@@ -412,20 +412,30 @@ class DrawingController extends ChangeNotifier {
   ///
   /// Add a drawing content to history
   void addContent(PaintContent content) {
+    final int hisLen = _history.length;
+    if (hisLen > _currentIndex) {
+      _history.removeRange(_currentIndex, hisLen);
+    }
     _history.add(content);
     _currentIndex++;
     cachedImage = null;
     _refreshDeep();
+    notifyListeners();
   }
 
   /// 批量添加多条绘制内容
   ///
   /// Add multiple drawing contents in batch
   void addContents(List<PaintContent> contents) {
+    final int hisLen = _history.length;
+    if (hisLen > _currentIndex) {
+      _history.removeRange(_currentIndex, hisLen);
+    }
     _history.addAll(contents);
     _currentIndex += contents.length;
     cachedImage = null;
     _refreshDeep();
+    notifyListeners();
   }
 
   /// 旋转画布（每次旋转90度）
